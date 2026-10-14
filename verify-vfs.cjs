@@ -32,7 +32,7 @@ async function verify() {
   assert(vfs.read(session, station, '/srv/equipe/contatos.txt').content);
   vfs.read(session, station, '/home/kael/leia-me.txt');
   assert.equal(session.progresso.filter(k => k === 'file:leia-me').length, 1);
-  assert.equal(VFS_FILES['/var/log/nexus.log'].content.split('\n').length, 15);
+  assert.equal(VFS_FILES['/var/log/nexus.log'].content.split('\n').length, 2400);
   // Dados de teste exclusivos do servidor, removidos antes dos testes HTTP.
   VFS_FILES['/restrito/teste.txt'] = { id: 'teste', content: 'teste', stations: ['computer_infra_upper'], grants: ['clue:teste'] };
   try {

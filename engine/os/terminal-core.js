@@ -78,7 +78,8 @@ registerTerminalCommand('cd', { help: 'cd [caminho] — muda o diretório (padr�
 } });
 registerTerminalCommand('cat', { help: 'cat <arquivo> — lê um arquivo', async run(args, term) {
   if (args.length !== 1) return { lines: ['cat: uso: cat <arquivo>'] };
-  return { lines: (await terminalRead(term, args[0], 'cat')).split(/\r?\n/) };
+  const lines = (await terminalRead(term, args[0], 'cat')).split(/\r?\n/);
+  return { lines: lines.length > 500 ? [...lines.slice(0, 200), 'Arquivo com ' + lines.length + ' linhas; mostrando as primeiras 200. Para consultar o restante, use grep, less ou sed -n Np.'] : lines };
 } });
 registerTerminalCommand('grep', { help: 'grep [-n] [-i] <padrão> <arquivo> — procura texto literal; -n numera, -i ignora maiúsculas', async run(args, term) {
   let numbered = false, insensitive = false, index = 0;
@@ -93,5 +94,21 @@ registerTerminalCommand('grep', { help: 'grep [-n] [-i] <padrão> <arquivo> — 
   const content = await terminalRead(term, args[index + 1], 'grep');
   return { lines: content.split(/\r?\n/).flatMap((line, number) =>
     (insensitive ? line.toLowerCase() : line).includes(pattern) ? [(numbered ? (number + 1) + ':' : '') + line] : []) };
+} });
+registerTerminalCommand('less', { help: 'less <arquivo> [página] — lê páginas de 200 linhas (padrão: 1)', async run(args, term) {
+  if (args.length < 1 || args.length > 2 || (args[1] !== undefined && !/^[1-9]\d*$/.test(args[1])))
+    return { lines: ['less: uso: less <arquivo> [página]'] };
+  const lines = (await terminalRead(term, args[0], 'less')).split(/\r?\n/), pages = Math.ceil(lines.length / 200), page = Number(args[1] ?? 1);
+  if (!Number.isSafeInteger(page) || page > pages) return { lines: ['less: página fora do intervalo 1–' + pages] };
+  return { lines: [...lines.slice((page - 1) * 200, page * 200), 'Página ' + page + '/' + pages + '. Use less "' + args[0] + '" ' + (page < pages ? page + 1 : page) + ' para consultar uma página.'] };
+} });
+// Só a forma de impressão de linhas: sed -n 'Np' ou sed -n 'A,Bp' (como no Unix).
+registerTerminalCommand('sed', { help: "sed -n 'Np' <arquivo> — mostra a linha N (ou 'A,Bp' para um intervalo)", async run(args, term) {
+  const match = args.length === 3 && args[0] === '-n' ? /^(\d+)(?:,(\d+))?p$/.exec(args[1]) : null;
+  if (!match) return { lines: ["sed: uso: sed -n 'Np' <arquivo>  ou  sed -n 'A,Bp' <arquivo>"] };
+  const lines = (await terminalRead(term, args[2], 'sed')).split(/\r?\n/);
+  const start = Number(match[1]), end = Number(match[2] ?? match[1]);
+  if (start < 1 || end < start) return { lines: ['sed: intervalo inválido'] };
+  return { lines: lines.slice(start - 1, Math.min(end, start + 499)) };
 } });
 if (typeof module !== 'undefined') module.exports = { createTerminal, TERMINAL_COMMANDS, registerTerminalCommand };

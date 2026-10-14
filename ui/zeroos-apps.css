@@ -9,6 +9,17 @@
 .terminal-command {margin:8px 0 0}.terminal-prompt {display:flex;flex-wrap:wrap;white-space:pre-wrap;overflow-wrap:anywhere}
 .terminal-input {flex:1;min-width:120px;width:0;border:0;border-radius:0;background:var(--os-panel);color:var(--os-text);font:inherit;padding:0 2px}
 .terminal-input:focus-visible {outline:1px solid var(--os-text);outline-offset:2px}
+.zero-app-window>.wm-body.zero-app-cesar {padding:16px;overflow:auto;user-select:text}
+.zero-app-cesar p {margin:0 0 12px}
+.zero-app-cesar label {display:block;font-weight:600}
+.zero-app-cesar textarea {display:block;box-sizing:border-box;width:100%;margin:6px 0 12px;resize:vertical;border:1px solid var(--os-text);border-radius:3px;background:var(--os-panel);color:var(--os-text);padding:8px;font:14px/1.5 Consolas,'Courier New',monospace}
+.cesar-controls {display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.cesar-controls select,.cesar-controls button {border:1px solid var(--os-text);border-radius:3px;background:var(--os-panel);color:var(--os-text);padding:5px 10px;font:inherit}
+.cesar-controls button:disabled {opacity:.5}
+.zero-app-cesar :is(textarea,select,button):focus-visible {outline:2px solid var(--os-text);outline-offset:2px}
+.cesar-alphabet {overflow:auto}
+.cesar-alphabet table {border-collapse:collapse;font:14px/1.5 Consolas,'Courier New',monospace}
+.cesar-alphabet th,.cesar-alphabet td {border:1px solid var(--os-text);padding:4px 7px;text-align:center}
 .zero-app-window>.wm-body.zero-app-wireshark {display:flex;flex-direction:column;min-height:0;padding:8px;gap:6px;user-select:text}
 .wireshark-filter {display:flex;gap:6px;margin:0}
 .wireshark-filter input {flex:1;min-width:0;height:30px;box-sizing:border-box;border:2px solid #287a39;border-radius:3px;background:var(--os-panel);color:var(--os-text);padding:3px 8px;font:inherit}

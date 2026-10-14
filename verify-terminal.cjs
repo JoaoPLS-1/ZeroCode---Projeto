@@ -146,7 +146,7 @@ async function verify() {
     await live.run('cat leia-me.txt');assert.deepEqual((await live.run('ls /srv')).lines, ['equipe/']);
     const state = await (await fetch(base + '/api/jogo/estado', { headers: { Cookie: cookie } })).json();
     assert(state.progresso.includes('file:leia-me'));
-    assert((await live.run('grep -n 02:14 /var/log/nexus.log')).lines.includes('12:02:14:08 Uma requisição gerou 4.096 tentativas'));
+    assert((await live.run('grep -n 02:14 /var/log/nexus.log')).lines.includes('1680:02:14:00 INFO  [release] Deploy v2.1 iniciado; commit 7f2'));
     for (const path of ['/engine/os/terminal-core.js', '/engine/os/apps/terminal.js']) assert.equal((await fetch(base + path)).status, 200);
     assert.equal((await fetch(base + '/verify-terminal.cjs')).status, 404);
     console.log('Terminal HTTP: scripts públicos, testes privados, leitura registrada no servidor, /srv liberado e log numerado aprovados.');

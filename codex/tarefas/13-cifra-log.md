@@ -26,7 +26,7 @@ reconhecer o IP no Wireshark (`codex/FASE.md` §3, "Cifra e o ano da IA").
    de deslocamento (−25…+25, com botões −/+), resultado ao vivo, e um disco/tabela de alfabeto
    mostrando a correspondência. Lógica pura em função testável (`cesar(texto, n)`; mantém
    espaços, pontuação e números).
-3. Terminal: garantir que `grep -n 2017 /var/log/nexus.log` e `cat` com arquivo grande funcionam
+3. Terminal: ler a linha 2017 com `sed -n '2017p' /var/log/nexus.log` (o `grep` procura texto, não número de linha) e `cat` com arquivo grande funcionam
    bem (rolagem; `cat` de arquivo com mais de 500 linhas mostra as primeiras 200 e a dica
    `use grep ou less`). Opcional: comando `head -n N` e `tail -n N`.
 4. Testes: `cesar` (ida/volta, pontuação, negativo), linha 2017 decifra para a frase esperada,
@@ -39,7 +39,7 @@ reconhecer o IP no Wireshark (`codex/FASE.md` §3, "Cifra e o ano da IA").
 
 ## Critérios de aceite
 - Todos os `verify*.cjs` passam.
-- Terminal: `grep -n 2017 /var/log/nexus.log` mostra a linha cifrada (entre outras com "2017" se
+- Terminal: `sed -n '2017p' /var/log/nexus.log` mostra a linha cifrada (correção pós-execução: a versão anterior desta tarefa pedia `grep -n 2017`, errado; e evite linhas com "2017" se
   houver — evite que haja muitas); Roda de César com +3 → −3 decifra; `cat
   /srv/infra/inventario.csv` no Servidor de Infra mostra o `srv-legado-07`.
 

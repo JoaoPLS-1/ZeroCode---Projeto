@@ -158,7 +158,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ⬜ 10 Motor de desafios de código (modo *implementar*; migra as 5 missões atuais)
 - ⬜ 11 Modo *escrever o teste que faltou*
 - ⬜ 12 `/lab` (SQLite em memória por sessão) + App Inspetor HTTP
-- ⬜ 13 App Roda de César + log real do NEXUS (linha do ano da IA) + cadeia de NPCs
+- ✅ 13 App Roda de César + log real do NEXUS (linha do ano da IA) + cadeia de NPCs
 
 **Fase 2 — Primeiro caso completo (fatia vertical): Pagamento do Café**
 - ⬜ 14 Descobrir: pistas do caso (Mateus, log de cobranças)
