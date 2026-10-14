@@ -1,0 +1,7 @@
+ESCOLHA DO SISTEMA
+Na primeira entrada em cada um dos cinco PCs, escolha Zero Code ou Windows.
+A escolha fica guardada por computador durante a partida.
+Use Trocar sistema na barra inferior ou no menu do PC para mudar o visual.
+A troca preserva código digitado, tentativas, instruções lidas, senhas e evidências.
+Os desafios, bloqueios e a ordem Dev 1 → Dev 2 → QA → Técnico → Infra continuam iguais.
+A formatação é apenas a apresentação inicial do computador dentro do jogo.

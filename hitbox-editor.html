@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hitbox Editor - ZeroCode</title>
+  <style>
+    body { margin: 0; background: #222; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    #toolbar { padding: 10px; background: #333; display: flex; gap: 10px; align-items: center; }
+    #editor-container { flex: 1; overflow: auto; position: relative; }
+    #canvas-container { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+    canvas { position: absolute; top: 0; left: 0; }
+    #bg-canvas { z-index: 1; }
+    #ui-canvas { z-index: 2; cursor: crosshair; }
+    select, button { padding: 5px 10px; background: #444; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #555; }
+    #output { width: 100%; height: 100px; background: #111; color: #0f0; font-family: monospace; border: none; padding: 10px; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <div id="toolbar">
+    <select id="room-select">
+      <option value="room_dev">Desenvolvimento</option>
+      <option value="room_qa_infra">QA / Infra</option>
+      <option value="room_cafe">Café</option>
+      <option value="room_meeting">Reunião</option>
+    </select>
+    <button id="btn-polygon">New Polygon (Q)</button>
+    <button id="btn-rect">New Rect (W)</button>
+    <button id="btn-undo">Undo Point (Z)</button>
+    <button id="btn-clear">Clear Current (C)</button>
+    <button id="btn-export">Export JSON (E)</button>
+    <span id="status">Mode: Polygon | Scale: 1x</span>
+  </div>
+  <div id="editor-container">
+    <div id="canvas-container">
+      <canvas id="bg-canvas"></canvas>
+      <canvas id="ui-canvas"></canvas>
+    </div>
+  </div>
+  <textarea id="output" readonly placeholder="Exported JSON will appear here..."></textarea>
+
+  <script>
+    const ROOMS = {
+      room_dev: 'assets/backgrounds/fase1/sala-dev.png',
+      room_qa_infra: 'assets/backgrounds/fase1/sala-qa-infra.png',
+      room_cafe: 'assets/backgrounds/fase1/sala-cafe.png',
+      room_meeting: 'assets/backgrounds/fase1/sala-reuniao.png'
+    };
+
+    const bgCanvas = document.getElementById('bg-canvas');
+    const uiCanvas = document.getElementById('ui-canvas');
+    const bgCtx = bgCanvas.getContext('2d');
+    const uiCtx = uiCanvas.getContext('2d');
+    const container = document.getElementById('canvas-container');
+
+    let obstacles = [];
+    let currentShape = null;
+    let mode = 'polygon';
+    let scale = 1;
+
+    const img = new Image();
+    
+    function loadRoom() {
+      const roomId = document.getElementById('room-select').value;
+      img.src = ROOMS[roomId];
+      img.onload = () => {
+        bgCanvas.width = uiCanvas.width = img.width;
+        bgCanvas.height = uiCanvas.height = img.height;
+        bgCtx.drawImage(img, 0, 0);
+        obstacles = [];
+        currentShape = null;
+        drawUI();
+      };
+    }
+
+    document.getElementById('room-select').addEventListener('change', loadRoom);
+    loadRoom();
+
+    function drawUI() {
+      uiCtx.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
+      
+      // Draw finalized obstacles
+      uiCtx.strokeStyle = '#0f0';
+      uiCtx.fillStyle = 'rgba(0, 255, 0, 0.2)';
+      uiCtx.lineWidth = 2;
+      
+      obstacles.forEach(obs => {
+        uiCtx.beginPath();
+        if (obs.points) {
+          obs.points.forEach((p, i) => {
+            if (i === 0) uiCtx.moveTo(p[0], p[1]);
+            else uiCtx.lineTo(p[0], p[1]);
+          });
+          uiCtx.closePath();
+        } else {
+          uiCtx.rect(obs.x, obs.y, obs.width, obs.height);
+        }
+        uiCtx.fill();
+        uiCtx.stroke();
+      });
+
+      // Draw current shape
+      if (currentShape) {
+        uiCtx.strokeStyle = '#f00';
+        uiCtx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+        uiCtx.beginPath();
+        if (mode === 'polygon') {
+          currentShape.points.forEach((p, i) => {
+            if (i === 0) uiCtx.moveTo(p[0], p[1]);
+            else uiCtx.lineTo(p[0], p[1]);
+          });
+          if (currentShape.points.length > 2) {
+            uiCtx.closePath();
+            uiCtx.fill();
+          }
+          uiCtx.stroke();
+          
+          currentShape.points.forEach(p => {
+            uiCtx.fillStyle = '#f00';
+            uiCtx.fillRect(p[0]-3, p[1]-3, 6, 6);
+          });
+        } else if (mode === 'rect') {
+          if (currentShape.x !== undefined && currentShape.width !== undefined) {
+            uiCtx.rect(currentShape.x, currentShape.y, currentShape.width, currentShape.height);
+            uiCtx.fill();
+            uiCtx.stroke();
+          }
+        }
+      }
+    }
+
+    uiCanvas.addEventListener('mousedown', (e) => {
+      const rect = uiCanvas.getBoundingClientRect();
+      const x = Math.round((e.clientX - rect.left) / scale);
+      const y = Math.round((e.clientY - rect.top) / scale);
+
+      if (e.button === 2) {
+        // Right click finishes shape
+        if (currentShape) {
+          obstacles.push(currentShape);
+          currentShape = null;
+          drawUI();
+        }
+        return;
+      }
+
+      if (!currentShape) {
+        if (mode === 'polygon') currentShape = { points: [] };
+        else currentShape = { startX: x, startY: y };
+      }
+
+      if (mode === 'polygon') {
+        currentShape.points.push([x, y]);
+      } else if (mode === 'rect') {
+        if (currentShape.startX !== undefined && currentShape.width === undefined) {
+          // Finish rect
+          currentShape.x = Math.min(currentShape.startX, x);
+          currentShape.y = Math.min(currentShape.startY, y);
+          currentShape.width = Math.abs(x - currentShape.startX);
+          currentShape.height = Math.abs(y - currentShape.startY);
+          delete currentShape.startX;
+          delete currentShape.startY;
+          obstacles.push(currentShape);
+          currentShape = null;
+        }
+      }
+      drawUI();
+    });
+
+    uiCanvas.addEventListener('mousemove', (e) => {
+      if (mode === 'rect' && currentShape && currentShape.startX !== undefined) {
+        const rect = uiCanvas.getBoundingClientRect();
+        const x = Math.round((e.clientX - rect.left) / scale);
+        const y = Math.round((e.clientY - rect.top) / scale);
+        
+        drawUI();
+        uiCtx.strokeStyle = '#f00';
+        uiCtx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+        uiCtx.beginPath();
+        const rx = Math.min(currentShape.startX, x);
+        const ry = Math.min(currentShape.startY, y);
+        const rw = Math.abs(x - currentShape.startX);
+        const rh = Math.abs(y - currentShape.startY);
+        uiCtx.rect(rx, ry, rw, rh);
+        uiCtx.fill();
+        uiCtx.stroke();
+      }
+    });
+
+    uiCanvas.addEventListener('contextmenu', e => e.preventDefault());
+
+    document.getElementById('editor-container').addEventListener('wheel', (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        scale -= e.deltaY * 0.001;
+        scale = Math.max(0.1, Math.min(scale, 5));
+        container.style.transform = `scale(${scale})`;
+        document.getElementById('status').innerText = `Mode: ${mode} | Scale: ${scale.toFixed(2)}x`;
+      }
+    });
+
+    document.getElementById('btn-polygon').onclick = () => { mode = 'polygon'; currentShape = null; };
+    document.getElementById('btn-rect').onclick = () => { mode = 'rect'; currentShape = null; };
+    document.getElementById('btn-undo').onclick = () => {
+      if (currentShape && currentShape.points) currentShape.points.pop();
+      else if (obstacles.length > 0) obstacles.pop();
+      drawUI();
+    };
+    document.getElementById('btn-clear').onclick = () => { currentShape = null; drawUI(); };
+    document.getElementById('btn-export').onclick = () => {
+      let out = 'obstacles: [\n';
+      obstacles.forEach(obs => {
+        if (obs.points) {
+          out += `  { points: ${JSON.stringify(obs.points)} },\n`;
+        } else {
+          out += `  { x: ${obs.x}, y: ${obs.y}, width: ${obs.width}, height: ${obs.height} },\n`;
+        }
+      });
+      out += '],';
+      document.getElementById('output').value = out;
+    };
+
+    window.addEventListener('keydown', e => {
+      if (e.key.toLowerCase() === 'q') document.getElementById('btn-polygon').click();
+      if (e.key.toLowerCase() === 'w') document.getElementById('btn-rect').click();
+      if (e.key.toLowerCase() === 'z') document.getElementById('btn-undo').click();
+      if (e.key.toLowerCase() === 'c') document.getElementById('btn-clear').click();
+      if (e.key.toLowerCase() === 'e') document.getElementById('btn-export').click();
+    });
+  </script>
+</body>
+</html>

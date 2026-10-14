@@ -1,0 +1,19 @@
+VISUAL DO BOLSO E CELULAR
+
+I ou clique no moletom abre o inventário. O botão Abrir do celular entra
+no Zero Mobile; Teams abre as conversas. A seta volta uma tela e X guarda.
+O Passe Ômega aparece após convencer Dante; o celular continua coletável.
+
+Bolso com painéis ciano/roxo, recortes angulares e tipografia pixelada.
+Celular e Teams com tema escuro. Telas estreitas usam a altura da janela.
+
+Assets atualizados pelo gerador de imagens integrado:
+assets/items/passe-omega.png — fundo transparente.
+assets/items/celular.png — novo sprite pixel art com fundo transparente.
+
+Prompts usados (resumo):
+1. Recortar o mesmo cartão de acesso, preservando formato, chip dourado,
+caveira, cores e textos; remover fundo escuro; transparência real.
+2. Melhorar o smartphone de referência: vista frontal, pixel art, metal
+azul-marinho, detalhes ciano/violeta, cidade ao pôr do sol refletida na água;
+tela opaca, fundo transparente, sem palavras ou aplicativos desenhados.

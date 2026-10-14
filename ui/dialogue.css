@@ -1,0 +1,53 @@
+/* Somente diálogos com NPCs. style.css e investigação original intactos. */
+#dialogue-modal.cyber-dialogue{all:initial;font-family:'Courier New',monospace;color:#edf6ff;--cyan:#08e8fc;--pink:#ed16c5;box-sizing:border-box}
+#dialogue-modal.cyber-dialogue *{all:revert;box-sizing:border-box;font-family:inherit}
+#dialogue-modal.cyber-dialogue{position:absolute;inset:0;z-index:25;background:linear-gradient(transparent 28%,#02040a33 60%,#02040ac9);isolation:isolate;--edge:polygon(0 0,21% 0,23% 7%,52% 7%,54% 14%,96% 14%,100% 26%,100% 92%,97% 100%,3% 100%,0 89%)}
+#dialogue-modal.cyber-dialogue .dialogue-frame{position:absolute;left:1%;right:1%;bottom:3%;height:35%;background:var(--cyan);clip-path:var(--edge);filter:drop-shadow(0 0 8px #00e8ff88);z-index:2}
+#dialogue-modal.cyber-dialogue .dialogue-panel{position:absolute;inset:3px;clip-path:var(--edge);background:radial-gradient(ellipse at 0 90%,#e400ba38,transparent 33%),radial-gradient(ellipse at 100% 20%,#00e5ff25,transparent 35%),#080c15;padding:4.1% 26% 1%;display:flex;flex-direction:column;align-items:stretch}
+#dialogue-modal.cyber-dialogue .dialogue-panel:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.3;background-image:radial-gradient(#09d9ee 1px,transparent 1.5px);background-size:7px 7px;mask-image:linear-gradient(90deg,#000,transparent 24%,transparent 76%,#000)}
+#dialogue-modal.cyber-dialogue .dialogue-panel:after{content:"";position:absolute;top:2%;left:3%;right:3%;height:3px;background:linear-gradient(90deg,var(--pink),transparent 45%,var(--pink));transform:rotate(.5deg)}
+#dialogue-modal.cyber-dialogue .dialogue-panel header{display:flex;align-items:center;gap:12px;position:relative;flex-shrink:0}
+#dialogue-modal.cyber-dialogue .dialogue-name{font-size:clamp(18px,2.4vw,37px);font-style:italic;margin:0;letter-spacing:1px}
+#dialogue-modal.cyber-dialogue .dialogue-role{display:block;color:var(--cyan);font-size:clamp(9px,.9vw,15px);margin-top:3px}
+#dialogue-modal.cyber-dialogue .dialogue-speaker-badge{font-size:clamp(16px,2vw,30px);border:2px solid var(--cyan);color:var(--cyan);padding:1px 6px}
+#dialogue-modal.cyber-dialogue .dialogue-counter{margin-left:auto;color:#678893;font-size:clamp(9px,.8vw,12px)}
+#dialogue-modal.cyber-dialogue .dialogue-text{position:relative;font-size:clamp(11px,1.27vw,20px);line-height:1.5;flex:1;overflow:auto;margin:12px 0;min-height:0;white-space:pre-line}
+#dialogue-modal.cyber-dialogue .dialogue-continue{position:relative;align-self:center;padding:9px 20px;font-size:clamp(10px,1.1vw,18px);flex-shrink:0}
+#dialogue-modal.cyber-dialogue .dialogue-sprite{position:absolute;bottom:4%;width:28%;height:58%;z-index:3;pointer-events:none;filter:brightness(.53) saturate(.75);transition:filter .18s}
+#dialogue-modal.cyber-dialogue .dialogue-sprite.active{filter:brightness(1) drop-shadow(2px 0 0 var(--cyan)) drop-shadow(-2px 0 0 var(--pink))}
+#dialogue-modal.cyber-dialogue .dialogue-sprite.player{left:-1%}
+#dialogue-modal.cyber-dialogue .dialogue-sprite.npc{right:-1%}
+#dialogue-modal.cyber-dialogue .dialogue-sprite img{width:100%;height:100%;object-fit:contain;object-position:bottom}
+#dialogue-modal.cyber-dialogue .portrait-caption{position:absolute;bottom:0;left:12%;right:12%;background:#06101bea;border-top:2px solid var(--pink);text-align:center;padding:6px;font-size:clamp(8px,.7vw,12px);letter-spacing:1px;color:#87afbd}
+#dialogue-modal.cyber-dialogue .dialogue-flavor{position:absolute;bottom:1%;left:2%;font-size:9px;line-height:1.8;color:#5b6c75;z-index:4;display:none}
+#dialogue-modal.cyber-dialogue .dialogue-sprite.no-portrait:before{content:"?";position:absolute;bottom:15%;left:25%;width:50%;height:45%;border:1px solid #206273;background:linear-gradient(160deg,#14303a,#080e16);display:grid;place-items:center;font-size:7vw;color:#28b2c9;clip-path:polygon(20% 0,80% 0,100% 20%,100% 100%,0 100%,0 20%)}
+#dialogue-modal.cyber-dialogue .no-portrait img{visibility:hidden}
+#dialogue-modal.cyber-dialogue .is-investigation .dialogue-sprite{display:none}
+#dialogue-modal.cyber-dialogue .is-investigation .dialogue-frame{left:13%;right:13%;height:42%}
+#dialogue-modal.cyber-dialogue .is-investigation .dialogue-panel{padding:7% 7% 3%}
+#dialogue-modal.cyber-dialogue .is-investigation .dialogue-text{font-size:clamp(12px,1.5vw,22px)}
+@media (max-width:800px){#dialogue-modal.cyber-dialogue .dialogue-frame{height:43%;bottom:1%}
+#dialogue-modal.cyber-dialogue .dialogue-panel{padding:5% 24% 1%}
+#dialogue-modal.cyber-dialogue .dialogue-sprite{width:25%;height:57%;bottom:2%}
+#dialogue-modal.cyber-dialogue .dialogue-text{margin:6px 0;line-height:1.35}
+#dialogue-modal.cyber-dialogue .dialogue-panel header{gap:5px}
+#dialogue-modal.cyber-dialogue .dialogue-name{font-size:16px}
+#dialogue-modal.cyber-dialogue .dialogue-continue{padding:5px 9px;letter-spacing:0}
+#dialogue-modal.cyber-dialogue .dialogue-role{font-size:8px}
+#dialogue-modal.cyber-dialogue #minimap{display:none}
+#dialogue-modal.cyber-dialogue .portrait-caption{font-size:7px}
+#dialogue-modal.cyber-dialogue .evidence-grid{grid-template-columns:1fr}
+#dialogue-modal.cyber-dialogue .dialogue-counter{display:none}
+#dialogue-modal.cyber-dialogue .dialogue-speaker-badge{display:none}
+}
+@media (prefers-reduced-motion:reduce){#dialogue-modal.cyber-dialogue *{transition:none!important}
+}
+#dialogue-modal.cyber-dialogue .dialogue-sprite.npc img{transform:scaleX(-1)}
+
+#dialogue-modal.cyber-dialogue .dialogue-continue{cursor:pointer;border:2px solid var(--cyan);color:var(--cyan);background:#06131e;font-family:inherit;font-weight:bold;letter-spacing:2px;clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px),0 8px)}
+#dialogue-modal.cyber-dialogue .dialogue-continue:hover{background:#12323e;color:white}
+#dialogue-modal.cyber-dialogue .dialogue-continue:focus-visible{outline:3px solid #ffeb59;outline-offset:3px}
+#dialogue-modal.cyber-dialogue .dialogue-sprite img{display:block}
+
+/* Acabamento do botão da versão 2.2, restrito à conversa. */
+#dialogue-modal.cyber-dialogue .dialogue-continue{box-shadow:3px 3px 0 #af17dd66,inset 0 0 15px #04e8ff12}

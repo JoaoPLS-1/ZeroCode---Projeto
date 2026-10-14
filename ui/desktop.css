@@ -1,0 +1,47 @@
+#case-panel.pc-mode {padding:0;background:#071121;backdrop-filter:none;font-family:'Segoe UI',sans-serif;color:#263347}
+.pc-desktop {position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at 76% 25%,#399bc580,transparent 43%),radial-gradient(ellipse at 55% 90%,#425ed5a8,transparent 58%),linear-gradient(135deg,#081c39,#144b79 65%,#173052)}
+.pc-desktop::before {content:'';position:absolute;width:65vw;height:65vw;border:2px solid #9de4ff24;border-radius:38%;transform:rotate(-28deg);right:-24vw;top:-20vw;box-shadow:0 0 0 55px #8accff08,0 0 0 115px #8accff06;pointer-events:none}
+.pc-desktop button {font:inherit;cursor:pointer;border:0;border-radius:5px;color:inherit}
+.pc-desktop button:focus-visible {outline:3px solid #1d84da;outline-offset:2px}
+.pc-brand {position:absolute;top:25px;left:28px;display:flex;gap:12px;align-items:center;color:#e4f2ff;letter-spacing:2px;font-size:22px;font-weight:600}
+.pc-brand div span {display:block;font-size:9px;letter-spacing:2px;margin-top:5px;opacity:.65}
+.pc-logo {font-size:40px;font-weight:300}
+.pc-shortcut {position:absolute;top:117px;left:22px;width:104px;background:transparent;color:white!important;font-size:12px!important;padding:12px 5px;text-shadow:0 1px 3px #0008}
+.pc-shortcut span {display:block;font-size:40px;color:#c9e8ff;margin-bottom:9px}
+.pc-shortcut:hover {background:#ffffff20}
+.pc-window {position:absolute;inset:9% 9% 12% 12%;display:flex;flex-direction:column;background:#f8fafc;border:1px solid #ffffff8a;border-radius:10px;overflow:hidden;box-shadow:0 28px 80px #0007;animation:pc-open .18s ease-out}
+.pc-window.maximized {inset:0 0 57px;border-radius:0}
+.pc-titlebar {display:flex;align-items:center;justify-content:space-between;min-height:43px;padding-left:17px;background:#e9eff6;user-select:none;font-size:12px}
+.pc-titlebar>div {display:flex;align-self:stretch}
+.pc-titlebar button {width:46px;background:transparent;border-radius:0;font-size:19px}
+.pc-titlebar button:hover {background:#d8e1eb}
+.pc-titlebar .pc-close:hover {background:#c42b32;color:white}
+.pc-toolbar {display:flex;gap:24px;padding:11px 20px;border-bottom:1px solid #e2e6ed;font-size:12px;background:#fff}
+.pc-readonly {margin-left:auto;color:#568477;font-size:11px}
+.pc-address {margin:12px 18px;padding:9px 12px;background:#fff;border:1px solid #e0e5ee;border-radius:5px;font-size:12px;display:flex;gap:13px;align-items:center}
+.pc-address span {color:#9ca7b6}.pc-address strong {font-weight:400}
+.pc-workspace {display:flex;flex:1;min-height:0}
+.pc-workspace aside {width:188px;flex-shrink:0;padding:20px 10px;display:flex;flex-direction:column;background:#f0f3f8;border-right:1px solid #e0e5ee;font-size:12px}
+.pc-workspace aside small {font-size:9px;letter-spacing:1.7px;color:#7c8a9d;padding:0 12px 18px}
+.pc-workspace aside>div {padding:13px 12px;margin:2px 0;border-radius:5px}
+.pc-workspace .selected {background:#dceafa;color:#1262a1;border-left:3px solid #1976c9}
+.pc-workspace aside footer {margin-top:auto;padding:20px 12px 0;font-size:10px;line-height:1.9;color:#738299}.pc-workspace aside footer span {color:#9aa4b3}
+#case-panel.pc-mode .case-content {flex:1;min-width:0;padding:24px 30px;overflow:auto;background:#fff;color:#28364b}
+.pc-document-heading>span {color:#217cc3;font-size:9px;font-weight:700;letter-spacing:1.5px}
+.pc-document-heading h2 {font-size:23px;margin:7px 0 8px;letter-spacing:-.5px;color:#182942}
+.pc-document-heading p {font-size:12px;color:#7a8595;margin:0 0 20px}
+#case-panel.pc-mode pre {background:#111d30;color:#c9d9f1;border:1px solid #243852;border-radius:7px;padding:20px 24px;line-height:1.9;font:12px/1.9 Consolas,monospace;overflow:auto;box-shadow:inset 0 3px #2e7eb5;margin:0 0 20px;white-space:pre-wrap}
+#case-panel.pc-mode h3 {font-size:13px;margin:18px 0 12px;color:#32445d}
+#case-panel.pc-mode .decision-option {display:block;width:100%;text-align:left;background:#f8fafc;border:1px solid #dce3ed;color:#31445b;border-radius:6px;padding:13px 16px;margin:7px 0;font-size:12px;transition:background .15s,border-color .15s}
+#case-panel.pc-mode .decision-option:hover {background:#eaf3fc;border-color:#65a6db}
+#case-panel.pc-mode .decision-option:disabled {opacity:.5;cursor:default}
+#case-panel.pc-mode .terminal-feedback {color:#986113;font-size:12px;line-height:1.6}
+.pc-status {padding:7px 15px;font-size:10px;color:#6b7d91;border-top:1px solid #e0e5ee;background:#f1f5f9;display:flex;justify-content:space-between}
+.pc-taskbar {position:absolute;bottom:0;left:0;right:0;height:56px;background:#e4eef5ed;border-top:1px solid #ffffff80;display:flex;align-items:center;padding:0 15px;gap:8px;backdrop-filter:blur(20px)}
+.pc-taskbar button {height:40px;background:transparent;padding:0 14px;font-size:12px}.pc-taskbar button:hover {background:#fff9}
+.pc-taskbar .pc-start-button {font-size:32px;color:#147aca;padding:0 10px}.pc-taskbar .pc-task {background:#fff9;border-bottom:3px solid #197ec3}
+.pc-session {margin-left:auto;font-size:11px;color:#6c8196}.pc-taskbar time {font-size:11px;white-space:nowrap;margin-left:12px}
+.pc-start {position:absolute;bottom:66px;left:14px;width:300px;padding:25px;background:#f0f5fcf7;border:1px solid white;border-radius:10px;box-shadow:0 15px 55px #0004;z-index:2}.pc-start p {font-size:12px;color:#778596}.pc-start button {display:block;width:100%;text-align:left;margin-top:12px;padding:13px;background:#fff}
+@keyframes pc-open {from {opacity:0;transform:translateY(8px) scale(.99)}to {opacity:1;transform:none}}
+@media(max-width:800px) {.pc-window {inset:8% 2% 10%}.pc-workspace aside {display:none}#case-panel.pc-mode .case-content {padding:18px}.pc-brand {top:8px;font-size:15px}.pc-brand div span,.pc-shortcut,.pc-session {display:none}.pc-address {font-size:10px;gap:6px}.pc-taskbar time {font-size:9px;margin-left:auto}}
+@media(prefers-reduced-motion:reduce) {.pc-window {animation:none}.pc-desktop * {transition:none!important}}

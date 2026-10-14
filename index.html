@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZeroCode — Protocolo Zero</title>
+  <link rel="icon" type="image/png" href="assets/zeroos/imported/1.png?v=2" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="ui/phone.css" />
+  <link rel="stylesheet" href="ui/desktop.css" />
+  <link rel="stylesheet" href="ui/zeroos.css" />
+  <link rel="stylesheet" href="ui/zeroos-light.css" />
+  <link rel="stylesheet" href="ui/computer.css" />
+  <link rel="stylesheet" href="ui/windows-pixel.css" />
+  <link rel="stylesheet" href="ui/os-setup.css" />
+  <link rel="stylesheet" href="ui/pixel-hud.css" />
+  <link rel="stylesheet" href="ui/manager.css" />
+  <link rel="stylesheet" href="ui/nexus.css" />
+  <link rel="stylesheet" href="ui/pause-charcoal.css" />
+  <link rel="stylesheet" href="ui/final-conversation.css" />
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas" width="800" height="600"></canvas>
+
+    <!-- TELA INICIAL -->
+    <div id="start-screen" class="overlay-screen">
+      <div class="overlay-box">
+        <div class="eyebrow">ZEROOS / RESPOSTA A INCIDENTES</div><h1 class="title-neon">ZEROCODE</h1>
+        <p class="subtitle">CASO 01 / PROTOCOLO ZERO</p>
+        <p class="intro-copy">Uma atualização. Milhares de falhas.<br>Encontre a linha que derrubou tudo.</p><div class="case-meta"><span>06 SETORES</span><span>11 EVIDÊNCIAS</span><span>01 CAUSA</span></div><button id="start-button" class="neon-button">INICIAR INVESTIGAÇÃO</button>
+      </div>
+    </div>
+
+    <!-- CHAMADO INICIAL / BRIEFING -->
+    <div id="briefing-screen" class="overlay-screen hidden">
+      <div class="overlay-box">
+        <h2 class="alert-title">INCIDENTE DETECTADO</h2>
+        <p class="briefing-text">
+          Às 02:14, a atualização do NEXUS interrompeu as operações. A fila de requisições cresce sem parar. Descubra a causa antes de autorizar a recuperação.
+        </p>
+        <p class="briefing-text">
+          Explore as salas, converse com os NPCs e analise os computadores.
+          Recupere os cinco registros técnicos, confronte os relatos e apresente a causa na sala de reuniões.
+        </p>
+        <p class="controls-hint">WASD / setas: mover · Shift: correr · E: interagir · J: dossiê · I: bolso · Esc: pausa</p>
+        <button id="briefing-button" class="neon-button">ENTRAR NA SALA</button>
+      </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <div class="hud-panel">
+        <div class="hud-found">Pistas encontradas: 0/0</div>
+        <div class="hud-relevant">Pistas relevantes: 0/0</div>
+        <div class="hud-false hidden">Pista falsa identificada: NÃO</div>
+      </div>
+    </div>
+
+    <!-- MINIMAPA -->
+    <div id="minimap" class="hidden"></div>
+
+    <!-- MINI INVENTÁRIO -->
+    <div id="inventory" class="hidden" aria-label="Inventário">
+      <button class="inv-bag" aria-label="Abrir bolso do moletom (I)"><span class="pocket-symbol" aria-hidden="true"></span><span>BOLSO <kbd>I</kbd></span></button>
+      <div class="inv-slots"></div>
+    </div>
+
+    <div id="interaction-prompt" class="hidden"></div>
+
+    <!-- ALERTA DE PISTA -->
+    <div id="clue-alert" class="hidden">
+      <div class="clue-alert-box">
+        <div class="clue-alert-title">PISTA ENCONTRADA</div>
+        <div class="clue-alert-body"></div>
+      </div>
+    </div>
+
+    <!-- MODAL DE DIÁLOGO -->
+    <div id="dialogue-modal" class="hidden">
+      <div class="dialogue-panel">
+        <div class="dialogue-portraits">
+          <div class="dialogue-sprite npc">
+            <div class="sprite-avatar npc-avatar"></div>
+          </div>
+          <div class="dialogue-sprite player">
+            <div class="sprite-avatar player-avatar"></div>
+          </div>
+        </div>
+        <div class="dialogue-box">
+          <div class="dialogue-speaker-badge">
+            <span class="dialogue-name"></span>
+          </div>
+          <p class="dialogue-text"></p>
+          <button class="dialogue-continue neon-button small">CONTINUAR (E)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAINEL DE DECISÃO FINAL -->
+    <div id="decision-modal" class="hidden">
+      <div class="decision-panel">
+        <h2 class="decision-title">QUAL É A CAUSA MAIS PROVÁVEL?</h2>
+        <div class="decision-options"></div>
+      </div>
+    </div>
+
+    <!-- RESULTADO DA INVESTIGAÇÃO -->
+    <div id="result-screen" class="overlay-screen hidden">
+      <div class="overlay-box">
+        <h2 class="result-title"></h2>
+        <div class="result-body"></div>
+        <button id="result-button" class="neon-button">CONCLUIR FASE</button>
+      </div>
+    </div>
+
+    <!-- FASE CONCLUÍDA -->
+    <div id="complete-screen" class="overlay-screen hidden">
+      <div class="overlay-box">
+        <h2 class="title-neon">FASE CONCLUÍDA</h2>
+        <p class="subtitle">O NEXUS está online. A investigação fica registrada.</p><button class="neon-button" onclick="location.reload()">JOGAR NOVAMENTE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dados -->
+  <script src="data/maps.js"></script>
+  <script src="data/objects.js"></script>
+  <script src="data/npcs.js"></script>
+  <script src="data/dialogs.js"></script>
+  <script src="data/clues.js"></script>
+  <script src="data/missions.js"></script>
+  <script src="data/code-missions.js"></script>
+
+  <!-- Engine -->
+  <script src="engine/input.js"></script>
+  <script src="engine/collision.js"></script>
+  <script src="engine/camera.js"></script>
+  <script src="engine/roomManager.js"></script>
+  <script src="engine/player.js?v=2"></script>
+  <script src="engine/interaction.js"></script>
+  <script src="engine/clues.js"></script>
+  <script src="engine/dialogue.js"></script>
+  <script src="engine/mission.js"></script>
+  <script src="engine/hud.js"></script>
+  <script src="engine/inventory.js"></script>
+  <script src="engine/renderer.js"></script>
+  <script src="engine/phone.js"></script>
+  <script src="engine/game.js"></script>
+
+  <script src="engine/case.js"></script>
+  <script src="engine/computer.js"></script>
+  <script src="engine/explorer.js"></script>
+  <script src="engine/manager.js"></script>
+  <script src="main.js"></script>
+  <script src="engine/windows-pixel.js"></script>
+  <script src="engine/os-setup.js"></script>
+  <script src="engine/nexus-result.js"></script>
+</body>
+</html>
+

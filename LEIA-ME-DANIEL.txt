@@ -1,0 +1,9 @@
+D.A.N.I.E.L. + PAUSA
+
+Execute o jogo como na versão anterior.
+Para testar o holograma: vá à Sala de Reunião e interaja com o terminal da decisão final (E no ponto de interação). Não precisa completar atividades nem coletar registros.
+D.A.N.I.E.L. alterna boca aberta/fechada durante a fala; clicar no texto completa a frase.
+A sigla foi deixada como D.A.N.I.E.L.; seu significado será definido depois.
+Esc abre a nova pausa: Continuar, Dossiê, Controles e Sair para o início.
+Os contadores e a imagem da sala acompanham o estado atual do jogo.
+O requisito de cinco registros para abrir a decisão final foi removido temporariamente para teste. Os desafios dos computadores continuam disponíveis.

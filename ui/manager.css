@@ -1,0 +1,16 @@
+/* Reutiliza integralmente moldura, retratos e cores do sistema de diálogos. */
+#dialogue-modal.cyber-dialogue.manager-dialogue .dialogue-frame{height:48%}
+#dialogue-modal.cyber-dialogue.manager-dialogue .dialogue-panel{padding-top:5%;padding-bottom:12px}
+#dialogue-modal.cyber-dialogue.manager-dialogue .dialogue-text{min-height:55px;margin:8px 0;font-size:clamp(11px,1.05vw,17px)}
+#dialogue-modal.cyber-dialogue .manager-form{position:relative;display:flex;flex-direction:column;gap:5px;flex-shrink:0;margin:0 0 8px}
+#dialogue-modal.cyber-dialogue .manager-form label{color:#08e8fc;font-size:11px;letter-spacing:1px}
+#dialogue-modal.cyber-dialogue .manager-compose{display:flex;gap:6px}
+#dialogue-modal.cyber-dialogue .manager-compose input{box-sizing:border-box;min-width:0;flex:1;background:#07131f;border:1px solid #08e8fc;color:#edf6ff;padding:9px;font:13px 'Courier New',monospace}
+#dialogue-modal.cyber-dialogue .manager-compose input::placeholder{color:#93a8b9}
+#dialogue-modal.cyber-dialogue .manager-compose button{cursor:pointer;background:#102936;border:1px solid #08e8fc;color:#08e8fc;padding:8px;font:bold 11px 'Courier New',monospace}
+#dialogue-modal.cyber-dialogue .manager-compose button:disabled{opacity:.45;cursor:wait}
+#dialogue-modal.cyber-dialogue .manager-progress{font-size:10px;color:#bbadd8}
+#dialogue-modal.cyber-dialogue .manager-form :focus-visible{outline:2px solid #ffeb59;outline-offset:2px}
+@media(max-height:650px),(max-width:900px){#dialogue-modal.cyber-dialogue.manager-dialogue .dialogue-frame{height:68%;bottom:1%}#dialogue-modal.cyber-dialogue.manager-dialogue .dialogue-panel{padding:7% 21% 8px}#dialogue-modal.cyber-dialogue.manager-dialogue .dialogue-sprite{width:22%;height:64%;bottom:2%}#dialogue-modal.cyber-dialogue.manager-dialogue .dialogue-text{font-size:11px;line-height:1.3;min-height:35px}#dialogue-modal.cyber-dialogue .manager-compose input{padding:6px;font-size:11px}#dialogue-modal.cyber-dialogue .manager-progress{font-size:9px}#dialogue-modal.cyber-dialogue.manager-dialogue .dialogue-continue{padding:5px 8px;font-size:10px}}
+#game-container:has(#dialogue-modal.manager-dialogue:not(.hidden)) #clue-alert,
+#game-container:has(#dialogue-modal.manager-dialogue:not(.hidden)) #phone-toast{visibility:hidden}

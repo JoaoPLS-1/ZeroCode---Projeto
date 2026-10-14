@@ -1,0 +1,38 @@
+ZEROCODE — CELULAR E TEAMS
+
+Extraia o ZIP e abra index.html. Se o navegador bloquear recursos locais,
+abra a pasta no VS Code e use Live Server.
+
+1. Vá à sala do Café. O celular fica na ponta esquerda da mesa retangular
+   entre os sofás, no local indicado na referência.
+2. Aproxime-se pelo lado esquerdo da mesa e pressione E para recolher.
+3. Pressione I ou clique no bolso do moletom, no canto inferior direito.
+4. Clique no celular e depois no Teams. Abra uma conversa.
+5. Envie texto com Enter/botão ou selecione uma resposta rápida.
+6. Use a seta para voltar, a barra inferior para ir à tela inicial e X
+   para guardar o celular. Esc também volta/fecha; I fecha o bolso/celular.
+
+Há notificações, contagem de mensagens não lidas, respostas programadas
+pelos personagens e mensagens ligadas ao avanço da investigação.
+Somente Teams está disponível como aplicativo. Trata-se do Teams narrativo
+simulado do jogo, sem conexão com contas ou mensagens reais da Microsoft.
+
+O celular sai da mesa ao ser coletado. O bolso e as conversas são mantidos
+enquanto a partida está aberta, inclusive nas trocas de sala. Recarregar
+ou iniciar outra partida limpa esse progresso, como os demais itens do jogo.
+
+Para editar as falas e eventos: engine/phone.js.
+Posição do celular: data/objects.js, item_celular.
+Visual do bolso e celular: ui/phone.css.
+
+INTERFACE PIXEL ART — ATUALIZAÇÃO
+• Envelope no alto à direita: abre o dossiê (J).
+• Engrenagem: abre o menu de pausa/configurações existente (Esc).
+• Caderno no alto à esquerda: objetivo, pistas e cinco registros atualizados.
+• Moletom: clique ou I para abrir o bolso. A arte muda quando o celular é coletado.
+• Mapa: mostra as quatro salas reais, os obstáculos e a posição/direção do jogador.
+  Clique no mapa ou pressione M para ampliar/recolher. A planta é esquemática:
+  suas conexões representam as portas; os obstáculos vêm dos dados de cada sala.
+• Os desenhos originais estão em assets/hud; fonte pixel local em assets/fonts.
+
+O celular e o Teams continuam funcionando como na versão anterior.

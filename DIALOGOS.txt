@@ -1,0 +1,11 @@
+RETRATOS E DIÁLOGO DE LÍVIA
+Extraia a pasta inteira e abra index.html.
+
+Edu à esquerda e Rick à direita em Desenvolvimento.
+Luna à esquerda e Mateus à direita no Café; Kael no ponto do sofá.
+Mark à esquerda e Steve à direita em QA/Infra.
+Lívia ao lado do terminal central da Reunião, com diálogo adicional sem alterar a contagem de pistas.
+
+Foram integradas as versões de boca aberta e fechada dos retratos. Os sprites de mapa existentes foram mantidos. As imagens de diálogo são PNGs transparentes na resolução recebida. A exibição continua espelhada para o NPC, como na versão recebida.
+
+HTML, CSS, cenários, HUD, movimentação e regras da investigação permanecem intactos. Testes verify.cjs aprovados e oito conversas verificadas no navegador.

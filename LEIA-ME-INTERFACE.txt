@@ -1,0 +1,12 @@
+ZEROCODE — INTERFACE ATUALIZADA
+
+Abra index.html no navegador ou execute node server.cjs e acesse http://localhost:8000.
+
+MENU: clique no botão do canto superior direito para abrir/fechar.
+DOSSIÊ: pasta com pistas e registros (atalho J).
+CONFIGURAÇÕES: computador que abre a pausa e suas opções.
+MAPA: botão abaixo para esconder/mostrar; clique na planta ou M para ampliar/reduzir.
+BOLSO: usa o novo moletom; ao coletar o celular no Café, a arte muda automaticamente.
+
+As duas versões do moletom usam a imagem original enviada, sem redesenho.
+O progresso permanece durante a partida. Recarregar começa de novo.

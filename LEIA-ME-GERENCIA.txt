@@ -1,0 +1,14 @@
+MAPA ATUALIZADO
+Gerência | Sala Secreta
+Reunião  | Café
+QA/Infra | Desenvolvimento
+
+Todas as conexões permitem ida e volta. E para usar uma porta.
+Dev: porta esquerda para QA/Infra, superior direita para Café.
+Café: inferior para Dev, esquerda para Reunião.
+Reunião: inferior para Café, superior esquerda para Gerência.
+Gerência: inferior para Reunião, direita para Sala Secreta.
+Sala Secreta: esquerda para Gerência.
+
+Modo de testes: conversar com Dante entrega o Passe Ômega, sem desafios.
+A Sala Secreta continua bloqueada até obter o passe.

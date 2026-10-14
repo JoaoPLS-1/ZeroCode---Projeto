@@ -1,0 +1,6 @@
+NEXUS — DECISÃO FINAL
+Após os cinco registros técnicos, use o terminal final na Reunião.
+NEXUS fala com texto progressivo e alternância de boca aberta/fechada.
+Clique na fala para exibir o texto inteiro.
+Selecione uma hipótese e confirme; revisar evidências preserva sua escolha.
+Esc retorna à investigação. Os critérios de acerto e as recompensas continuam iguais.

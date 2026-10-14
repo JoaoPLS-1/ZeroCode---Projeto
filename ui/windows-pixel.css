@@ -1,0 +1,16 @@
+#case-panel.windows-pixel .pc-desktop{background:#0866b6 url('../assets/windows-pixel/wallpaper.png') center/cover no-repeat;font-family:'Segoe UI',Arial,sans-serif}
+.windows-pixel .pc-desktop::before,.windows-pixel .pc-brand,.windows-pixel .zero-wallpaper{display:none}
+.windows-pixel .zero-launchers{top:18px;bottom:78px;left:14px;width:210px;display:grid;grid-template-columns:repeat(2,96px);grid-auto-rows:94px;align-content:start;gap:8px;overflow:auto}
+.windows-pixel .zero-launchers button{color:white!important;font:12px 'Segoe UI',Arial,sans-serif!important;text-shadow:0 1px 3px #000;padding:5px 2px;border-radius:3px}
+.windows-pixel .zero-launchers img{width:52px;height:52px;object-fit:contain;margin:0 auto 6px;filter:none;image-rendering:pixelated}
+.windows-pixel .zero-launchers button:hover{background:#c1e5ff42;border-color:#d7f0ff;outline:none}
+.windows-pixel .pc-taskbar{background:linear-gradient(#639acbcc,#174b7bea);border-top:1px solid #bedfff;box-shadow:none;border-radius:0}
+.windows-pixel .pc-taskbar button,.windows-pixel .pc-taskbar time,.windows-pixel .pc-session{color:#fff}
+.windows-pixel .pc-taskbar .pc-task{background:#d5edff30;border:1px solid #b9dfff70}
+.windows-pixel .pc-taskbar .pc-start-button{background:linear-gradient(#78ac63,#2a6c32);border:1px solid #b4ddae;border-radius:18px;padding:0 18px;color:white;font-weight:600}
+.windows-pixel .pc-titlebar,.windows-pixel .code-explorer header{background:linear-gradient(#e8f5ff,#b6d5ec);color:#203b50}
+.windows-pixel .pc-window,.windows-pixel .code-explorer{border-radius:5px;border:1px solid #91b9d8}
+.windows-pixel .desktop-welcome{background:#f4f9f2e8;border-radius:4px;box-shadow:none}
+.windows-pixel .zero-info{white-space:pre-line;border-radius:5px}
+.windows-pixel .pixel-notes{width:100%;height:180px;box-sizing:border-box;background:white;color:#222;border:1px solid #aabccc;padding:12px;font:14px 'Segoe UI',Arial,sans-serif;resize:vertical}
+@media(max-width:650px){.windows-pixel .zero-launchers{width:170px;grid-template-columns:repeat(2,76px);grid-auto-rows:80px;gap:4px}.windows-pixel .zero-launchers img{width:42px;height:42px}.windows-pixel .zero-launchers button{font-size:11px!important}.windows-pixel .desktop-welcome{display:none}}
