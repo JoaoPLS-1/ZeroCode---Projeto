@@ -30,9 +30,6 @@ sequências lineares obrigatórias.
   Web Worker e **exigem HTTP**; abrir `index.html` via file:// quebra essa parte.
 - Testes (Node, sem dependências): `node verify.cjs`, `node verify-computer.cjs`,
   `node verify-npc-animation.cjs`, `node verify-player-frames.cjs`.
-- Estado atual (13/10/2026): `verify-computer` e `verify-npc-animation` passam; `verify.cjs` (linha 21,
-  `walkDistance` ao parar) e `verify-player-frames.cjs` **já falham** — testes desatualizados em relação
-  ao código, não regressão sua. Não "conserte" o jogo para satisfazê-los sem confirmar a intenção.
 - Sem build, sem npm, sem frameworks. Não adicione dependências.
 
 ## Arquitetura

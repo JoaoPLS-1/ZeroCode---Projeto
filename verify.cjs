@@ -16,9 +16,12 @@ for(const [x,y,direction] of [[1,1,'down-right'],[-1,1,'down-left'],[1,-1,'up-ri
  assert.equal(player.facing,direction);
  assert(Math.abs(Math.hypot(player.centerX,player.centerY)-22)<0.001,'Diagonal mais rápida');
  assert(Math.abs(player.walkDistance-22)<0.001,'Cadência inconsistente');
- player.update(0.1,{x:0,y:0},freeMovement);
- assert.equal(player.moving,false);
- assert.equal(player.walkDistance,0);
+ const walkDistance=player.walkDistance;
+ for(let idle=0;idle<3;idle++){
+  player.update(0.1,{x:0,y:0},freeMovement);
+  assert.equal(player.moving,false);
+  assert.equal(player.walkDistance,walkDistance,'Cadência avançou parado');
+ }
 }
 delete global.Image;
 console.log('Personagens: skins únicas, posições no chão e quatro diagonais aprovadas.');
@@ -65,7 +68,10 @@ console.log('Colisões: vãos de mesas, móveis sólidos, contato, deslizamento 
 // Exercita a progressão sem depender do canvas ou de um navegador externo.
 const vm=require('node:vm'),fs=require('node:fs');
 class Element {
- constructor(){this.children=[];this.nodes={};this.classList={add(){},remove(){},toggle(){}};}
+ constructor(){
+  this.children=[];this.nodes={};this.dataset={};const classes=new Set();
+  this.classList={add(...names){names.forEach(n=>classes.add(n));},remove(...names){names.forEach(n=>classes.delete(n));},contains:n=>classes.has(n),toggle(n,force){const enabled=force??!classes.has(n);if(enabled)classes.add(n);else classes.delete(n);return enabled;}};
+ }
  set innerHTML(v){this.children=[];this.nodes={};}
  setAttribute(){} focus(){} append(...nodes){this.children.push(...nodes);}
  addEventListener(name,callback){this[name]=callback;}
@@ -77,23 +83,38 @@ class FakeGame {
  start(){} _update(){} _interactWith(c){this.lastInteraction=c;}
  _showResult(correct,def){this.result={correct,def};}
 }
-const sandbox={Game:FakeGame,document:{createElement:()=>new Element(),getElementById:()=>new Element(),activeElement:new Element()}};
+const sandbox={Game:FakeGame,CODE_MISSIONS:require('./data/code-missions.js'),document:{createElement:()=>new Element(),getElementById:()=>new Element(),activeElement:new Element(),addEventListener(){}}};
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync('engine/case.js','utf8'),sandbox);
+vm.runInContext(fs.readFileSync('engine/computer.js','utf8'),sandbox);
 const game=new FakeGame();game.clues=new Clues(defs);game.state='playing';game.hud={showPrompt(){}};game._lockInteractions=()=>{};
 game.dialogue={active:false,open(def,cb){this.def=def;this.cb=cb;}};game.mission={active:false};
 game._openContainerContent=c=>game.clues.addClue(c.clueRef);game.start();
-const final=objects.find(c=>c.type==='computer_final');game._interactWith(final);assert(!game.lastInteraction);assert(game.dialogue.def.lines[0].text.includes('0/5'));
-const answers=[1,0,2,1,0];let i=0;
+// A decisão final está liberada no modo de testes, inclusive sem registros.
+const final=objects.find(c=>c.type==='computer_final');game._interactWith(final);assert.equal(game.lastInteraction,final);assert.equal(game.clues.getRelevantCount(),0);
+// A execução e as credenciais são cobertas por verify-computer.cjs.
+// Aqui verificamos o encaminhamento das cinco estações ao laboratório atual.
+vm.runInContext('ZeroComputer.prototype.open=function(c){this.opened=c;};',sandbox);
 for(const c of objects.filter(c=>c.type==='computer')){
- game._interactWith(c);assert.equal(game.state,'case');assert(!game.clues.hasClue(c.clueRef));
- const body=game.case.panel.querySelector('.case-content'),buttons=body.children.filter(n=>n.className==='decision-option');
- buttons[(answers[i]+1)%3].onclick();assert(!game.clues.hasClue(c.clueRef));
- buttons[answers[i++]].onclick();assert(game.clues.hasClue(c.clueRef));assert.equal(game.state,'playing');
+ assert(sandbox.CODE_MISSIONS.some(m=>m.id===c.id),'Estação sem missão de código');
+ game._interactWith(c);assert.equal(game.case.computer.opened,c);assert(!game.clues.hasClue(c.clueRef),'Abrir PC concedeu pista');
+ assert(game.clues.addClue(c.clueRef));assert(!game.clues.addClue(c.clueRef));
 }
-assert.equal(game.case.errors,5);game._interactWith(final);assert.equal(game.lastInteraction,final);
-game._showResult(false,{body:['Revisar']});assert.equal(game.result.correct,false);
-game._showResult(true,{body:['Resolvido']});assert(game.result.def.body.some(s=>s.includes('CLASSIFICAÇÃO')));
-console.log('Progressão: 5 desafios, erro sem pista, acerto com pista, bloqueio inicial e relatório final aprovados.');
+assert.equal(game.clues.getRelevantCount(),5);assert.equal(game.clues.getFoundCount(),5);
+for(const [allEvidence,errors,hypothesisErrors,rank] of [[false,0,0,'A'],[true,0,0,'S'],[true,2,0,'A'],[true,0,2,'A'],[true,1,1,'A'],[true,3,0,'B'],[true,0,3,'B'],[true,1,2,'B']]){
+ game.clues=new Clues(defs);
+ Object.values(defs).filter(c=>allEvidence||c.relevant).forEach(c=>game.clues.addClue(c.id));
+ game.case.errors=errors;game.case.hypothesisErrors=hypothesisErrors;game.case.seconds=65;
+ const result={body:['Resolvido']};game._showResult(true,result);
+ assert.equal(game.result.correct,true);assert.equal(game.case.hypothesisErrors,hypothesisErrors);
+ assert.equal(game.result.def.body[0],'Resolvido');assert.deepEqual(result.body,['Resolvido'],'Relatório alterou definição original');
+ const report=game.result.def.body[1];assert(report.startsWith('CLASSIFICAÇÃO '+rank+' /'),`Classificação incorreta: ${report}`);
+ assert(report.includes(`${allEvidence?11:5}/11 evidências / 1:05 em campo`));
+ assert(report.includes(`${errors} revisões de análise / ${hypothesisErrors} hipóteses incorretas`));
+}
+game.case.errors=0;game.case.hypothesisErrors=0;
+game._showResult(false,{body:['Revisar']});assert.equal(game.result.correct,false);assert.equal(game.case.hypothesisErrors,1);assert.deepEqual(Array.from(game.result.def.body),['Revisar']);
+game._showResult(false,{body:['Revisar']});assert.equal(game.case.hypothesisErrors,2);
+console.log('Progressão: cinco estações de código, coleta deduplicada, decisão livre em modo de testes, classificação S/A/B e hipóteses incorretas aprovadas.');
 
 // A sala só muda sob cobertura opaca, depois do carregamento do cenário.
 const transitionContext={module:{exports:{}},window:{matchMedia:()=>({matches:false})}};
@@ -140,7 +161,7 @@ dialog.open(conversation,()=>collected++);dialog.advance();dialog.close(false);
 assert.equal(collected,0,'Cancelar concedeu pista');assert(!dialog.isActive());
 dialog.open(conversation,()=>collected++);dialog.advance();dialog.advance();dialog.close();
 assert.equal(collected,1,'Pista concedida mais de uma vez');
-const missionContext={module:{exports:{}},document:{activeElement:new Element(),createElement:()=>new Element()}};
+const missionContext={module:{exports:{}},document:{activeElement:new Element(),createElement:()=>new Element()},window:{matchMedia:()=>({matches:true})},clearInterval(){}};
 vm.createContext(missionContext);
 vm.runInContext(fs.readFileSync('engine/mission.js','utf8'),missionContext);
 const mission=new missionContext.module.exports(new Element(),require('./data/missions.js'));let decisions=0;

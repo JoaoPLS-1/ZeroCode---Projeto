@@ -104,7 +104,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 
 **Fase 0 — Base**
 - ✅ 00 Versionamento com git (manual, ver tarefa)
-- ⬜ 01 Atualizar testes desatualizados
+- ✅ 01 Atualizar testes desatualizados
 - ⬜ 02 Remover código morto (`computer.js` duplicado, `CHALLENGES`)
 
 **Fase 1 — Plataforma ZeroOS (ferramentas do CTF)**

@@ -13,7 +13,7 @@ for (const [width,height] of [[1774,887],[1536,1024]]) {
   for(let frame=0;frame<8;frame++) {
     const x=Math.round(frame%4*width/4)+12;
     const y=Math.round(Math.floor(frame/4)*height/2)+20;
-    expected.push({x,y,w:30,h:80});
+    expected.push({x,y,w:30,h:80,anchorX:(30-1)/2});
     for(let py=y;py<y+80;py++) for(let px=x;px<x+30;px++)
       pixels[(py*width+px)*4+3]=255;
   }
@@ -25,5 +25,6 @@ for (const [width,height] of [[1774,887],[1536,1024]]) {
   sandbox.sheet={naturalWidth:width,naturalHeight:height};
   vm.runInContext('measurePlayerFrames(sheet,2)',sandbox);
   assert.deepEqual(JSON.parse(JSON.stringify(sandbox.sheet.frames)),expected);
+  assert.equal(sandbox.sheet.referenceHeight,80,'Escala de referência do ciclo incorreta');
 }
-console.log('Recorte: oito frames corretos em atlas pares e ímpares.');
+console.log('Recorte: oito frames, âncoras e altura de referência corretos em atlas pares e ímpares.');
