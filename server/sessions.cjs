@@ -14,6 +14,7 @@ function createSessions({ now = Date.now } = {}) {
     session.usadaEm = session.criadaEm;
     session.progresso = [];
     session.missoes = null;
+    session.desafios = null;
     session.gameOver = false;
     session.capturaAberta = false;
     session.portaSecretaTentativas = [];

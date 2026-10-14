@@ -15,7 +15,7 @@ ZeroComputer.prototype.explore=function(folder='',back=false){
  }
  if(!back&&this.fileFolder!==undefined&&this.fileFolder!==folder)this.fileHistory.push(this.fileFolder);
  this.fileFolder=folder;this.owner.windowManager.adopt({id:'explorer',el:w,body:w.querySelector('.files-layout'),header:w.querySelector('header'),title:'Arquivos',icon:'assets/zeroos/imported/5.png'});
- const find=s=>w.querySelector(s),r=this.record(this.c.id),m=CODE_MISSIONS.find(m=>m.id===this.c.id),entries=[];
+ const find=s=>w.querySelector(s),r=this.record(this.currentId()),m=this.currentMission(),entries=[];
  const path=find('.files-path');path.textContent='';
  for(const [name,target] of [['Este computador',''],...(folder?[[folder,folder]]:[])]){if(path.childNodes.length)path.append(document.createTextNode(' › '));const b=document.createElement('button');b.textContent=name;b.onclick=()=>this.explore(target);path.append(b);}find('.files-search').value='';
  find('.files-back').disabled=!this.fileHistory.length;
@@ -28,7 +28,7 @@ ZeroComputer.prototype.explore=function(folder='',back=false){
  const action=(label,fn)=>notepad.action(label,fn);
  const editor=()=>this.owner.launchTrace();
  const manual=mission=>{show('instrucoes.txt',mission.name+'\n\n'+mission.manual);action('Abrir ZeroTrace',editor);};
- const lesson=mission=>{show('Caderno de treinamento — '+mission.file,'Mensagem de Lívia, equipe de desenvolvimento\n\nSe você chegou agora, respire. Este caderno ensina o necessário para recuperar a estação.\n\nCOMO USAR O EDITOR\n1. Abra ZeroTrace. O editor já representa o corpo de uma função: não escreva function por fora.\n2. input é o dado que os testes entregam a você.\n3. Escreva uma resposta usando return. Texto usa aspas; números não. Linhas que começam com // são comentários.\n4. Encontre instrucoes.txt para conhecer as regras desta estação.\n5. Edite com calma: digitar e ler não gastam tentativas. Só executar código incorreto conta como erro.\n6. Depois de 3 erros no mesmo PC, a partida termina. Fechar a janela não apaga os erros.\n\n'+ZERO_TUTORIALS[CODE_MISSIONS.indexOf(mission)]+'\n\nDEPOIS DA MISSÃO\nA senha e a evidência serão guardadas no ZeroVault. A sequência é Dev 1 → Dev 2 → QA → Técnico → Infra.');action('Abrir ZeroTrace',editor);};
+ const lesson=mission=>{if(!CODE_MISSIONS.some(item=>item.id===mission.id)){manual(mission);return;}show('Caderno de treinamento — '+mission.file,'Mensagem de Lívia, equipe de desenvolvimento\n\nSe você chegou agora, respire. Este caderno ensina o necessário para recuperar a estação.\n\nCOMO USAR O EDITOR\n1. Abra ZeroTrace. O editor já representa o corpo de uma função: não escreva function por fora.\n2. input é o dado que os testes entregam a você.\n3. Escreva uma resposta usando return. Texto usa aspas; números não. Linhas que começam com // são comentários.\n4. Encontre instrucoes.txt para conhecer as regras desta estação.\n5. Edite com calma: digitar e ler não gastam tentativas. Só executar código incorreto conta como erro.\n6. Depois de 3 erros no mesmo PC, a partida termina. Fechar a janela não apaga os erros.\n\n'+(ZERO_TUTORIALS[CODE_MISSIONS.findIndex(item=>item.id===mission.id)]||mission.manual)+'\n\nDEPOIS DA MISSÃO\nA senha e a evidência serão guardadas no ZeroVault. A sequência é Dev 1 → Dev 2 → QA → Técnico → Infra.');action('Abrir ZeroTrace',editor);};
  const add=(name,type,icon,open)=>entries.push({name,type,icon,open,size:type==='Pasta'?'—':'1 KB',date:'01/10/2026 02:14'});
  const folders=['Documentos','Projetos','Backup','Equipe','Downloads','Arquivo','ZeroVault','ZeroOS'];
  const sidebar=find('.files-sidebar');sidebar.textContent='';
@@ -48,8 +48,8 @@ ZeroComputer.prototype.explore=function(folder='',back=false){
   add('kernel.zero','Sistema','1',()=>show('kernel.zero','Núcleo essencial do ZeroOS simulado. Excluí-lo permite que LoopZero destrua a estação e encerra a partida.','1'));
  }else{
   add('leia-me.txt','Documento','6',()=>show('Nota da equipe','Lívia separou o treinamento de programação das instruções operacionais. Explore as pastas locais; há um caderno para iniciantes. Documentos lidos ficam no ZeroVault.'));
-  if(folder===r.folder)add('instrucoes.txt','Missão','6',()=>{r.read=true;manual(m);if(p.querySelector('.code-run')&&!r.solved)this.refresh();});
-  if(folder===r.tutorialFolder)add('treinamento-livia.txt','Tutorial','6',()=>{r.tutorialRead=true;lesson(m);});
+  if(m&&folder===r.folder)add('instrucoes.txt','Missão','6',()=>{r.read=true;manual(m);if(p.querySelector('.code-run')&&!r.solved)this.refresh();});
+  if(m&&folder===r.tutorialFolder)add('treinamento-livia.txt','Tutorial','6',()=>{r.tutorialRead=true;lesson(m);});
  }
  let descending=false,sortBy='name',selected=null,visible=[];
  const filePath=entry=>'C:\\'+(folder?folder+'\\':'')+entry.name;

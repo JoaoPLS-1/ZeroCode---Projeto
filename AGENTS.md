@@ -127,6 +127,17 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   O acerto concede `acesso:sala-secreta`; o Passe Ômega não libera a sala. `engine/secret-door.js`
   é chamado pelo `Game` e abre o controlador de acesso (Esc fecha); falas em `data/secret-door.js`.
   `node verify-door.cjs` verifica API, limite, reset, isolamento e fluxo do painel.
+- Desafios (tarefa 10): `server/challenges.cjs` carrega automaticamente os arquivos privados
+  de `server/data/challenges/*.cjs`. Cada desafio contém metadados públicos, código vibecodado
+  com `// TODO`, casos fixos, `gerarCasos(rng)`, referência privada e três dicas progressivas.
+  `GET /api/jogo/desafios?estacao=` filtra por estação e `requires`; os POSTs de execução e dica
+  também validam `requires`. Execuções são únicas e expiram em 60 s. `maxErros: null` permite
+  tentativas ilimitadas; as cinco missões S2 mantêm `maxErros: 3`, ordem, senhas e flags antigas.
+  `server/data/missions.cjs` e `server/missions.cjs` são adaptadores S2 sobre o mesmo motor.
+  ZeroTrace oferece a lista lateral Arquivos quando há vários desafios, rascunhos separados e
+  Pedir dica ao D.A.N.I.E.L.; dicas usadas ficam na sessão e são apagadas na nova partida.
+  `node verify-challenges.cjs` valida formato, referências/código inicial no Worker em `vm`,
+  autorização, dicas, captura, HTTP e seleção no editor; `verify-computer.cjs` mantém a cobertura S2.
 
 ## Armadilhas conhecidas
 - **Overrides no fim dos arquivos de dados.** `maps.js`, `dialogs.js`, `npcs.js` e `objects.js` redefinem

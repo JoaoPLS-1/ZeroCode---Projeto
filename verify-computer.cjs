@@ -100,9 +100,10 @@ async function verifyClient(){
  }
  let currentSession=fresh(),timeoutCallback,afterSubmit=null;
  const api={
-  async get(path){assert.equal(path,'/api/jogo/missoes');return service.list(currentSession);},
+  async get(path){if(path.startsWith('/api/jogo/desafios?'))return service.listChallenges(currentSession,new URL(path,'http://localhost').searchParams.get('estacao'));assert.equal(path,'/api/jogo/missoes');return service.list(currentSession);},
   async post(path,body){
    const parts=path.split('/'),id=parts[4];
+   if(parts[5]==='dica')return service.hint(currentSession,id);
    if(parts[5]==='desbloquear')return service.unlock(currentSession,id,body);
    if(parts.length===6)return service.start(currentSession,id);
    const result=service.submit(currentSession,id,parts[6],JSON.parse(JSON.stringify(body)));

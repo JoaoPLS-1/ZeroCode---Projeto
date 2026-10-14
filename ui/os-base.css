@@ -160,6 +160,14 @@
 #case-panel.pc-mode .case-content:has(.code-editor)>.code-output {flex:0 1 100px;min-height:40px}
 .case-content:has(.code-editor)>.code-status {position:static}
 .file-preview,.code-output,.files-details,.code-risk {user-select:text}
+/* Arquivos de desafios compartilham o editor, com rascunhos independentes. */
+#case-panel.pc-mode .case-content.code-multiple {position:relative;padding-left:160px}
+#case-panel.pc-mode .case-content.code-multiple:has(.code-password) {padding:20px 20px 20px 180px!important}
+.code-challenge-files {position:absolute;left:0;top:0;bottom:0;width:160px;overflow:auto;background:var(--os-panel);border-right:1px solid var(--os-border);color:var(--os-text)}
+.code-challenge-files strong {display:block;padding:12px;font-size:13px}
+.code-challenge-files button {display:block;width:100%;padding:10px 12px;text-align:left;overflow-wrap:anywhere;border:0;border-radius:0;background:transparent;color:var(--os-text)}
+.code-challenge-files button:hover,.code-challenge-files button[aria-pressed="true"] {background:var(--os-hover)}
+@media(max-width:650px){#case-panel.pc-mode .case-content.code-multiple {padding-left:112px}#case-panel.pc-mode .case-content.code-multiple:has(.code-password) {padding-left:132px!important}.code-challenge-files {width:112px}}
 /* Explorer selection metadata and read-only document apps. */
 .files-path button {width:auto;height:20px;padding:0 3px;border:0;background:transparent;vertical-align:top}
 .explorer-modern .files-layout {grid-template-rows:minmax(0,1fr) auto}
