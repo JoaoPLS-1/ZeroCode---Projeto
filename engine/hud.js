@@ -10,7 +10,11 @@ class HUD {
     this.relevantEl = rootEl.querySelector('.hud-relevant');
     this.falseEl = rootEl.querySelector('.hud-false');
     this.promptEl = promptEl;
+    this.memoryEl=document.createElement('div');this.memoryEl.className='notebook-memories';
+    this.root.querySelector('.notebook-content').append(this.memoryEl);this.setLembrancas(0);
   }
+
+  setLembrancas(count) { this.memoryEl.textContent='Lembranças '+count+'/5'; }
 
   update(clueState) {
     this.foundEl.textContent = `${clueState.found}/${clueState.total}`;

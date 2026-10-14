@@ -85,7 +85,13 @@ async function verifyMissionApi(port,cookie) {
       assert((await call(unlock,{method:'POST',body:{senha:success.senha}})).ok);
     } else assert(!('senha' in success));
   }
-  const progress=await call('/api/jogo/estado');assert.equal(progress.progresso.length,5);
+  const progress=await call('/api/jogo/estado');
+  assert.equal(progress.progresso.filter(key=>key.startsWith('clue:')).length,5);
+  assert.deepEqual(progress.contagem,{flags:5,lembrancas:5});
+  for(const id of ['retry-C','provisoria-2','provisoria-3','provisoria-4','provisoria-5']){
+    assert(progress.progresso.includes('flag:'+id));assert(progress.progresso.includes('mem:'+id));
+  }
+  assert(progress.progresso.includes('app:wireshark'));assert(progress.progresso.includes('evento:senha-lembrada'));
   const other=await request(port,'/api/jogo/nova-partida',{method:'POST',body:'{}'});
   const otherCookie=other.headers['set-cookie'][0].split(';')[0];
   const isolated=await call(root,{sessionCookie:otherCookie});assert(isolated.missoes.every(m=>!m.resolvida&&m.erros===0&&!('senha' in m)));

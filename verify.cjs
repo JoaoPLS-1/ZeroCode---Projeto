@@ -84,7 +84,9 @@ class FakeGame {
  _showResult(correct,def){this.result={correct,def};}
 }
 const sandbox={Game:FakeGame,CODE_MISSIONS:require('./data/code-missions.js'),document:{createElement:()=>new Element(),getElementById:()=>new Element(),activeElement:new Element(),addEventListener(){}}};
-vm.createContext(sandbox);vm.runInContext(fs.readFileSync('engine/case.js','utf8'),sandbox);
+sandbox.api={onResposta(){}};sandbox.window={addEventListener(){}};
+vm.createContext(sandbox);vm.runInContext(fs.readFileSync('engine/flags-ui.js','utf8'),sandbox);
+vm.runInContext(fs.readFileSync('engine/case.js','utf8'),sandbox);
 vm.runInContext(fs.readFileSync('engine/computer.js','utf8'),sandbox);
 const game=new FakeGame();game.clues=new Clues(defs);game.state='playing';game.hud={showPrompt(){}};game._lockInteractions=()=>{};
 game.dialogue={active:false,open(def,cb){this.def=def;this.cb=cb;}};game.mission={active:false};

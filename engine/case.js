@@ -17,6 +17,7 @@ class CaseExperience {
   this.bar.querySelector('.dossier-button').onclick=()=>{this.setMenuOpen(false);this.menuToggle.focus();this.journal();};
   this.bar.querySelector('.settings-button').onclick=()=>{this.setMenuOpen(false);this.menuToggle.focus();this.pause();};
   document.addEventListener('pointerdown',e=>{if(!this.bar.contains(e.target))this.setMenuOpen(false);});
+  this.g.flagsUI=new FlagsUI(this.g);
  }
  setMenuOpen(open){
   this.menu.hidden=!open;
@@ -150,6 +151,8 @@ class CaseExperience {
    const source=[...this.g.allNpcs,...this.g.allObjects].find(c=>c.clueRef===clue.id);p.textContent=found?clue.body.join(' '):'Local: '+this.g.rooms[source.roomId].name;
    card.append(label,title,p);b.querySelector('.evidence-grid').append(card);
   }
+  const heading=document.createElement('h2'),sheets=document.createElement('section');
+  heading.textContent='Fichas de conhecimento';sheets.className='knowledge-sheets';b.append(heading,sheets);this.g.flagsUI.renderCards(sheets);
  }
  // Os PCs de CODE_MISSIONS são tratados por engine/computer.js.
  terminal(){return false;}
@@ -186,7 +189,7 @@ class CaseExperience {
 const caseStart=Game.prototype.start;
 Game.prototype.start=function(){this.case=new CaseExperience(this);caseStart.call(this);};
 const caseUpdate=Game.prototype._update;
-Game.prototype._update=function(dt){if(this.phone.update(dt)) return;this.case.update(dt);caseUpdate.call(this,dt);};
+Game.prototype._update=function(dt){if(this.flagsUI.update())return;if(this.phone.update(dt)) return;this.case.update(dt);caseUpdate.call(this,dt);};
 const caseInteract=Game.prototype._interactWith;
 Game.prototype._interactWith=function(c){
  if(c.type==='computer'&&this.case.terminal(c))return;

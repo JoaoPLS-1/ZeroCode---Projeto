@@ -37,6 +37,12 @@ Falhas dos sistemas vibecodados existem só em `/lab`, simuladas sobre dados fal
   **exigem HTTP**; abrir `index.html` via file:// não inicia a partida.
 - Testes (Node, sem dependências): `node verify.cjs`, `node verify-computer.cjs`,
   `node verify-npc-animation.cjs`, `node verify-player-frames.cjs`, `node verify-server.cjs`.
+- Flags (tarefa 07): `node verify-flags.cjs`. Para teste local, inicie com `$env:ZC_DEV='1'; node server/index.cjs`
+  (PowerShell). Só nesse modo existe `POST /api/jogo/dev/flag { id }`; sem `ZC_DEV=1`, retorna 404.
+  No console do navegador, após iniciar a partida, use `api.post('/api/jogo/dev/flag', {id:'retry-C'})`.
+  As outras flags provisórias são `provisoria-2` até `provisoria-5`. Repita para testar as cinco
+  lembranças; duplicatas não contam. `GET /api/jogo/flags` lista apenas fichas já capturadas.
+  Para voltar ao modo normal, encerre o servidor e use `Remove-Item Env:ZC_DEV` antes de reiniciá-lo.
 - `server/`: HTTP nativo, lista explícita de estáticos públicos, sessões em memória e `/api/jogo`.
   As cinco missões de código são validadas no servidor, com entradas aleatórias e execuções
   únicas de 60 s. Gabaritos, senhas, erros e desbloqueios ficam na sessão; o Worker só devolve saídas.

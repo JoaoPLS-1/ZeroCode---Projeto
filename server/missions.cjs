@@ -3,6 +3,7 @@ const { isDeepStrictEqual } = require('node:util');
 const { missions, inputs } = require('./data/missions.cjs');
 const { readJson, json } = require('./router.cjs');
 const progress = require('./progress.cjs');
+const { capturar } = require('./flags.cjs');
 const EXECUTION_TTL = 60000;
 const fail = (status, message) => { throw Object.assign(new Error(message), { status }); };
 
@@ -46,7 +47,7 @@ function createMissionService({ now = Date.now } = {}) {
       return { ok:true, execucao, entradas };
     },
     submit(session, id, executionId, body) {
-      const { mission, state } = station(session, id);active(session, state);
+      const { mission, state, index } = station(session, id);active(session, state);
       const execution = state.execution;
       if (!execution || execution.id !== executionId) fail(409, 'Execução inválida ou já utilizada.');
       if (now()-execution.created >= EXECUTION_TTL) { state.execution=null;fail(409, 'Execução expirada. Execute novamente.'); }
@@ -60,14 +61,17 @@ function createMissionService({ now = Date.now } = {}) {
         return { teste:i+1, passou, entrada, recebido:body.saidas[i], ...(passou?{}:{esperado:execution.expected[i]}) };
       });
       const ok = resultados.every(r => r.passou);
+      let captura;
       if (ok) {
         state.solved=true;
         progress.set(session, 'clue:'+mission.clueRef);
+        captura = capturar(session, index === 0 ? 'retry-C' : 'provisoria-'+(index+1));
       } else {
         state.errors++;
         if (state.errors >= 3) session.gameOver=true;
       }
       return { ok, ...progress.state(session), resultados, erros:state.errors, gameOver:session.gameOver,
+        ...(captura?{captura}:{}),
         ...(body.erro?{erroExecucao:body.erro}:{}),
         ...(ok?{recompensa:mission.reward, clueRef:mission.clueRef, ...(state.password?{senha:state.password}:{})}:{}) };
     },
