@@ -162,7 +162,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 
 **Fase 2 — Primeiro caso completo (fatia vertical): Pagamento do Café**
 - ⬜ 14 Descobrir: pistas do caso (Mateus, log de cobranças)
-- ⬜ 15 Explorar: regra de negócio no Inspetor HTTP
+- ⏸ 15 Explorar: regra de negócio no Inspetor HTTP — **aguardando definição do autor**
 - ⬜ 16 Corrigir: validação no backend + idempotência
 > Revisar a experiência inteira deste caso antes de replicar o modelo nos outros.
 
