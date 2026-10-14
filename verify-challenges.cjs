@@ -79,6 +79,53 @@ function testMode(){
  createSessions().reset(s);assert(!api.list(s,'computer_qa_upper').desafios.find(c=>c.id===id).resolvida);
  console.log('Modo testes: Worker devolve casos; bug detectado, casos sem bug/incorretos, entradas malformadas, limites 1–10/8 KB, execução única/expirada, isolamento, flag compartilhada nos dois sentidos e reset aprovados.');
 }
+function payment(){
+ const api=createChallengeService(),ids=['pagamento-validar','pagamento-idempotencia'];
+ const validation=challenges.find(c=>c.id===ids[0]);
+ for(const order of [ids,[...ids].reverse()]){
+  const s=fresh(),other=fresh();
+  assert(!api.list(s,'computer_dev_left').desafios.some(c=>ids.includes(c.id)));
+  for(const id of ids)for(const fn of [()=>api.start(s,id),()=>api.hint(s,id),()=>api.submit(s,id,'x',{})])status(fn,404);
+  s.progresso.push('flag:retry-C');other.progresso.push('flag:retry-C');
+  assert.equal(api.list(s,'computer_dev_left').desafios.filter(c=>ids.includes(c.id)).length,2);
+  assert(!api.list(s,'computer_dev_right').desafios.some(c=>ids.includes(c.id)));
+  for(const id of ids){
+   const meta=api.list(s,'computer_dev_left').desafios.find(c=>c.id===id);
+   for(const key of ['flag','flagComposta','compararSaida','referencia','casosFixos','dicas','recompensa'])assert(!(key in meta));
+   for(let level=1;level<=3;level++)assert.equal(api.hint(s,id).nivel,level);
+   for(let i=0;i<4;i++){
+    const e=api.start(s,id),failed=api.submit(s,id,e.execucao,execute(meta.codigoInicial,e.entradas));
+    assert(!failed.ok&&!failed.gameOver);assert(!failed.captura);assert.equal(failed.erros,i+1);
+   }
+  }
+  for(const [index,id] of order.entries()){
+   const c=challenges.find(c=>c.id===id),e=api.start(s,id);
+   const result=execute('return ('+c.referencia.toString()+')(input);',e.entradas);
+   if(id===validation.id)for(const output of result.saidas)if(!output.ok)output.erro='Minha mensagem livre';
+   status(()=>api.submit(other,id,e.execucao,result),409);
+   const solved=api.submit(s,id,e.execucao,result);assert(solved.ok);
+   assert(solved.recompensa.startsWith((index+1)+' de 2 correções aplicadas'));
+   assert.equal(s.progresso.includes('flag:pagamento-C'),index===1);
+   assert.equal(s.progresso.includes('mem:pagamento-C'),index===1);
+   if(index===0)assert(!solved.captura);
+   else{
+    assert(solved.captura.nova);assert(solved.captura.flag.ficha.includes('O servidor é a fonte da verdade'));
+    assert.equal(solved.captura.flag.lembranca,'Regra de negócio não é detalhe. Foi o primeiro sermão que eu dei a um estagiário.');
+   }
+   status(()=>api.submit(s,id,e.execucao,result),409);
+  }
+  assert.equal(s.progresso.filter(key=>key==='mem:pagamento-C').length,1);
+  assert(api.list(s,'computer_dev_left').desafios.filter(c=>ids.includes(c.id)).every(c=>c.resolvida&&c.recompensa.startsWith('2 de 2')));
+  assert(!other.progresso.includes('flag:pagamento-C'));
+  createSessions().reset(s);s.progresso.push('flag:retry-C');
+  assert(api.list(s,'computer_dev_left').desafios.filter(c=>ids.includes(c.id)).every(c=>!c.resolvida&&c.dicasUsadas===0));
+ }
+ for(const [received,expected,ok] of [[{ok:false,erro:'Livre'},{ok:false},true],
+   [{ok:true,total:9,extra:1},{ok:true,total:9},true],[{ok:true,total:'9'},{ok:true,total:9},false],
+   [{ok:true,total:0.02},{ok:true,total:9},false],[{ok:'false'},{ok:false},false],
+   [null,{ok:false},false],[[],{ok:false},false]])assert.equal(validation.compararSaida(received,expected),ok);
+ console.log('Pagamento: regras de produto/quantidade/preço/arredondamento, erros livres, requires, dicas, tentativas ilimitadas, duas ordens de solução, recompensa parcial, captura composta única, isolamento e reset aprovados.');
+}
 // Fixtures somente no teste: não antecipam os desafios narrativos das próximas tarefas.
 const fixture={id:'teste-livre',caso:'teste',camada:'C',flag:'retry-C',estacoes:['computer_dev_left'],requires:'talk:teste',
  titulo:'Teste livre',arquivo:'livre.js',enunciado:'Retorne o dobro.',codigoInicial:'// TODO\nreturn 0;',modo:'implementar',
@@ -128,7 +175,19 @@ async function http(){
   const c=challenges.find(c=>c.id==='computer_dev_left');
   const solved=(await call('/api/jogo/missoes/'+c.id+'/execucao/'+e.execucao,{saidas:e.entradas.map(c.referencia)})).data;
   assert(solved.ok&&solved.captura.nova);assert(solved.senha);
-  assert((await call('/api/jogo/desafios?estacao='+c.id)).data.desafios[0].resolvida);
+  assert((await call('/api/jogo/desafios?estacao='+c.id)).data.desafios.find(d=>d.id===c.id).resolvida);
+  for(const id of ['pagamento-validar','pagamento-idempotencia']){
+   const meta=(await call('/api/jogo/desafios?estacao='+c.id)).data.desafios.find(d=>d.id===id);assert(meta);
+   const e=(await call('/api/jogo/desafios/'+id+'/execucao',{})).data;
+   const definition=challenges.find(d=>d.id===id),result=execute('return ('+definition.referencia.toString()+')(input);',e.entradas);
+   if(id==='pagamento-validar')for(const output of result.saidas)if(!output.ok)output.erro='Recusado pelo backend';
+   const solved=(await call('/api/jogo/desafios/'+id+'/execucao/'+e.execucao,result)).data;assert(solved.ok);
+   if(id==='pagamento-validar'){
+    assert(!solved.captura);assert(solved.recompensa.startsWith('1 de 2 correções aplicadas'));
+    assert(!(await call('/api/jogo/flags')).data.flags.some(f=>f.titulo.startsWith('Pagamento')));
+   }else assert(solved.captura.nova);
+  }
+  assert((await call('/api/jogo/flags')).data.flags.some(f=>f.titulo==='Pagamento · Validação no backend'));
   await call('/api/jogo/nova-partida',{});listed=await call('/api/jogo/desafios?estacao='+c.id);
   assert.equal(listed.data.desafios[0].dicasUsadas,0);assert(!listed.data.desafios[0].resolvida);
   const qa=(await call('/api/jogo/desafios?estacao=computer_qa_upper')).data.desafios.find(c=>c.id==='retry-teste');assert(qa&&!qa.bloqueada);
@@ -190,4 +249,4 @@ function client(){
   console.log('ZeroTrace: lista, seleção, rascunhos, tentativas ilimitadas, dicas; modo testes exibe versão com bug, envia só casos do Worker, mostra recusas/erro de sintaxe e recompensa aprovada.');
  })();
 }
-(async()=>{format();service();testMode();await http();await client();})().catch(error=>{console.error(error);process.exitCode=1;});
+(async()=>{format();service();testMode();payment();await http();await client();})().catch(error=>{console.error(error);process.exitCode=1;});

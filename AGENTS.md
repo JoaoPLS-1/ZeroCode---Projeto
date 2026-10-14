@@ -146,6 +146,11 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   `node verify-challenges.cjs` cobre o modo, entradas inválidas, limites, flag compartilhada e editor.
 
 ## Armadilhas conhecidas
+- Pagamento (tarefa 16): `pagamento-validar` e `pagamento-idempotencia` aparecem no Dev 1
+  com `flag:retry-C`, sem limite de erros. O servidor captura `pagamento-C` apenas após as duas
+  correções, em qualquer ordem; a primeira mostra "1 de 2 correções aplicadas". A validação
+  compara somente `ok` e `total`, aceitando mensagens de erro livres. O ponto de integração
+  com o futuro app do Café em `/lab` está marcado `TODO tarefa 15` em `server/challenges.cjs`.
 - **Overrides no fim dos arquivos de dados.** `maps.js`, `dialogs.js`, `npcs.js` e `objects.js` redefinem
   valores no final (`Object.assign`, `push`, laços). Ex.: portas/spawns reais das salas estão no fim
   de `maps.js`; nomes reais dos NPCs vêm de `NPC_DIALOG_NAMES`; posição real dos NPCs vem de

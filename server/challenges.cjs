@@ -36,6 +36,12 @@ function createChallengeService({now=Date.now,catalog=challenges}={}) {
     if(!state.unlocked)fail(403,'Estação protegida.');
     if(state.solved)fail(409,'Missão já resolvida.');
   }
+  function correctionReward(session,c) {
+    if(!c.flagComposta)return c.recompensa;
+    const parts=catalog.filter(part=>part.flagComposta&&part.flag===c.flag);
+    const solved=parts.filter(part=>stateFor(session,part).solved).length;
+    return solved+' de '+parts.length+' correções aplicadas'+(solved===parts.length?'. Validação e idempotência restauradas.':'. Conclua a outra correção para recuperar a evidência do caso Pagamento.');
+  }
   function publicData(session,c) {
     const state=stateFor(session,c);
     // Lista explícita: nunca serializar referências, testes privados, flags ou dicas futuras.
@@ -43,7 +49,7 @@ function createChallengeService({now=Date.now,catalog=challenges}={}) {
       ...(c.modo==='testes'?{assinatura:c.assinatura,codigoVibecodado:c.implementacaoVibecodada.toString(),minimoCasos:c.minimoCasos,maximoCasos:c.maximoCasos}:{}),
       maxErros:c.maxErros,bloqueada:!state.unlocked,resolvida:state.solved,erros:state.errors,dicasUsadas:state.hints,
       ...(state.hints?{dica:c.dicas[state.hints-1]}:{}),...(Number.isInteger(c.ordemS2)?{ordemS2:c.ordemS2}:{}),
-      ...(state.solved?{recompensa:c.recompensa,clueRef:c.clueRef,...(state.password?{senha:state.password}:{})}:{})};
+      ...(state.solved?{recompensa:correctionReward(session,c),clueRef:c.clueRef,...(state.password?{senha:state.password}:{})}:{})};
   }
   return {
     list(session,estacao) {
@@ -94,7 +100,7 @@ function createChallengeService({now=Date.now,catalog=challenges}={}) {
         (body.erro!==undefined&&(typeof body.erro!=='string'||!body.erro.length||body.erro.length>300)))
         fail(400,'Envie uma saída para cada entrada e, se necessário, uma mensagem de erro.');
       resultados=execution.entradas.map((entrada,i)=>{
-        const passou=!body.erro&&isDeepStrictEqual(body.saidas[i],execution.expected[i]);
+        const passou=!body.erro&&(c.compararSaida?c.compararSaida(body.saidas[i],execution.expected[i]):isDeepStrictEqual(body.saidas[i],execution.expected[i]));
         return {teste:i+1,passou,entrada,recebido:body.saidas[i],...(passou?{}:{esperado:execution.expected[i]})};
       });
       }
@@ -103,11 +109,19 @@ function createChallengeService({now=Date.now,catalog=challenges}={}) {
       const mensagem=c.modo==='testes'?(ok?'Seu teste revelou o bug.':resultados.some(r=>!r.passaNaCorreta)?
         'Seu teste não é válido: ele também falha na versão correta':'Seus testes passam, mas não pegam o bug'):undefined;
       let captura;
-      if(ok){captura=capturar(session,c.flag);state.solved=true;if(c.clueRef)progress.set(session,'clue:'+c.clueRef);}
+      if(ok){
+        state.solved=true;
+        if(!c.flagComposta||catalog.filter(part=>part.flagComposta&&part.flag===c.flag).every(part=>stateFor(session,part).solved)){
+          captura=capturar(session,c.flag);
+          // TODO tarefa 15: o app do Café em /lab deve consultar flag:pagamento-C nesta sessão
+          // para aplicar a validação do catálogo/quantidade e a idempotência no servidor.
+        }
+        if(c.clueRef)progress.set(session,'clue:'+c.clueRef);
+      }
       else{state.errors++;if(c.maxErros!==null&&state.errors>=c.maxErros)session.gameOver=true;}
       return {ok,...progress.state(session),resultados,erros:state.errors,gameOver:session.gameOver,
         ...(mensagem?{mensagem}:{}),...(captura?{captura}:{}),...(c.modo!=='testes'&&body.erro?{erroExecucao:body.erro}:{}),
-        ...(ok?{recompensa:c.recompensa,clueRef:c.clueRef,...(state.password?{senha:state.password}:{})}:{})};
+        ...(ok?{recompensa:correctionReward(session,c),clueRef:c.clueRef,...(state.password?{senha:state.password}:{})}:{})};
     },
     hint(session,id) {
       const {c,state}=station(session,id);active(session,state);
