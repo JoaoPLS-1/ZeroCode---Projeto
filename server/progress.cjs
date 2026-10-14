@@ -1,7 +1,7 @@
 const NPCS = require('../data/npcs.js');
 const { readJson, json } = require('./router.cjs');
 const allowedEvents = new Set(NPCS.map(npc => 'talk:' + npc.id));
-// file: só será permitido a partir da lista do VFS da tarefa 04.
+// file: é registrado exclusivamente pela leitura autorizada no VFS, nunca por evento manual.
 
 function has(session, key) { return session.progresso.includes(key); }
 function set(session, key) {

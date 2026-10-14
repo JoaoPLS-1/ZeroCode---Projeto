@@ -73,6 +73,19 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   O desktop encerra observadores, eventos e relógio ao sair, trocar sistema ou encerrar a partida.
 - `engine/os/notepad.js` (`ZeroNotepad`) abre documentos somente leitura pelo gerenciador de
   janelas. No explorador, clique simples seleciona; duplo clique/Enter abre e registra a leitura.
+- Progresso (tarefa 03): `server/progress.cjs` é a autoridade (`set/has/all/count/requires`).
+  `engine/progress.js` (`Progress`) é só o espelho em `__game.progress`, sincronizado pela API;
+  `on(listener)` notifica chaves novas. `POST /api/jogo/eventos` aceita apenas `talk:<npcId>`
+  existente ao concluir o diálogo. Conquistas de missão são concedidas pelo servidor.
+- VFS (tarefa 04): `server/data/vfs.cjs` guarda arquivos privados; `server/vfs.cjs` resolve
+  caminhos virtuais e filtra por `requires` e `stations`, inclusive diretórios implícitos.
+  `GET /api/jogo/fs/lista` e `/api/jogo/fs/arquivo` exigem sessão, `estacao` e `caminho`;
+  oculto e inexistente retornam o mesmo 404. Só a leitura autorizada registra `file:<id>`
+  e aplica `grants`; eventos manuais `file:` são recusados. `engine/os/vfs.js` expõe
+  `RemoteFS(api, estacao)` com `list(caminho)`, `read(caminho)` e `resolve(cwd, entrada)`
+  assíncronos. Listas retornam `{ caminho, entries: [{ name, path, type, size?, modified? }] }`;
+  leituras retornam `{ caminho, id, content, size, modified }` e o progresso atualizado.
+  Ainda não integrado às interfaces do Terminal/Explorador.
 - Estilos: `style.css` + `ui/*.css`.
 
 ## Armadilhas conhecidas
