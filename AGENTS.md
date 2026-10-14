@@ -96,8 +96,11 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   `RemoteFS(api, estacao)` com `list(caminho)`, `read(caminho)` e `resolve(cwd, entrada)`
   assíncronos. Listas retornam `{ caminho, entries: [{ name, path, type, size?, modified? }] }`;
   leituras retornam `{ caminho, id, content, size, modified }` e o progresso atualizado.
-  Ainda não integrado às interfaces do Terminal/Explorador.
+  Integrado ao Terminal na tarefa 06; a interface do Explorador ainda não usa o RemoteFS.
 - Estilos: `style.css` + `ui/*.css`.
+- Terminal (tarefa 06): `engine/os/terminal-core.js` fornece `createTerminal(fs)` sem DOM e
+  `registerTerminalCommand(nome, { help, run(args, term) })`; a janela está em
+  `engine/os/apps/terminal.js`. `cat` e `grep` leem pelo `RemoteFS`, sem conceder progresso local.
 
 ## Armadilhas conhecidas
 - **Overrides no fim dos arquivos de dados.** `maps.js`, `dialogs.js`, `npcs.js` e `objects.js` redefinem

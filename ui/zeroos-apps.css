@@ -4,3 +4,8 @@
 .zero-app-about h2 {margin:0 0 20px;font-size:18px;font-weight:600}
 .zero-app-about dl {margin:0}.zero-app-about dt {font-weight:600}
 .zero-app-about dd {margin:4px 0 16px;overflow-wrap:anywhere}
+.zero-app-window>.wm-body.zero-app-terminal {display:flex;flex-direction:column;min-height:0;padding:12px;font:14px/1.5 Consolas,'Courier New',monospace;user-select:text}
+.terminal-output {flex:1;min-height:0;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.terminal-command {margin:8px 0 0}.terminal-prompt {display:flex;flex-wrap:wrap;white-space:pre-wrap;overflow-wrap:anywhere}
+.terminal-input {flex:1;min-width:120px;width:0;border:0;border-radius:0;background:var(--os-panel);color:var(--os-text);font:inherit;padding:0 2px}
+.terminal-input:focus-visible {outline:1px solid var(--os-text);outline-offset:2px}

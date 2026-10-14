@@ -150,7 +150,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ✅ 03 Progresso no servidor (flags) + espelho no cliente
 - ✅ 04 Sistema de arquivos virtual servido pela API
 - ✅ 05 Registro de apps no ZeroOS
-- ⬜ 06 App Terminal (`ls`, `cd`, `cat`, `grep -n`) — base do "log do ano da IA"
+- ✅ 06 App Terminal (`ls`, `cd`, `cat`, `grep -n`) — base do "log do ano da IA"
 - ⬜ 07 Captura de flags: lembranças no caderno, ficha de conhecimento, D.A.N.I.E.L. comemorando
 - ⬜ 08 App Wireshark (50 pacotes, filtro, detalhes) + desbloqueio por 5 lembranças
 - ⬜ 09 Porta da Sala Secreta por IP:porta (substitui o Passe Ômega como tranca)
