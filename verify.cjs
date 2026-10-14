@@ -116,6 +116,8 @@ game.case.errors=0;game.case.hypothesisErrors=0;
 game._showResult(false,{body:['Revisar']});assert.equal(game.result.correct,false);assert.equal(game.case.hypothesisErrors,1);assert.deepEqual(Array.from(game.result.def.body),['Revisar']);
 game._showResult(false,{body:['Revisar']});assert.equal(game.case.hypothesisErrors,2);
 console.log('Progressão: cinco estações de código, coleta deduplicada, classificação S/A/B e hipóteses incorretas aprovadas.');
+const serverResult={rank:'B',flags:5,body:['CLASSIFICAÇÃO B / 5 flags capturadas']};
+game._showResult(true,serverResult);assert.equal(game.result.def,serverResult,'Cliente alterou avaliação do servidor');
 
 // A sala só muda sob cobertura opaca, depois do carregamento do cenário.
 const transitionContext={module:{exports:{}},window:{matchMedia:()=>({matches:false})}};
@@ -167,8 +169,8 @@ vm.createContext(missionContext);
 vm.runInContext(fs.readFileSync('engine/mission.js','utf8'),missionContext);
 const mission=new missionContext.module.exports(new Element(),require('./data/missions.js'));let decisions=0;
 mission.open(()=>decisions++);mission._choose('invalid');assert.equal(decisions,0);assert(mission.active);
-mission._choose('C');mission._choose('C');assert.equal(decisions,1,'Resultado duplicado');
-mission.open(()=>decisions++);mission.close();mission._choose('A');assert.equal(decisions,1,'Painel fechado aceitou decisão');
+assert.equal(decisions,0,'Escolhas incompletas aceitas');
+mission.open(()=>decisions++);mission.close();mission._choose();assert.equal(decisions,0,'Painel fechado aceitou decisão');
 game.case.errors=0;game.case.hypothesisErrors=0;Object.keys(defs).forEach(id=>game.clues.addClue(id));
 game._showResult(false,{body:[]});game._showResult(true,{body:[]});
 assert(game.result.def.body[0].includes('CLASSIFICAÇÃO A'),'Hipótese incorreta manteve nota S');

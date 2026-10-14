@@ -58,7 +58,7 @@ function installProgressRoutes(router, sessions) {
     const session = sessions.get(req);
     if (!session) return json(res, 401, { ok:false, erro:'Inicie uma nova partida.' });
     const liberada = has(session, 'evento:omega-encontrada');
-    json(res, 200, { ok:true, liberada, ...(!liberada ? { dialogo:omega.bloqueada } : {}), ...state(session) });
+    json(res, 200, { ok:true, liberada, ...(session.decisao ? {resultado:session.decisao} : {}), ...(!liberada ? { dialogo:omega.bloqueada } : {}), ...state(session) });
   });
 }
 

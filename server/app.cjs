@@ -13,6 +13,7 @@ const { installSecretDoorRoutes } = require('./secret-door.cjs');
 const { installPerguntaRoutes } = require('./perguntas.cjs');
 const { installRepoRoutes } = require('./repo.cjs');
 const { installPipelineRoutes } = require('./pipeline.cjs');
+const { installDecisionRoutes } = require('./decision.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC_FILES = new Set(['/index.html', '/style.css', '/main.js']);
@@ -77,6 +78,7 @@ function createApp() {
   installPerguntaRoutes(router, sessions);
   installRepoRoutes(router, sessions);
   installPipelineRoutes(router, sessions);
+  installDecisionRoutes(router, sessions);
   router.add('POST', '/api/jogo/nova-partida', async (req, res) => {
     await readJson(req);
     const session = sessions.get(req);

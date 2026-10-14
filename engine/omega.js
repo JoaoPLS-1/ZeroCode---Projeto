@@ -10,7 +10,7 @@ class OmegaEncounter {
     g.input.keys = {}; g.input._justPressed = {};
     try { await run(); }
     catch (error) { g._showClueAlert({title:'Não foi possível concluir a solicitação', body:[error.message]}); }
-    finally { this.busy = false; g.state = 'playing'; g._lockInteractions(); }
+    finally { this.busy = false; if(g.state === 'omega')g.state = 'playing'; g._lockInteractions(); }
   }
   enter() {
     if (this.g.map.id !== 'room_secret' || !this.g.progress.has('acesso:sala-secreta')) return;
@@ -34,6 +34,7 @@ class OmegaEncounter {
     return this.request(async () => {
       const result = await api.get('/api/jogo/decisao/acesso');
       if (!result.liberada) this.g.dialogue.open(result.dialogo, () => this.g._lockInteractions());
+      else if (result.resultado) this.g._showResult(true, result.resultado);
       else this.g.mission.open((correct, def) => this.g._showResult(correct, def));
     });
   }

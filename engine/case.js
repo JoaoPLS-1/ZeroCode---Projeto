@@ -237,6 +237,7 @@ Game.prototype._interactWith=function(c){
 };
 const caseResult=Game.prototype._showResult;
 Game.prototype._showResult=function(correct,def){
+ if(def.rank){caseResult.call(this,correct,def);return;}
  if(!correct)this.case.hypothesisErrors++;
  const mistakes=this.case.errors+this.case.hypothesisErrors;
  const rank=this.clues.found.size===11&&mistakes===0?'S':mistakes<3?'A':'B';

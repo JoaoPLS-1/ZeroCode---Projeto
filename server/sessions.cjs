@@ -21,6 +21,7 @@ function createSessions({ now = Date.now } = {}) {
     session.perguntasTentativas = [];
     session.repoErros = 0;
     session.pipelineYaml = null;
+    session.decisao = null;
     return session;
   }
   return {

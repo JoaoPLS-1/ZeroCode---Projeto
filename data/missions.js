@@ -1,5 +1,17 @@
 const MISSION_FASE1 = {
- id:'protocolo_zero', title:'QUAL É A CAUSA DO APAGÃO?',
- options:[{id:'A',text:'Ataque externo. Bloquear conexões de clientes.'},{id:'B',text:'Falha de hardware. Reiniciar servidores.'},{id:'C',text:'Retry sem limite no deploy 2.1. Reverter a versão e limitar tentativas com espera.'},{id:'D',text:'Excesso de clientes. Aumentar a fila.'}],correctOption:'C',
- results:{correct:{title:'NEXUS RESTABELECIDO',body:['Uma resposta 503 virou milhares de tentativas internas. O deploy removeu o limite de retries e saturou a fila.','Rollback aplicado. Próxima versão: tentativas limitadas, espera progressiva e testes de falha. Você encontrou a causa.']},incorrect:{title:'HIPÓTESE NÃO SUSTENTADA',body:['Essa intervenção não explica as repetições internas após o deploy.','Revise o diff, a linha do tempo e a telemetria no dossiê. O incidente ainda pode ser resolvido.']}}};
+ id:'protocolo_zero', title:'COMO RESPONDER AO INCIDENTE?',
+ choices:[
+  {id:'omega',title:'ÔMEGA',speech:'Kael, encontramos ÔMEGA. O que faremos com ela e com o servidor legado?',options:[
+   {id:'isolar',text:'Isolar ÔMEGA e o servidor legado.'},
+   {id:'monitorar',text:'Deixar ÔMEGA ativa e só monitorar.'},
+   {id:'desligar',text:'Desligar tudo sem investigar mais.'}]},
+  {id:'deploy',title:'Deploy 2.1',speech:'Agora, escolha como responder à tempestade de retries do deploy 2.1.',options:[
+   {id:'rollback',text:'Fazer rollback e corrigir o retry com limite e espera.'},
+   {id:'fila',text:'Manter o deploy e aumentar a fila.'},
+   {id:'reiniciar',text:'Reiniciar os servidores.'}]},
+  {id:'processo',title:'Processo',speech:'Por fim, como a equipe deve trabalhar depois deste incidente?',options:[
+   {id:'revisao',text:'Exigir revisão humana, acionar QA e usar pipeline que barra testes falhos.'},
+   {id:'proibir',text:'Proibir IA no time.'},
+   {id:'manter',text:'Manter o processo como está.'}]}
+ ]};
 if(typeof module !== 'undefined') module.exports=MISSION_FASE1;

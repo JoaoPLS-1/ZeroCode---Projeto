@@ -130,6 +130,10 @@ class Game {
   }
 
   _onResultButtonClick() {
+    if (this.dom.resultButton.dataset.replay === '1') {
+      this._newSession(() => location.reload(), this.dom.resultButton, this.dom.resultScreen);
+      return;
+    }
     const wasCorrect = this.dom.resultButton.dataset.correct === '1';
     this.dom.resultScreen.classList.remove('is-correct', 'is-incorrect');
     this.dom.resultScreen.classList.add('hidden');
@@ -347,6 +351,10 @@ class Game {
       ? 'CONCLUIR FASE'
       : 'VOLTAR E INVESTIGAR MAIS';
     this.dom.resultButton.dataset.correct = isCorrect ? '1' : '0';
+    if (resultDef.rank) {
+      this.dom.resultButton.textContent = 'JOGAR NOVAMENTE';
+      this.dom.resultButton.dataset.replay = '1';
+    } else delete this.dom.resultButton.dataset.replay;
     this.dom.resultButton.focus();
   }
 

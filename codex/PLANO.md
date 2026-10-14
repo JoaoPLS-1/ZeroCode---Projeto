@@ -177,7 +177,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 
 **Fase 4 — Final**
 - ✅ 24 Sala Secreta: ÔMEGA e cena final
-- ⬜ 25 Nova tomada de decisão com D.A.N.I.E.L.
+- ✅ 25 Nova tomada de decisão com D.A.N.I.E.L.
 
 **Fase 5 — Evento**
 - ⬜ 26 Desligar modos de teste, reset rápido entre jogadores, dicas progressivas

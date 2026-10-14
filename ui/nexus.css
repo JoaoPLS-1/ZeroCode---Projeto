@@ -19,6 +19,8 @@
 .nexus-panel{background:linear-gradient(120deg,#0b1926,#0b101a)}.nexus-option-icon svg{display:block;width:30px;height:30px}#result-screen.nexus-result .overlay-box{max-width:1100px;width:100%}
 #game-container:has(#decision-modal:not(.hidden)) #clue-alert,#game-container:has(#result-screen.nexus-result:not(.hidden)) #clue-alert{visibility:hidden}
 
+#decision-modal .nexus-option[data-option]{grid-template-columns:1fr}
+
 /* Same base image in both states: only the mouth changes, preventing sprite jitter. */
 .nexus-sprite{position:relative;aspect-ratio:2/3;background-image:url('../assets/nexus/daniel-open.png');background-size:100% 100%;background-position:center;max-width:38vh;margin-inline:auto}
 .nexus-sprite::after{content:'';position:absolute;inset:0;background:url('../assets/nexus/daniel-closed.png') center/100% 100% no-repeat;clip-path:polygon(30% 25%,44% 25%,44% 28.5%,30% 28.5%)}
