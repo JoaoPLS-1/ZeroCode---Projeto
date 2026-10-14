@@ -15,6 +15,7 @@ function createSessions({ now = Date.now } = {}) {
     session.progresso = [];
     session.missoes = null;
     session.gameOver = false;
+    session.capturaAberta = false;
     return session;
   }
   return {

@@ -8,6 +8,7 @@ const { installMissionRoutes } = require('./missions.cjs');
 const progress = require('./progress.cjs');
 const { installVfsRoutes } = require('./vfs.cjs');
 const { installFlagRoutes } = require('./flags.cjs');
+const { installCaptureRoutes } = require('./capture.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC_FILES = new Set(['/index.html', '/style.css', '/main.js']);
@@ -67,6 +68,7 @@ function createApp() {
   progress.installProgressRoutes(router, sessions);
   installVfsRoutes(router, sessions);
   installFlagRoutes(router, sessions);
+  installCaptureRoutes(router, sessions);
   router.add('POST', '/api/jogo/nova-partida', async (req, res) => {
     await readJson(req);
     const session = sessions.get(req);

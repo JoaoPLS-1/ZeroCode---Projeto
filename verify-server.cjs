@@ -49,6 +49,7 @@ async function verifyMissionApi(port,cookie) {
   async function call(path,{method='GET',body,expected=200,sessionCookie=cookie}={}) {
     const response=await request(port,path,{method,cookie:sessionCookie,...(body!==undefined?{body:JSON.stringify(body)}:{})});
     assert.equal(response.status,expected,path);security(response);
+    assert(!response.body.includes('10.19.56.7'),'Endereço privado em resposta de missões/progresso: '+path);
     assert.equal(response.headers['cache-control'],'no-store');
     const payload=JSON.parse(response.body);inspect(payload);return payload;
   }
@@ -92,6 +93,7 @@ async function verifyMissionApi(port,cookie) {
     assert(progress.progresso.includes('flag:'+id));assert(progress.progresso.includes('mem:'+id));
   }
   assert(progress.progresso.includes('app:wireshark'));assert(progress.progresso.includes('evento:senha-lembrada'));
+  await verifyCaptureApi(port,cookie);
   const other=await request(port,'/api/jogo/nova-partida',{method:'POST',body:'{}'});
   const otherCookie=other.headers['set-cookie'][0].split(';')[0];
   const isolated=await call(root,{sessionCookie:otherCookie});assert(isolated.missoes.every(m=>!m.resolvida&&m.erros===0&&!('senha' in m)));
@@ -101,6 +103,37 @@ async function verifyMissionApi(port,cookie) {
   await call('/api/jogo/nova-partida',{method:'POST',body:{}});
   await call(root+'/'+privateMissions[0].id+'/execucao/'+old.execucao,{method:'POST',body:{saidas:old.entradas.map(privateMissions[0].reference)},expected:409});
   console.log('API de missões: cinco missões por HTTP, entradas sem gabarito, senha só após sucesso, respostas públicas, desbloqueio, validação, execução única, progresso, isolamento e reset aprovados.');
+}
+
+async function verifyCaptureApi(port,cookie) {
+  async function call(path,body,status=200,sessionCookie=cookie) {
+    const response=await request(port,path,{cookie:sessionCookie,...(body===undefined?{}:{method:'POST',body:JSON.stringify(body)})});
+    assert.equal(response.status,status,path);security(response);assert.equal(response.headers['cache-control'],'no-store');
+    return JSON.parse(response.body);
+  }
+  const path='/api/jogo/captura?estacao=computer_infra_upper',chave='evento:batimento-visto';
+  await call(path,undefined,401,'zc_sid=invalida');
+  for(const station of ['', 'computer_dev_left', 'computer_dev_left&estacao=computer_infra_upper']) {
+    await call('/api/jogo/captura?estacao='+station,undefined,403);
+  }
+  await call('/api/jogo/eventos',{chave,estacao:'computer_infra_upper',pacote:1},403);
+  const capture=await call(path);assert.equal(capture.pacotes.length,50);
+  assert.deepEqual((await call(path)).pacotes,capture.pacotes,'Captura deve ser determinística');
+  const suspicious=capture.pacotes.filter(p=>p.origem==='10.19.56.7');assert.equal(suspicious.length,4);
+  assert(suspicious.every(p=>p.portaDestino===2017&&p.payload==='RPHJD:EDWLPHQWR'));
+  for(const pacote of [null,'1',-1,51,capture.pacotes.find(p=>p.protocolo==='HTTP').n])
+    await call('/api/jogo/eventos',{chave,estacao:'computer_infra_upper',pacote},403);
+  await call('/api/jogo/eventos',{chave,estacao:'computer_dev_left',pacote:suspicious[0].n},403);
+  const first=await call('/api/jogo/eventos',{chave,estacao:'computer_infra_upper',pacote:suspicious[0].n});
+  assert(first.nova);assert.equal(first.pensamento,require('./server/data/capture.cjs').pensamento);
+  assert(first.progresso.includes(chave));
+  const duplicate=await call('/api/jogo/eventos',{chave,estacao:'computer_infra_upper',pacote:suspicious[1].n});
+  assert(!duplicate.nova);assert(!('pensamento' in duplicate));assert.equal(duplicate.progresso.filter(k=>k===chave).length,1);
+  const other=await request(port,'/api/jogo/nova-partida',{method:'POST',body:'{}'});
+  const isolated=other.headers['set-cookie'][0].split(';')[0];
+  await call(path,undefined,403,isolated);
+  await call('/api/jogo/eventos',{chave,estacao:'computer_infra_upper',pacote:suspicious[0].n},403,isolated);
+  console.log('Wireshark HTTP: 50 pacotes determinísticos, estação e autenticação obrigatórias, evento validado, pensamento único e isolamento aprovados.');
 }
 
 async function verify() {
@@ -142,6 +175,25 @@ async function verify() {
     const cookieHeader = created.headers['set-cookie'][0];assert.match(cookieHeader, /^zc_sid=[a-f0-9]{48}; HttpOnly; SameSite=Strict; Path=\/$/);
     const cookie = cookieHeader.split(';')[0];
     const state = await request(port, '/api/jogo/estado', { cookie });assert.equal(state.status, 200);assert.deepEqual(JSON.parse(state.body), { ok: true, progresso: [], contagem: { flags: 0, lembrancas: 0 } });
+    const privateCapture='/api/jogo/captura?estacao=computer_infra_upper';
+    for(const pathname of [privateCapture,'/api/jogo/captura','/api/jogo/flags','/api/jogo/missoes','/api/jogo/estado',
+      '/api/jogo/fs/lista?estacao=computer_infra_upper&caminho=/',
+      '/api/jogo/fs/arquivo?estacao=computer_infra_upper&caminho=/home/kael/leia-me.txt',
+      '/server/data/capture.cjs','/server/capture.cjs']) {
+      const response=await request(port,pathname,{cookie});
+      assert(!response.body.includes('10.19.56.7'),pathname+' vazou o endereço antes da liberação');
+      if(pathname.startsWith('/api/jogo/captura'))assert.equal(response.status,403);
+      if(pathname.startsWith('/server/'))assert.equal(response.status,404);
+    }
+    for(const directory of ['data','engine','ui'])for(const name of fs.readdirSync(directory,{recursive:true})) {
+      if(!/\.(js|css|json|txt)$/.test(name))continue;
+      const pathname='/'+directory+'/'+name.replaceAll('\\','/'),response=await request(port,pathname);
+      assert.equal(response.status,200,pathname);assert(!response.body.includes('10.19.56.7'),pathname+' vazou o endereço');
+    }
+    assert(!index.body.includes('10.19.56.7'));
+    const blocked=await request(port,'/api/jogo/eventos',{method:'POST',cookie,body:JSON.stringify({chave:'evento:batimento-visto',estacao:'computer_infra_upper',pacote:1})});
+    assert.equal(blocked.status,403);assert(!blocked.body.includes('10.19.56.7'));
+    console.log('Wireshark bloqueado: captura 403, evento recusado, dados privados 404 e endereço ausente das APIs e dos arquivos públicos antes da liberação.');
     await verifyMissionApi(port,cookie);
     const second = await request(port, '/api/jogo/nova-partida', { method: 'POST', body: '{}' });assert.notEqual(second.headers['set-cookie'][0], cookieHeader);
     const reset = await request(port, '/api/jogo/nova-partida', { method: 'POST', cookie, body: '{}' });assert.equal(reset.status, 200);

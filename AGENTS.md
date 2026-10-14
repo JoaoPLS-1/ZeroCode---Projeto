@@ -90,10 +90,13 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   sem os ids reservados `zerotrace`, `info`, `explorer` ou o prefixo `notepad:`.
   Estilos em `ui/zeroos-apps.css`, seguindo os temas e as regras visuais da tarefa 02a.
   Arquivos e conquistas continuam sob autoridade do servidor; não use VFS local nem flags privadas.
+  `openLocked(ctx)` opcional mantém o ícone visível e abre uma explicação quando `requires`
+  ainda não foi atendido. O Wireshark usa isso para a autenticação sem campo de senha.
 - Progresso (tarefa 03): `server/progress.cjs` é a autoridade (`set/has/all/count/requires`).
   `engine/progress.js` (`Progress`) é só o espelho em `__game.progress`, sincronizado pela API;
   `on(listener)` notifica chaves novas. `POST /api/jogo/eventos` aceita apenas `talk:<npcId>`
-  existente ao concluir o diálogo. Conquistas de missão são concedidas pelo servidor.
+  existente ao concluir o diálogo, além de `evento:batimento-visto` com estação/pacote validados
+  após abrir a captura autorizada. Conquistas de missão são concedidas pelo servidor.
 - VFS (tarefa 04): `server/data/vfs.cjs` guarda arquivos privados; `server/vfs.cjs` resolve
   caminhos virtuais e filtra por `requires` e `stations`, inclusive diretórios implícitos.
   `GET /api/jogo/fs/lista` e `/api/jogo/fs/arquivo` exigem sessão, `estacao` e `caminho`;
@@ -107,6 +110,11 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
 - Terminal (tarefa 06): `engine/os/terminal-core.js` fornece `createTerminal(fs)` sem DOM e
   `registerTerminalCommand(nome, { help, run(args, term) })`; a janela está em
   `engine/os/apps/terminal.js`. `cat` e `grep` leem pelo `RemoteFS`, sem conceder progresso local.
+- Wireshark (tarefa 08): `server/data/capture.cjs` guarda os 50 pacotes privados;
+  `GET /api/jogo/captura?estacao=computer_infra_upper` exige `app:wireshark`.
+  `engine/os/apps/wireshark-filter.js` fornece `WiresharkFilter.compile(texto)` sem DOM;
+  a interface está em `engine/os/apps/wireshark.js`. `node verify-wireshark.cjs` valida
+  captura, filtros e interface; `verify-server.cjs` verifica autorização e ausência de vazamento.
 
 ## Armadilhas conhecidas
 - **Overrides no fim dos arquivos de dados.** `maps.js`, `dialogs.js`, `npcs.js` e `objects.js` redefinem

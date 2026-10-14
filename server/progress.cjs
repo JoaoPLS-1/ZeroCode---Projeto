@@ -1,5 +1,6 @@
 const NPCS = require('../data/npcs.js');
 const { readJson, json } = require('./router.cjs');
+const capture = require('./data/capture.cjs');
 const allowedEvents = new Set(NPCS.map(npc => 'talk:' + npc.id));
 // file: é registrado exclusivamente pela leitura autorizada no VFS, nunca por evento manual.
 
@@ -29,6 +30,12 @@ function installProgressRoutes(router, sessions) {
     const session = sessions.get(req);
     if (!session) return json(res, 401, { ok: false, erro: 'Inicie uma nova partida.' });
     const body = await readJson(req);
+    if (body?.chave === 'evento:batimento-visto') {
+      if (!has(session, 'app:wireshark') || !session.capturaAberta || body.estacao !== 'computer_infra_upper' || !capture.suspeito(body.pacote))
+        return json(res, 403, { ok:false, erro:'Evento não permitido.' });
+      const nova = set(session, body.chave);
+      return json(res, 200, { ok:true, nova, ...(nova ? { pensamento:capture.pensamento } : {}), ...state(session) });
+    }
     if (!allowedEvents.has(body?.chave)) return json(res, 403, { ok: false, erro: 'Evento não permitido.' });
     set(session, body.chave);
     json(res, 200, { ok: true, ...state(session) });

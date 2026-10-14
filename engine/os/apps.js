@@ -20,7 +20,7 @@ if(typeof ZeroComputer!=='undefined')(()=>{
   const result=original.call(this,station),owner=this.owner,game=owner.g;
   const nav=owner.panel.querySelector('.zero-launchers'),manager=owner.windowManager,events=owner.osMenuEvents;
   if(!nav||!manager||!events||events.signal.aborted)return result;
-  const available=app=>(app.availableAt==='*'||app.availableAt.includes(station.id))&&game.progress.requires(app.requires);
+  const available=app=>(app.availableAt==='*'||app.availableAt.includes(station.id))&&(game.progress.requires(app.requires)||typeof app.openLocked==='function');
   const launch=app=>{
    if(events.signal.aborted||!available(app))return;
    owner.closeStartMenu();
@@ -29,7 +29,7 @@ if(typeof ZeroComputer!=='undefined')(()=>{
    win.el.classList.add('zero-app-window');
    const ctx={game,computer:this,station,fs:new RemoteFS(api,station.id),window:win};
    const failed=()=>{if(!events.signal.aborted&&manager.windows.get(app.id)?.api===win)win.body.textContent='Não foi possível abrir o aplicativo. Feche a janela e tente novamente.';};
-   try{Promise.resolve(app.open(ctx)).catch(failed);}catch(error){failed();}
+   try{Promise.resolve((game.progress.requires(app.requires)?app.open:app.openLocked).call(app,ctx)).catch(failed);}catch(error){failed();}
   };
   let ids=null;
   const refresh=()=>{
