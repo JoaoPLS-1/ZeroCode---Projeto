@@ -160,6 +160,18 @@
 #case-panel.pc-mode .case-content:has(.code-editor)>.code-output {flex:0 1 100px;min-height:40px}
 .case-content:has(.code-editor)>.code-status {position:static}
 .file-preview,.code-output,.files-details,.code-risk {user-select:text}
+/* Explorer selection metadata and read-only document apps. */
+.files-path button {width:auto;height:20px;padding:0 3px;border:0;background:transparent;vertical-align:top}
+.explorer-modern .files-layout {grid-template-rows:minmax(0,1fr) auto}
+.explorer-modern .files-details {max-height:170px}
+.os-notepad-window>.wm-body,.os-notepad {display:flex;flex-direction:column;min-height:0;flex:1;overflow:hidden}
+#case-panel.pc-mode .os-notepad-text {flex:1;min-height:0;overflow:auto;margin:0;padding:16px;border:0;border-radius:0;box-shadow:none;background:var(--os-field);color:var(--os-text);white-space:pre-wrap;overflow-wrap:anywhere;user-select:text;font:14px/1.6 Consolas,'Courier New',monospace}
+.os-notepad-actions {flex-shrink:0;padding:8px 12px;border-top:1px solid var(--os-border);background:var(--os-panel)}
+.os-notepad-actions:empty {display:none}.os-notepad-actions button {padding:5px 12px}
+.os-file-properties {padding:16px;margin:0;user-select:text}.os-file-properties dt {font-weight:600}.os-file-properties dd {margin:0 0 12px;overflow-wrap:anywhere}
+.os-file-confirm {width:min(440px,90%);padding:20px;border:1px solid var(--os-border);border-radius:4px;background:var(--os-panel);color:var(--os-text);box-shadow:0 8px 24px #0005;font:14px/1.5 'Segoe UI',system-ui,sans-serif}
+.os-file-confirm::backdrop {background:#0006}.os-file-confirm h2 {margin:0;font-size:18px}.os-file-confirm footer {display:flex;justify-content:flex-end;gap:8px}.os-file-confirm button {padding:6px 12px}
+.os-copy-path {position:absolute;opacity:0;pointer-events:none}
 @media(max-width:800px) {
  .pc-window {inset:5% 2% 10% 100px}.code-explorer {left:2%;width:96%;top:5%;max-height:calc(95% - 56px)}
  .zero-launchers {width:80px;grid-template-columns:80px}

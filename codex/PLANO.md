@@ -137,7 +137,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ✅ 02 Remover código morto (`CHALLENGES`)
 - ✅ 02a Visual do ZeroOS próximo de um SO real (feedback: "cara de IA", leitura ruim)
 - ✅ 02b Gerenciador de janelas, menu Iniciar, menu de contexto do sistema
-- ⬜ 02c Explorador real: duplo clique, Bloco de notas, clique direito, propriedades
+- ✅ 02c Explorador real: duplo clique, Bloco de notas, clique direito, propriedades
 > **SO congelado após a 02c**: sem mais polimento visual até a Fase 5 (evento). Ajustes só se
 > bloquearem uma mecânica.
 - ⬜ D1 História no jogo: abertura, pensamentos do Kael, D.A.N.I.E.L. no início, diálogos dos NPCs

@@ -70,6 +70,8 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   integra as janelas existentes. `engine/os/context-menu.js` fornece `showContextMenu(...)`
   e intercepta Esc dos menus antes do teclado do jogo. Ambos carregam antes de `case.js`.
   O desktop encerra observadores, eventos e relógio ao sair, trocar sistema ou encerrar a partida.
+- `engine/os/notepad.js` (`ZeroNotepad`) abre documentos somente leitura pelo gerenciador de
+  janelas. No explorador, clique simples seleciona; duplo clique/Enter abre e registra a leitura.
 - Estilos: `style.css` + `ui/*.css`.
 
 ## Armadilhas conhecidas
