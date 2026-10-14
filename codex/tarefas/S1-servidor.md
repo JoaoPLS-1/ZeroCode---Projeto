@@ -10,10 +10,10 @@ Existem dois servidores improvisados (`server.cjs` porta 8000 e `serve.cjs` port
 substituídos.
 
 ## O que fazer
-1. Pasta `server/`, Node **24 LTS**, só módulos nativos (`node:http`, `node:crypto`, `node:fs`,
+1. Pasta `server/`, Node **22.13 ou superior**, só módulos nativos (`node:http`, `node:crypto`, `node:fs`,
    `node:path`), CommonJS (`.cjs`):
    - `server/index.cjs` — sobe o servidor em `127.0.0.1` (porta `PORT` ou 8000); ao iniciar, avisa
-     e encerra se a versão do Node for < 24.
+     e encerra se a versão do Node for < 22.13.
    - `server/app.cjs` — exporta `createApp()` que devolve o `http.Server` **sem** chamar `listen`
      (para os testes subirem em porta aleatória).
    - `server/router.cjs` — roteador mínimo (método + caminho → handler), leitura de corpo JSON com
@@ -40,7 +40,7 @@ substituídos.
    servidor não responder, mostrar mensagem clara na tela inicial em vez de travar). "Sair para o
    início" na pausa também deve iniciar uma partida nova.
 6. Remover `server.cjs` e `serve.cjs`. Atualizar `README.md` ("Jogar": `node server/index.cjs` e
-   abrir http://localhost:8000) e `AGENTS.md` (seção "Rodar e testar", Node 24, nova pasta
+   abrir http://localhost:8000) e `AGENTS.md` (seção "Rodar e testar", Node 22.13+, nova pasta
    `server/`, regra "o navegador nunca recebe respostas").
 7. `verify-server.cjs`: sobe `createApp()` em porta 0 e testa: `index.html` 200 com cabeçalhos de
    segurança; `AGENTS.md`, `server/app.cjs`, `codex/PLANO.md`, `/../AGENTS.md`, `%2e%2e/` → 404;

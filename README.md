@@ -1,6 +1,6 @@
 # CyberScript — Protocolo Zero
 
-Jogo de investigação tecnológica em HTML, CSS e JavaScript puro, sem backend ou dependências de execução.
+Jogo de investigação tecnológica em HTML, CSS e JavaScript puro, com servidor Node.js sem dependências externas.
 
 ## O caso
 
@@ -8,7 +8,11 @@ Jogo de investigação tecnológica em HTML, CSS e JavaScript puro, sem backend 
 
 ## Jogar
 
-Na pasta do projeto, execute `python -m http.server 8000` e abra http://localhost:8000. Também é possível abrir `index.html` diretamente em um navegador moderno.
+Com Node.js **22.13** ou superior (22 ou 24 LTS), execute `node server/index.cjs` na pasta do projeto e abra http://localhost:8000. O servidor escuta apenas em `127.0.0.1`; a variável `PORT` permite escolher outra porta. A API de sessões e os Web Workers exigem HTTP; abrir `index.html` diretamente não inicia a partida.
+
+As sessões ficam em memória e expiram após duas horas sem uso. Iniciar uma investigação ou sair para o início zera a sessão. Nesta base (S1), a API mantém apenas a sessão e um progresso vazio; as regras e os gabaritos existentes ainda estão no navegador, aguardando migração em tarefas posteriores.
+
+A CSP da página permite scripts do próprio domínio e não permite JavaScript inline. O único estilo inline do painel de controles (`margin-top:0`) é autorizado por hash. Apenas a resposta de `engine/code-worker.js` permite `unsafe-eval`, necessário para executar o corpo JavaScript do jogador via `new Function` no Worker; código do jogador nunca roda no servidor.
 
 - WASD ou setas: movimentar.
 - Shift: correr.
@@ -45,6 +49,8 @@ Marcadores no cenário: `?` depoimento, `>_` terminal, `↗` porta, `✓` evidê
 Os identificadores internos antigos foram preservados para manter as referências entre dados. Os backgrounds originais são de 1672 × 941 px. NPCs reutilizam os sprites direcionais existentes, acompanhados de marcadores de interação.
 
 ## Verificação
+
+Com Node.js 22.13 ou superior, execute `node verify-server.cjs` para validar arquivos públicos, bloqueios, cabeçalhos, sessões e integração de início. Execute também `node verify.cjs`, `node verify-computer.cjs`, `node verify-npc-animation.cjs` e `node verify-player-frames.cjs`.
 
 Com Node.js instalado, execute `node verify.cjs`. A verificação percorre as áreas acessíveis de cada sala para conferir os 20 pontos de interação e valida spawns, deduplicação de pistas, os cinco desafios, respostas erradas/certas, bloqueio da conclusão e geração do relatório. A parte de progressão usa um DOM simulado; não substitui testes visuais no navegador.
 

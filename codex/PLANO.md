@@ -108,7 +108,7 @@ Regras:
   (troca rápida de jogador no estande).
 - O servidor só serve arquivos públicos (lista explícita); `server/`, `codex/`, testes e docs não
   são servidos.
-- Node **24 LTS** (tem `node:sqlite` embutido). Continua sem npm e sem dependências.
+- Node **22.13 ou superior** (tem `node:sqlite` embutido; no 22 aparece um aviso de recurso experimental, inofensivo). Continua sem npm e sem dependências.
 - `/lab`: o "XSS" do mural roda dentro de `iframe sandbox` sem `allow-same-origin`, para não virar
   falha real do próprio jogo.
 
@@ -140,7 +140,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ⬜ 02c Explorador real: duplo clique, Bloco de notas, clique direito, propriedades
 
 **Fase S — Servidor (antes do conteúdo; pedido do pentester)**
-- ⬜ S1 Servidor do jogo: estáticos seguros, sessão, nova partida, cliente da API
+- ✅ S1 Servidor do jogo: estáticos seguros, sessão, nova partida, cliente da API
 - ⬜ S2 Missões de código com gabarito no servidor (entradas aleatórias, senhas e erros no servidor)
 
 **Fase 1 — Plataforma ZeroOS (ferramentas do CTF)**

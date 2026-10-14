@@ -80,9 +80,30 @@ class Game {
   }
 
   _bindScreenButtons() {
-    this.dom.startButton.addEventListener('click', () => this._goToBriefing());
+    this.dom.startButton.addEventListener('click', () => this._newSession(() => this._goToBriefing(), this.dom.startButton, this.dom.startScreen));
     this.dom.briefingButton.addEventListener('click', () => this._goToPlaying());
     this.dom.resultButton.addEventListener('click', () => this._onResultButtonClick());
+    const replayButton = this.dom.completeScreen.querySelector('.neon-button');
+    replayButton.addEventListener('click', () => this._newSession(() => location.reload(), replayButton, this.dom.completeScreen));
+  }
+
+  async _newSession(onSuccess, button, root) {
+    if (this._startingSession) return;
+    this._startingSession = true;
+    button.disabled = true;
+    let message = root.querySelector('.session-error');
+    if (!message) {
+      message = document.createElement('p');
+      message.className = 'session-error';
+      message.setAttribute('role', 'alert');
+      (root.querySelector('.overlay-box') || root).append(message);
+    }
+    message.textContent = '';
+    try {
+      await api.post('/api/jogo/nova-partida', {});
+      onSuccess();
+    } catch (error) { message.textContent = error.message; }
+    finally { button.disabled = false; this._startingSession = false; }
   }
 
   _goToBriefing() {

@@ -32,10 +32,14 @@ Falhas dos sistemas vibecodados existem só em `/lab`, simuladas sobre dados fal
 - Não marque status no `codex/PLANO.md`; o autor faz isso após revisar.
 
 ## Rodar e testar
-- `node server.cjs` → http://localhost:8000 (ou `node serve.cjs` → :8765). As missões de código usam
-  Web Worker e **exigem HTTP**; abrir `index.html` via file:// quebra essa parte.
+- Node **22.13** ou superior (22 ou 24 LTS): `node server/index.cjs` → http://localhost:8000 (somente
+  `127.0.0.1`; porta configurável por `PORT`). A API de sessões e as missões em Web Worker
+  **exigem HTTP**; abrir `index.html` via file:// não inicia a partida.
 - Testes (Node, sem dependências): `node verify.cjs`, `node verify-computer.cjs`,
-  `node verify-npc-animation.cjs`, `node verify-player-frames.cjs`.
+  `node verify-npc-animation.cjs`, `node verify-player-frames.cjs`, `node verify-server.cjs`.
+- `server/`: HTTP nativo, lista explícita de estáticos públicos, sessões em memória e `/api/jogo`.
+  O navegador nunca deve receber respostas/gabaritos na arquitetura-alvo. S1 cria só a base:
+  as regras existentes continuam no cliente até a migração prevista nas próximas tarefas.
 - Sem build, sem npm, sem frameworks. Não adicione dependências.
 
 ## Arquitetura

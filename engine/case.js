@@ -112,7 +112,7 @@ class CaseExperience {
       <div class="pause-info-row"><span>✓</span><span>Evidência recuperada</span></div>
     </div>`;
   };
-  quitBtn.onclick=()=>{location.reload();};
+  quitBtn.onclick=()=>this.g._newSession(()=>location.reload(),quitBtn,this.panel.querySelector('.pause-info-panel'));
   resumeBtn.focus();
   // Keyboard nav within pause menu
   const btns=[...this.panel.querySelectorAll('.pause-nav-btn')];
