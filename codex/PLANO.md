@@ -103,7 +103,7 @@ apenas as ideias abaixo, em JS puro:
 Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez; revisar antes da próxima.
 
 **Fase 0 — Base**
-- ⬜ 00 Versionamento com git (manual, ver tarefa)
+- ✅ 00 Versionamento com git (manual, ver tarefa)
 - ⬜ 01 Atualizar testes desatualizados
 - ⬜ 02 Remover código morto (`computer.js` duplicado, `CHALLENGES`)
 
