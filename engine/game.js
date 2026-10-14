@@ -172,6 +172,11 @@ class Game {
 
   _changeRoom(targetRoomId, targetSpawnId) {
     if (this.state !== 'playing' || this._roomTransition) return;
+    if (targetRoomId === 'room_secret' && !this.progress.has('acesso:sala-secreta')) {
+      this.secretDoor ??= new SecretDoor(this);
+      this.secretDoor.open(targetSpawnId);
+      return;
+    }
     const room = this.roomManager.getRoom(targetRoomId);
     if (!room) return;
 

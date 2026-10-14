@@ -153,7 +153,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ✅ 06 App Terminal (`ls`, `cd`, `cat`, `grep -n`) — base do "log do ano da IA"
 - ✅ 07 Captura de flags: lembranças no caderno, ficha de conhecimento, D.A.N.I.E.L. comemorando
 - ✅ 08 App Wireshark (50 pacotes, filtro, detalhes) + desbloqueio por 5 lembranças
-- ⬜ 09 Porta da Sala Secreta por IP:porta (substitui o Passe Ômega como tranca)
+- ✅ 09 Porta da Sala Secreta por IP:porta (substitui o Passe Ômega como tranca)
 > Marco jogável: dá para ir do terminal ao Wireshark e à Sala Secreta com flags de teste.
 - ⬜ 10 Motor de desafios de código (modo *implementar*; migra as 5 missões atuais)
 - ⬜ 11 Modo *escrever o teste que faltou*

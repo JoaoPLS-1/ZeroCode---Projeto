@@ -9,6 +9,7 @@ const progress = require('./progress.cjs');
 const { installVfsRoutes } = require('./vfs.cjs');
 const { installFlagRoutes } = require('./flags.cjs');
 const { installCaptureRoutes } = require('./capture.cjs');
+const { installSecretDoorRoutes } = require('./secret-door.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC_FILES = new Set(['/index.html', '/style.css', '/main.js']);
@@ -69,6 +70,7 @@ function createApp() {
   installVfsRoutes(router, sessions);
   installFlagRoutes(router, sessions);
   installCaptureRoutes(router, sessions);
+  installSecretDoorRoutes(router, sessions);
   router.add('POST', '/api/jogo/nova-partida', async (req, res) => {
     await readJson(req);
     const session = sessions.get(req);

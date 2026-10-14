@@ -65,7 +65,7 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
 - **Extensões por monkey-patch** de `Game.prototype` / `DialogueSystem.prototype` /
   `ZeroComputer.prototype` / `CaseExperience.prototype`, nesta ordem de carga:
   `case.js` (pausa, dossiê, marcadores, nota S/A/B) → `computer.js` (`ZeroComputer`) → `explorer.js` (ZeroFiles) →
-  `manager.js` (Dante, Passe Ômega, bloqueio da Sala Secreta) → `main.js` → `windows-pixel.js` →
+  `manager.js` (Dante, Passe Ômega em modo de testes) → `main.js` → `windows-pixel.js` →
   `os-setup.js` (escolha ZeroOS/Windows) → `nexus-result.js`.
   Para novas mecânicas, prefira **módulos novos e explícitos** chamados pelo `Game` em vez de mais
   camadas de patch; se precisar patchar, guarde e chame o método original.
@@ -115,6 +115,11 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   `engine/os/apps/wireshark-filter.js` fornece `WiresharkFilter.compile(texto)` sem DOM;
   a interface está em `engine/os/apps/wireshark.js`. `node verify-wireshark.cjs` valida
   captura, filtros e interface; `verify-server.cjs` verifica autorização e ausência de vazamento.
+- Porta secreta (tarefa 09): `POST /api/jogo/porta-secreta { ip, porta }` compara os dados
+  exclusivamente em `server/secret-door.cjs`, com até 5 tentativas por minuto por sessão.
+  O acerto concede `acesso:sala-secreta`; o Passe Ômega não libera a sala. `engine/secret-door.js`
+  é chamado pelo `Game` e abre o controlador de acesso (Esc fecha); falas em `data/secret-door.js`.
+  `node verify-door.cjs` verifica API, limite, reset, isolamento e fluxo do painel.
 
 ## Armadilhas conhecidas
 - **Overrides no fim dos arquivos de dados.** `maps.js`, `dialogs.js`, `npcs.js` e `objects.js` redefinem

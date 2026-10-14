@@ -16,6 +16,7 @@ function createSessions({ now = Date.now } = {}) {
     session.missoes = null;
     session.gameOver = false;
     session.capturaAberta = false;
+    session.portaSecretaTentativas = [];
     return session;
   }
   return {

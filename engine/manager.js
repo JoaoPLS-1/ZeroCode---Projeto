@@ -15,13 +15,6 @@ Game.prototype._interactWith=function(c){
  if(c.type==='manager'){this.managerConversation??=new ManagerConversation(this);this.managerConversation.open();return;}
  managerInteract.call(this,c);
 };
-const managerChangeRoom=Game.prototype._changeRoom;
-Game.prototype._changeRoom=function(id,spawn){
- if(id==='room_secret'&&!this.inventory.has('passe_omega')){
-  this.dialogue.open({kind:'investigation',npcName:'ACESSO RESTRITO · SALA SECRETA',lines:[{text:'É necessário ter o Passe Ômega no inventário. Apenas Dante Kernel pode entregá-lo. Vá ao Café, siga para Reunião e use a porta superior esquerda para entrar na Gerência. Converse com Dante para receber o passe.'}]},()=>this._lockInteractions());return;
- }
- managerChangeRoom.call(this,id,spawn);
-};
 const managerAdvance=DialogueSystem.prototype.advance;
 DialogueSystem.prototype.advance=function(){if(this.managerMode){this.close();return;}managerAdvance.call(this);};
 const managerClose=DialogueSystem.prototype.close;

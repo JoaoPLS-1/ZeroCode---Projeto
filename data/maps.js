@@ -203,7 +203,7 @@ Object.assign(managerDoor,{name:'Porta para a Gerência',action:'ENTRAR',targetR
 
 // Acesso ao laboratório pelo ponto de passagem na frente da Gerência.
 ROOMS.room_manager.spawns.entrySecret={x:1080,y:730};
-ROOMS.room_manager.doors.push({id:'door_manager_secret',type:'door',roomId:'room_manager',color:'purple',name:'Sala secreta · Passe Ômega',x:1000,y:800,width:140,height:40,interactionRadius:75,action:'ENTRAR',targetRoom:'room_secret',targetSpawn:'entryMain'});
+ROOMS.room_manager.doors.push({id:'door_manager_secret',type:'door',roomId:'room_manager',color:'purple',name:'Sala Secreta · Controlador de acesso',x:1000,y:800,width:140,height:40,interactionRadius:75,action:'ENTRAR',targetRoom:'room_secret',targetSpawn:'entryMain'});
 ROOMS.room_secret={
  id:'room_secret',name:'Sala Secreta',mapOrder:6,width:1672,height:941,
  background:'assets/backgrounds/fase1/sala-secreta.png',
@@ -241,7 +241,7 @@ Object.assign(ROOMS.room_meeting,{width:1671,spawns:{entryLeft:{x:1500,y:535},en
 // A parede frontal permanece fechada; a entrada do Café fica na lateral direita.
 Object.assign(ROOMS.room_manager,{width:1671,height:941,bounds:{x:130,y:320,width:1450,height:410},spawns:{entryMain:{x:805,y:675},entrySecret:{x:1525,y:660}},doors:[
  door('door_manager_exit','room_manager','Reunião',740,740,140,100,'room_meeting','entryRight'),
- door('door_manager_secret','room_manager','Sala Secreta · Passe Ômega',1560,460,75,170,'room_secret','entryMain')
+ door('door_manager_secret','room_manager','Sala Secreta · Controlador de acesso',1560,460,75,170,'room_secret','entryMain')
 ],obstacles:[
  {x:155,y:320,width:245,height:65},{x:130,y:420,width:80,height:160},
  {x:595,y:330,width:410,height:150},{x:655,y:465,width:115,height:100},{x:830,y:465,width:120,height:100},
