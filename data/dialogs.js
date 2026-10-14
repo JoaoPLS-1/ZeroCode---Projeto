@@ -1,61 +1,125 @@
 const DIALOGS = {
   "dialog_test_dev_1": {
     "kind": "dialogue",
-    "npcName": "Lia · Backend",
+    "npcName": "Edu · Backend",
     "lines": [
       {
         "speaker": "npc",
-        "text": "Às 02:14 publicamos a versão 2.1. O retry foi alterado nessa versão. Verifique o diff no meu terminal."
+        "text": "Kael! Finalmente. O 2.1 subiu às 02:14 e tudo desandou. Olha o diff no meu terminal."
+      },
+      {
+        "speaker": "player",
+        "text": "O que mudou no retry?"
+      },
+      {
+        "speaker": "npc",
+        "text": "Sumiu o limite de tentativas. Ninguém tirou isso de propósito… o assistente gerou o arquivo inteiro e veio assim."
+      },
+      {
+        "speaker": "thought",
+        "text": "Limite de tentativas. Por que isso importa? …Se o serviço falha, ele tenta de novo. Se nunca para de tentar…"
+      },
+      {
+        "speaker": "npc",
+        "text": "Se quiser entender o log, pergunte ao Mark quantas tentativas o teste dele deveria permitir."
       }
     ]
   },
   "dialog_test_dev_2": {
     "kind": "dialogue",
-    "npcName": "Edu · Release",
+    "npcName": "Rick · Release",
     "lines": [
       {
         "speaker": "npc",
-        "text": "O tráfego externo não aumentou. Os erros começaram segundos depois do deploy, antes de qualquer alerta de rede."
+        "text": "Fui eu que publiquei. Pedi pro assistente refazer o retry, ele gerou, os testes passaram e eu subi. Foi rápido."
+      },
+      {
+        "speaker": "player",
+        "text": "Alguém revisou?"
+      },
+      {
+        "speaker": "npc",
+        "text": "O PR foi aprovado em quarenta segundos. Era sexta à noite… Todo mundo usa o assistente. Ninguém sabe nem quem instalou, já veio no ambiente."
+      },
+      {
+        "speaker": "thought",
+        "text": "Código que ninguém leu, de uma IA que ninguém sabe de onde veio."
       }
     ]
   },
   "dialog_test_qa": {
     "kind": "dialogue",
-    "npcName": "Nara · QA",
+    "npcName": "Mark · QA",
     "lines": [
       {
         "speaker": "npc",
-        "text": "O pipeline passou, mas só simulamos respostas 200. Ninguém testou o comportamento quando o serviço retorna 503."
+        "text": "Ninguém me chamou pra testar o 2.1. Descobri pelo alerta."
+      },
+      {
+        "speaker": "npc",
+        "text": "E a ferramenta de relatórios que o pessoal 'fez com IA'? Aceita qualquer arquivo. Já avisei, ninguém ouviu."
+      },
+      {
+        "speaker": "npc",
+        "text": "Limite? Três tentativas. Era a regra. Fala com o Steve — ele disse que esse número aparece num lugar estranho do log."
       }
     ]
   },
   "dialog_test_infra": {
     "kind": "dialogue",
-    "npcName": "Dante · Infra",
+    "npcName": "Steve · Infra",
     "lines": [
       {
         "speaker": "npc",
-        "text": "CPU e memória estavam normais antes da fila crescer. Reiniciar os servidores só aliviou o problema por alguns segundos."
+        "text": "CPU normal, memória normal. Não é hardware. É alguma coisa repetindo sem parar."
+      },
+      {
+        "speaker": "npc",
+        "text": "O servidor de Infra tem o Wireshark, mas a senha é sua, Kael. Só você tem."
+      },
+      {
+        "speaker": "thought",
+        "text": "Minha senha. Ótimo. Eu nem lembro o meu ramal."
+      },
+      {
+        "speaker": "npc",
+        "text": "Três, é? Tem uma linha no log do NEXUS que parece embaralhada. Fica lá no meio — na linha do ano em que nasceu o Transformer. Desloca as letras três casas e lê."
       }
     ]
   },
   "dialog_test_cafe_1": {
     "kind": "dialogue",
-    "npcName": "Bia · Produto",
+    "npcName": "Luna · Produto",
     "lines": [
       {
         "speaker": "npc",
-        "text": "Ouvi dizer que foi um ataque externo. Mas não vi nenhum log que confirme isso. Melhor verificar o firewall."
+        "text": "O app de pedidos do café? Eu pedi pra ontem e o assistente entregou em uma tarde. Lindo, funciona!"
+      },
+      {
+        "speaker": "player",
+        "text": "Funciona pra quem usa certo. E pra quem usa errado?"
+      },
+      {
+        "speaker": "npc",
+        "text": "…Como assim, errado?"
       }
     ]
   },
   "dialog_test_cafe_2": {
     "kind": "dialogue",
-    "npcName": "Rui · Suporte",
+    "npcName": "Mateus · Suporte",
     "lines": [
       {
         "speaker": "npc",
-        "text": "Um cliente recebeu a mesma confirmação várias vezes. Todas tinham o mesmo identificador de requisição."
+        "text": "Um cliente foi cobrado três vezes. Mesmo pedido, mesmo identificador, três cobranças."
+      },
+      {
+        "speaker": "npc",
+        "text": "E teve um colaborador que ficou com crédito no app do café. Ninguém entende como."
+      },
+      {
+        "speaker": "thought",
+        "text": "Mesmo identificador, três cobranças. O sistema não sabe que já processou aquele pedido."
       }
     ]
   },
@@ -120,28 +184,19 @@ const DIALOGS = {
     ]
   }
 };
-// Perguntas de abertura; as respostas e referências de pistas originais permanecem.
-const OPENING_QUESTIONS = {
- dialog_test_dev_1:'O que mudou antes de o problema aparecer?',
- dialog_test_dev_2:'Os erros começaram antes ou depois da publicação?',
- dialog_test_qa:'O problema apareceu durante os testes?',
- dialog_test_infra:'Como estavam os servidores antes da falha?',
- dialog_test_cafe_1:'Você ouviu alguma coisa sobre o incidente?',
- dialog_test_cafe_2:'O que os clientes perceberam?',
- dialog_test_decoy:'Você tem alguma pista sobre o que aconteceu?'
-};
-for (const [id,text] of Object.entries(OPENING_QUESTIONS)) DIALOGS[id].lines.unshift({speaker:'player',text});
-// Identidades vinculadas aos pontos de interação, sem mudar as pistas.
-const NPC_DIALOG_NAMES = {
- dialog_test_dev_1:'Edu · Backend',dialog_test_dev_2:'Rick · Release',
- dialog_test_qa:'Mark · QA',dialog_test_infra:'Steve · Infra',
- dialog_test_cafe_1:'Luna · Produto',dialog_test_cafe_2:'Mateus · Suporte',dialog_test_decoy:'Kael · Café'
-};
-for(const [id,name] of Object.entries(NPC_DIALOG_NAMES)) DIALOGS[id].npcName=name;
 DIALOGS.dialog_livia={kind:'dialogue',npcName:'Lívia · Full-stack',lines:[
- {speaker:'player',text:'Lívia, como organizamos a apresentação do que encontramos?'},
- {speaker:'npc',text:'Conecte o que mudou no código, o que os testes cobriram e o que os registros mostram. A conclusão precisa explicar todas as evidências.'},
- {speaker:'player',text:'Vou revisar os registros e apresentar a causa no terminal central.'},
- {speaker:'npc',text:'Combinado. Um bom plano começa com uma explicação clara do problema.'}
+ {speaker:'npc',text:"Kael, você está diferente. Mais… cuidadoso. Gosto disso."},
+ {speaker:'npc',text:"Deixei cadernos de treinamento nos computadores. Para os estagiários. Mas acho que vão te ajudar a organizar as ideias."},
+ {speaker:'npc',text:"O mural da equipe está estranho. Toda vez que alguém abre um aviso, aparece uma janela que ninguém escreveu."}
+]};
+DIALOGS.dialog_opening={kind:'dialogue',npcName:'D.A.N.I.E.L. · Assistente',lines:[
+ {speaker:'thought',text:"Eu conheço essas pessoas. Deveria conhecer. Respira. Ninguém pode perceber."},
+ {speaker:'npc',text:"Bom dia, Kael. Sou o D.A.N.I.E.L., seu assistente. Você me configurou há meses — imagino que não se lembre. Tudo bem. Vamos reaprender juntos, uma peça por vez."},
+ {speaker:'npc',text:"Converse com a equipe, abra os computadores e leia tudo. Cada coisa que você resolver vai trazer uma lembrança de volta."}
+]};
+DIALOGS.dialog_dante={kind:'dialogue',npcName:'Dante Kernel · Gestor de Acesso',lines:[
+ {speaker:'npc',text:"O sistema de crachás foi feito num fim de semana, com o assistente. Economizamos um mês."},
+ {speaker:'npc',text:"Cada um só vê o próprio crachá. Pelo menos foi o que me disseram."},
+ {speaker:'thought',text:"'Foi o que me disseram.' Alguém conferiu?"}
 ]};
 if (typeof module !== "undefined") module.exports = DIALOGS;

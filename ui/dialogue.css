@@ -12,6 +12,7 @@
 #dialogue-modal.cyber-dialogue .dialogue-speaker-badge{font-size:clamp(16px,2vw,30px);border:2px solid var(--cyan);color:var(--cyan);padding:1px 6px}
 #dialogue-modal.cyber-dialogue .dialogue-counter{margin-left:auto;color:#678893;font-size:clamp(9px,.8vw,12px)}
 #dialogue-modal.cyber-dialogue .dialogue-text{position:relative;font-size:clamp(11px,1.27vw,20px);line-height:1.5;flex:1;overflow:auto;margin:12px 0;min-height:0;white-space:pre-line}
+#dialogue-modal.cyber-dialogue.is-thought .dialogue-text{font-style:italic}
 #dialogue-modal.cyber-dialogue .dialogue-continue{position:relative;align-self:center;padding:9px 20px;font-size:clamp(10px,1.1vw,18px);flex-shrink:0}
 #dialogue-modal.cyber-dialogue .dialogue-sprite{position:absolute;bottom:4%;width:28%;height:58%;z-index:3;pointer-events:none;filter:brightness(.53) saturate(.75);transition:filter .18s}
 #dialogue-modal.cyber-dialogue .dialogue-sprite.active{filter:brightness(1) drop-shadow(2px 0 0 var(--cyan)) drop-shadow(-2px 0 0 var(--pink))}

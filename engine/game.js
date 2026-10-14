@@ -118,6 +118,12 @@ class Game {
     this.hud.setVisible(true);
     this.minimap.setVisible(true);
     this.inventory.setVisible(true);
+    if (!this._openingShown) {
+      this._openingShown = true;
+      this.input.keys = {}; this.input._justPressed = {};
+      this.hud.showPrompt(null);
+      this.dialogue.open(this.dialogsData.dialog_opening, () => this._lockInteractions());
+    }
   }
 
   _onResultButtonClick() {

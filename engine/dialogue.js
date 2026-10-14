@@ -59,18 +59,21 @@ class DialogueSystem {
 
     const isInvestigation = this.kind === 'investigation';
     const isPlayer = !isInvestigation && line.speaker === 'player';
+    const isThought = !isInvestigation && line.speaker === 'thought';
+    const isKael = isPlayer || isThought;
+    this.root.classList.toggle('is-thought', isThought);
     this.nameEl.textContent = isInvestigation
       ? this.npcName
-      : isPlayer
+      : isThought ? 'Kael' : isPlayer
         ? 'Você'
         : this.npcName;
     this.textEl.textContent = line.text;
-    if (this.supportsPortraits && this.root.classList.contains('cyber-dialogue')) this._renderPortraits(isPlayer);
+    if (this.supportsPortraits && this.root.classList.contains('cyber-dialogue')) this._renderPortraits(isKael);
 
     this.speakerBadgeEl.classList.toggle('is-player', isPlayer);
-    this.speakerBadgeEl.classList.toggle('is-npc', !isPlayer);
-    this.playerSpriteEl.classList.toggle('active', isPlayer);
-    this.npcSpriteEl.classList.toggle('active', !isPlayer);
+    this.speakerBadgeEl.classList.toggle('is-npc', !isKael);
+    this.playerSpriteEl.classList.toggle('active', isKael);
+    this.npcSpriteEl.classList.toggle('active', !isKael);
 
     const isLast = this.index === this.lines.length - 1;
     if (isInvestigation) {
@@ -113,17 +116,17 @@ class DialogueSystem {
     const player = this.playerSpriteEl.querySelector('img');
     player.src = 'assets/portraits/kael-' + (isPlayer ? 'open' : 'closed') + '.png';
     // Retrato de Edu e apresentação das falas conforme a versão 2.2 aprovada.
-    const portraitKey = {'Dante Kernel':'dante','Edu':'edu','Rick':'rick','Luna':'luna','Mateus':'mateus','Kael':'kael-npc','Steve':'steve','Mark':'mark','Lívia':'livia'}[this.npcName.split('·')[0].trim()];
+    const portraitKey = {'Dante Kernel':'dante','Edu':'edu','Rick':'rick','Luna':'luna','Mateus':'mateus','Zeca':'kael-npc','Steve':'steve','Mark':'mark','Lívia':'livia','D.A.N.I.E.L.':'daniel-hoodie'}[this.npcName.split('·')[0].trim()];
     const hasPortrait = Boolean(portraitKey);
     this.npcSpriteEl.classList.toggle('no-portrait', !hasPortrait);
     const npc = this.npcSpriteEl.querySelector('img');
-    if (hasPortrait) npc.src = 'assets/portraits/' + portraitKey + '-' + (isPlayer ? 'closed' : 'open') + '.png';
+    if (hasPortrait) npc.src = (portraitKey === 'daniel-hoodie' ? 'assets/nexus/' : 'assets/portraits/') + portraitKey + '-' + (isPlayer ? 'closed' : 'open') + '.png';
     else npc.removeAttribute('src');
     npc.alt = this.npcName;
     this.npcSpriteEl.querySelector('.portrait-caption').textContent = this.npcName;
     const parts = (isPlayer ? 'Kael · Investigador' : this.npcName).split('·');
     this.nameEl.textContent = parts[0].trim();
-    this.root.querySelector('.dialogue-role').textContent = parts.slice(1).join('·').trim() || 'DEPOIMENTO';
+    this.root.querySelector('.dialogue-role').textContent = this.lines[this.index].speaker === 'thought' ? 'PENSAMENTO' : parts.slice(1).join('·').trim() || 'DEPOIMENTO';
     this.root.querySelector('.dialogue-counter').textContent = `${String(this.index + 1).padStart(2,'0')} / ${String(this.lines.length).padStart(2,'0')}`;
     this.textEl.scrollTop = 0;
   }

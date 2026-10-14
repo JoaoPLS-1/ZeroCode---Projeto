@@ -5,7 +5,8 @@ class ManagerConversation {
   const g=this.g,owned=g.inventory.has('passe_omega');
   if(!owned)g.inventory.add({id:'passe_omega',name:'Passe Ômega',icon:'assets/items/passe-omega.png'});
   g.input.keys={};g.input._justPressed={};g.hud.showPrompt(null);
-  g.dialogue.open({npcName:'Dante Kernel · Gestor de Acesso',lines:[{speaker:'npc',text:owned?'Seu Passe Ômega continua válido. A Sala Secreta fica na porta à direita da Gerência.':'Aqui está o Passe Ômega. Ele já está no seu bolso. Use a porta à direita desta sala para acessar a Sala Secreta.'}]},()=>g._lockInteractions());
+  const intro=g.dialogsData.dialog_dante;
+  g.dialogue.open({...intro,lines:[...intro.lines,{speaker:'npc',text:owned?'Seu Passe Ômega continua válido. A Sala Secreta fica na porta à direita da Gerência.':'Aqui está o Passe Ômega. Ele já está no seu bolso. Use a porta à direita desta sala para acessar a Sala Secreta.'}]},()=>g._lockInteractions());
  }
  cleanup(){}
 }

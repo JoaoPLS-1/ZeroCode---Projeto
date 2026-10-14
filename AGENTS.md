@@ -83,7 +83,6 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   `data/code-missions.js` (`CODE_MISSIONS`).
 - Retratos de diálogo são escolhidos pelo prefixo do nome antes de `·` (mapa em
   `DialogueSystem._renderPortraits`). Novo NPC com retrato = adicionar ali.
-- Kael é o protagonista **e** existe um NPC "Kael · Café" (`kael-npc`). Cuidado com ambiguidade.
 - Modos de teste ativos: decisão final sem exigir os 5 registros; Dante entrega o Passe Ômega direto.
 - Progresso não é salvo: recarregar reinicia a partida.
 - Arquivos de dados exportam via `if (typeof module !== 'undefined') module.exports = ...` para os

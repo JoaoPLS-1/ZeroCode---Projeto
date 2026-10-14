@@ -40,7 +40,7 @@ const NPCS = [
   },
   {
     id: 'npc_cafe_decoy', type: 'npc', roomId: 'room_cafe', color: 'green',
-    name: 'Kael · Café', x: 1270, y: 446, width: 94, height: 80,
+    name: 'Zeca · Café', x: 1270, y: 446, width: 94, height: 80,
     interactionRadius: 80, action: 'CONVERSAR',
     dialogRef: 'dialog_test_decoy', clueRef: null,
   },

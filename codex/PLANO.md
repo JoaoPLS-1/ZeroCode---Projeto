@@ -140,7 +140,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ✅ 02c Explorador real: duplo clique, Bloco de notas, clique direito, propriedades
 > **SO congelado após a 02c**: sem mais polimento visual até a Fase 5 (evento). Ajustes só se
 > bloquearem uma mecânica.
-- ⬜ D1 História no jogo: abertura, pensamentos do Kael, D.A.N.I.E.L. no início, diálogos dos NPCs
+- ✅ D1 História no jogo: abertura, pensamentos do Kael, D.A.N.I.E.L. no início, diálogos dos NPCs
 
 **Fase S — Servidor (antes do conteúdo; pedido do pentester)**
 - ✅ S1 Servidor do jogo: estáticos seguros, sessão, nova partida, cliente da API
