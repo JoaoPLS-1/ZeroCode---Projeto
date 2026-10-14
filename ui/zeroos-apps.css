@@ -1,0 +1,6 @@
+/* Apps compartilham as superfícies e o contraste dos dois temas do sistema. */
+.zero-app-window>.wm-body {background:var(--os-panel);color:var(--os-text);font:14px/1.5 'Segoe UI',system-ui,sans-serif}
+.zero-app-about {padding:20px;user-select:text}
+.zero-app-about h2 {margin:0 0 20px;font-size:18px;font-weight:600}
+.zero-app-about dl {margin:0}.zero-app-about dt {font-weight:600}
+.zero-app-about dd {margin:4px 0 16px;overflow-wrap:anywhere}

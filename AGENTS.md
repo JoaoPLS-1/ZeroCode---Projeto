@@ -73,6 +73,17 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   O desktop encerra observadores, eventos e relógio ao sair, trocar sistema ou encerrar a partida.
 - `engine/os/notepad.js` (`ZeroNotepad`) abre documentos somente leitura pelo gerenciador de
   janelas. No explorador, clique simples seleciona; duplo clique/Enter abre e registra a leitura.
+- Apps (tarefa 05): para criar um app novo, adicione `engine/os/apps/<nome>.js`, carregue após
+  `engine/os/apps.js` (que vem depois de `os-setup.js`) e chame
+  `registerZeroApp({ id, name, icon, availableAt, requires, open(ctx) })`. `availableAt` é `'*'`
+  ou um array de ids de computadores; `requires` usa o espelho `game.progress.requires`.
+  Os lançadores e o menu Iniciar acompanham o progresso, independentemente da senha da missão.
+  `ctx = { game, computer, station, fs, window }`: `computer` é o `ZeroComputer`, `fs` é
+  `RemoteFS(api, station.id)` (operações assíncronas) e `window` vem do `ZeroWindowManager`.
+  Preencha `ctx.window.body` com DOM; reabrir só restaura a janela existente. Use id único,
+  sem os ids reservados `zerotrace`, `info`, `explorer` ou o prefixo `notepad:`.
+  Estilos em `ui/zeroos-apps.css`, seguindo os temas e as regras visuais da tarefa 02a.
+  Arquivos e conquistas continuam sob autoridade do servidor; não use VFS local nem flags privadas.
 - Progresso (tarefa 03): `server/progress.cjs` é a autoridade (`set/has/all/count/requires`).
   `engine/progress.js` (`Progress`) é só o espelho em `__game.progress`, sincronizado pela API;
   `on(listener)` notifica chaves novas. `POST /api/jogo/eventos` aceita apenas `talk:<npcId>`
