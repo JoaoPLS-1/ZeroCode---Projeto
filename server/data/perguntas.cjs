@@ -1,0 +1,19 @@
+// Roteiro privado: respostas e conclusões só saem após a validação.
+const perguntas = [
+  { id:'sistema', pergunta:'Qual sistema foi afetado pelo incidente?', tipo:'valor', resposta:'NEXUS', dica:'Leia o briefing e os registros do incidente.', conclusao:'Já sei qual sistema investigar.' },
+  { id:'responsavel', pergunta:'Quem publicou a versão que iniciou o incidente?', tipo:'valor', resposta:'Rick', dica:'Converse com a equipe de release.', conclusao:'Identifiquei o responsável pela publicação.' },
+  { id:'equipe', pergunta:'Qual equipe publicou o NEXUS 2.1?', tipo:'escolha', opcoes:['Desenvolvimento','QA / Infra','Produto'], resposta:'Desenvolvimento', dica:'Localize a equipe de release.', conclusao:'Sei onde buscar o contexto da mudança.' },
+  { id:'ultima-versao', pergunta:'Qual versão do NEXUS entrou durante o incidente?', tipo:'valor', resposta:'2.1', dica:'Compare os registros de release.', conclusao:'A versão publicada está identificada.' },
+  { id:'log', pergunta:'Qual é o caminho do log do NEXUS?', tipo:'valor', resposta:'/var/log/nexus.log', dica:'Leia o arquivo leia-me no Terminal.', conclusao:'Encontrei o registro para reconstruir o incidente.' },
+  { id:'historico', pergunta:'Qual commit removeu o limite de retries?', tipo:'valor', resposta:'7f2', dica:'Cruze os registros de release com o depoimento do Edu.', conclusao:'Identifiquei a mudança que removeu a proteção.' },
+  { id:'quem-fez', pergunta:'Quem gerou o código de retry publicado?', tipo:'escolha', opcoes:['Assistente de IA','Edu','Mark'], resposta:'Assistente de IA', dica:'Pergunte ao Rick como o arquivo foi produzido.', conclusao:'O código foi gerado pelo assistente.' },
+  { id:'como-fez', pergunta:'Como o arquivo de retry foi produzido?', tipo:'escolha', opcoes:['Gerado inteiro pelo assistente','Correção manual revisada','Rollback da versão anterior'], resposta:'Gerado inteiro pelo assistente', dica:'Converse com Edu sobre o limite que desapareceu.', conclusao:'O arquivo inteiro foi gerado sem preservar a proteção.' },
+  { id:'revisao', pergunta:'Em quantos segundos o PR foi aprovado?', tipo:'valor', resposta:'40', dica:'Rick relata quanto durou a aprovação.', conclusao:'Uma aprovação tão rápida merece investigação.' },
+  { id:'qa', pergunta:'O QA foi chamado para testar o 2.1?', tipo:'escolha', opcoes:['Sim','Não'], resposta:'Não', dica:'Ouça o relato do Mark.', conclusao:'O QA descobriu a mudança pelo alerta.' },
+  { id:'pipeline', pergunta:'Qual configuração permitiu publicar mesmo com testes falhando?', tipo:'valor', resposta:'allow_failure: true', disponivel:false, dica:'Aguarde os registros da pipeline.', conclusao:'Teste falho precisa bloquear a publicação.' },
+  { id:'regra-negocio', pergunta:'De onde deve vir o preço usado para validar um pedido?', tipo:'escolha', opcoes:['Catálogo do servidor','Valor enviado pelo cliente'], resposta:'Catálogo do servidor', disponivel:false, dica:'Investigue as regras do app de pedidos.', conclusao:'O servidor precisa conferir a regra de negócio.' },
+  { id:'tomada-decisao', pergunta:'Qual ação de processo evita publicar código sem revisão e testes?', tipo:'escolha', opcoes:['Exigir revisão, QA e testes obrigatórios','Publicar mais rápido'], resposta:'Exigir revisão, QA e testes obrigatórios', disponivel:false, dica:'Reúna as evidências antes da decisão final.', conclusao:'A decisão precisa corrigir também o processo.' },
+  { id:'pagamento', pergunta:'Qual identificador de requisição foi cobrado mais de uma vez?', tipo:'valor', resposta:'REQ-7F2-0412', flag:'pagamento-D', dica:'Compare os request_id em /var/log/cobrancas.log no servidor de release ou na estação de telemetria.', conclusao:'Mesmo identificador, três cobranças. O sistema não sabe que já processou aquele pedido.' },
+];
+perguntas.forEach((pergunta, index) => { pergunta.ordem = index + 1; });
+module.exports = { perguntas };

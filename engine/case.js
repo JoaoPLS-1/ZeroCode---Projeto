@@ -143,7 +143,17 @@ class CaseExperience {
   this.close=()=>{window.removeEventListener('keydown',this._pauseKeyHandler);this.close=origClose;origClose();};
  }
  journal(){
-  if(!this.available())return;const b=this.show('Dossiê de evidências',`CASO 01 / ${this.g.clues.found.size} DE 11 RECUPERADAS`);
+  if(!this.available())return;const root=this.show('Dossiê de evidências',`CASO 01 / ${this.g.clues.found.size} DE 11 RECUPERADAS`);
+  root.innerHTML='<nav class="dossier-tabs" aria-label="Abas do dossiê"><button type="button" aria-pressed="true">Evidências e fichas</button><button type="button" aria-pressed="false">Perguntas do incidente</button></nav><section class="dossier-evidence"></section><section class="incident-questions" hidden aria-label="Perguntas do incidente"></section>';
+  const b=root.querySelector('.dossier-evidence'),questions=root.querySelector('.incident-questions'),tabs=[...root.querySelectorAll('.dossier-tabs button')];
+  tabs.forEach((tab,index)=>{tab.onclick=()=>{tabs.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));b.hidden=index!==0;questions.hidden=index!==1;if(index===0)this.g.flagsUI.renderCards(b.querySelector('.knowledge-sheets'));};});
+  root.onkeydown=event=>{
+   if(event.key==='Tab'){
+    const fields=[...this.panel.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')].filter(el=>el.getClientRects().length>0),index=fields.indexOf(document.activeElement);
+    event.stopPropagation();if(fields.length&&(index<0||(!event.shiftKey&&index===fields.length-1)||(event.shiftKey&&index===0))){event.preventDefault();fields[event.shiftKey?fields.length-1:0].focus();}
+   }else if(event.target.tagName==='SELECT'&&event.key!=='Escape')event.stopPropagation();
+  };
+  this.renderQuestions(questions);
   b.innerHTML='<p>Cruze os registros com os depoimentos. Um rumor não é uma prova.</p><div class="evidence-grid"></div>';
   for(const clue of Object.values(this.g.cluesData)){
    const found=this.g.clues.hasClue(clue.id),card=document.createElement('article');card.className='evidence-card'+(found?' recovered':'');
@@ -154,6 +164,36 @@ class CaseExperience {
   const heading=document.createElement('h2'),sheets=document.createElement('section');
   heading.textContent='Fichas de conhecimento';sheets.className='knowledge-sheets';b.append(heading,sheets);this.g.flagsUI.renderCards(sheets);
  }
+ async renderQuestions(root){
+  root.textContent='Carregando perguntas…';
+  try{
+   const result=await api.get('/api/jogo/perguntas');if(!root.isConnected)return;root.replaceChildren();
+   for(const q of result.perguntas){
+    const card=document.createElement('article'),title=document.createElement('h3'),status=document.createElement('p'),hint=document.createElement('p');
+    card.className='incident-question';title.textContent=q.ordem+'. '+q.pergunta;hint.textContent='D.A.N.I.E.L.: '+q.dica;
+    status.setAttribute('role','status');status.textContent=q.respondida?'Respondida ✓ · Kael (pensa): '+q.conclusao:q.disponivel?'Ainda não respondida':'Conteúdo ainda indisponível';card.append(title,hint,status);
+    if(q.disponivel){
+     const form=document.createElement('form'),label=document.createElement('label'),field=document.createElement(q.tipo==='escolha'?'select':'input'),send=document.createElement('button');
+     label.textContent='Resposta';field.setAttribute('aria-label',q.pergunta);field.required=true;
+     if(q.tipo==='escolha'){
+      const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecione uma opção';field.append(placeholder);
+      for(const text of q.opcoes){const option=document.createElement('option');option.value=text;option.textContent=text;field.append(option);}
+     }else{field.type='text';field.maxLength=500;field.autocomplete='off';}
+     send.type='submit';send.textContent='Responder';field.disabled=send.disabled=q.respondida;label.append(field);form.append(label,send);card.append(form);
+     form.onsubmit=async event=>{
+      event.preventDefault();if(send.disabled)return;field.disabled=send.disabled=true;status.textContent='Conferindo os registros…';
+      try{
+       const answer=await api.post('/api/jogo/perguntas/'+encodeURIComponent(q.id),{resposta:field.value});if(!root.isConnected)return;
+       if(answer.ok){q.respondida=true;field.value='';status.textContent='Respondida ✓ · Kael (pensa): '+answer.conclusao;}
+       else status.textContent=answer.mensagem;
+      }catch(error){if(root.isConnected)status.textContent=error.message;}
+      finally{if(root.isConnected){field.disabled=send.disabled=q.respondida;}}
+     };
+    }
+    root.append(card);
+   }
+  }catch(error){if(root.isConnected)root.textContent=error.message;}
+ }
  // Os PCs de CODE_MISSIONS são tratados por engine/computer.js.
  terminal(){return false;}
  update(dt){
@@ -163,7 +203,7 @@ class CaseExperience {
   const objective=n<5?`${g.map.name} / Recupere os registros técnicos · ${n}/5`:'Evidências reunidas / Apresente a causa na Reunião';
   if(objective!==this.objective){this.bar.querySelector('strong').textContent=objective;this.objective=objective;}
   if(g.input.wasJustPressed('Escape')){if(!this.menu.hidden){this.setMenuOpen(false);this.menuToggle.focus();}else if(g.state==='case')this.close();else if(g.dialogue.active){g.dialogue.close(false);g._lockInteractions();}else if(g.mission.active){g.mission.close();g._lockInteractions();}else this.pause();}
-  else if(g.input.wasJustPressed('KeyJ')){if(g.state==='case')this.close();else this.journal();}
+  else if(g.input.wasJustPressed('KeyJ')&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName)){if(g.state==='case')this.close();else this.journal();}
  }
  drawMarker(c){
   const g=this.g,ctx=g.renderer.ctx,p=g.camera.worldToScreen(c.x+c.width/2,c.y+c.height),done=c.clueRef&&g.clues.hasClue(c.clueRef),near=c===g._nearestContainer;

@@ -36,7 +36,17 @@ function generateNexusLog() {
   return lines.join('\n');
 }
 const nexusLog = generateNexusLog();
+const cobrancasLog = Array.from({ length:40 }, (_, i) => {
+  const repetida = i >= 14 && i <= 16;
+  return '02:14:'+String(i).padStart(2,'0')+' INFO [pagamento] cobrança aprovada request_id='+
+    (repetida ? 'REQ-7F2-0412' : 'REQ-NORMAL-'+String(i+1).padStart(4,'0'))+
+    ' cliente='+(repetida ? 'C-1088' : 'C-'+(2000+i))+' valor='+(repetida ? '29.90' : (10+i).toFixed(2));
+}).join('\n');
 const VFS_FILES = {
+  '/var/log/cobrancas.log': {
+    id:'cobrancas-log', stations:['computer_dev_right','computer_qa_infra_lower'],
+    content:cobrancasLog, size:Math.ceil(Buffer.byteLength(cobrancasLog,'utf8')/1024)+' KB', modified:'13/10/2026 02:15',
+  },
   '/home/kael/leia-me.txt': {
     id: 'leia-me',
     content: 'Kael, comece pelos registros do NEXUS em /var/log/nexus.log.\nOs contatos da equipe ficam em /srv/equipe/contatos.txt.\nCruze as pistas na ordem que preferir.',

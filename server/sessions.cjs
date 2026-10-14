@@ -18,6 +18,7 @@ function createSessions({ now = Date.now } = {}) {
     session.gameOver = false;
     session.capturaAberta = false;
     session.portaSecretaTentativas = [];
+    session.perguntasTentativas = [];
     return session;
   }
   return {

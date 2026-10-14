@@ -115,6 +115,10 @@ const DIALOGS = {
       },
       {
         "speaker": "npc",
+        "text": "O log de cobranças fica no servidor de release."
+      },
+      {
+        "speaker": "npc",
         "text": "E teve um colaborador que ficou com crédito no app do café. Ninguém entende como."
       },
       {
