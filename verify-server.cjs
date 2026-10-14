@@ -5,6 +5,7 @@ const vm = require('node:vm');
 const { createApp } = require('./server/app.cjs');
 const { createSessions, SESSION_TTL } = require('./server/sessions.cjs');
 const { BODY_LIMIT } = require('./server/router.cjs');
+const { missions:privateMissions } = require('./server/data/missions.cjs');
 
 function request(port, pathname, { method = 'GET', cookie, body, chunked = false } = {}) {
   return new Promise((resolve, reject) => {
@@ -33,6 +34,69 @@ function security(response) {
   assert(response.headers['content-security-policy']);
 }
 
+async function verifyMissionApi(port,cookie) {
+  const resolved=new Set();
+  function inspect(payload) {
+    if (!payload || typeof payload!=='object') return;
+    for (const [key,value] of Object.entries(payload)) {
+      assert(!['tests','reference','references','fixed','generate','password','reward'].includes(key),'Campo privado: '+key);
+      assert.notEqual(typeof value,'function');inspect(value);
+    }
+    if (payload.id && !resolved.has(payload.id)) {
+      assert(!('senha' in payload),'Senha antes de resolver');assert(!('recompensa' in payload));
+    }
+  }
+  async function call(path,{method='GET',body,expected=200,sessionCookie=cookie}={}) {
+    const response=await request(port,path,{method,cookie:sessionCookie,...(body!==undefined?{body:JSON.stringify(body)}:{})});
+    assert.equal(response.status,expected,path);security(response);
+    assert.equal(response.headers['cache-control'],'no-store');
+    const payload=JSON.parse(response.body);inspect(payload);return payload;
+  }
+  const root='/api/jogo/missoes';
+  await call(root,{sessionCookie:'zc_sid=invalida',expected:401});
+  await call(root,{method:'POST',body:{},expected:405});
+  const initial=await call(root);assert.equal(initial.missoes.length,5);
+  assert(initial.missoes.every((m,i)=>m.erros===0&&!m.resolvida&&m.bloqueada===(i>0)));
+  await call(root+'/inexistente/execucao',{method:'POST',body:{},expected:404});
+  await call(root+'/'+privateMissions[1].id+'/execucao',{method:'POST',body:{},expected:403});
+  for(let i=0;i<privateMissions.length;i++) {
+    const mission=privateMissions[i],path=root+'/'+mission.id;
+    const start=await call(path+'/execucao',{method:'POST',body:{}});
+    assert.deepEqual(Object.keys(start).sort(),['entradas','execucao','ok']);
+    assert(start.entradas.length>mission.fixed.length);
+    await call(path+'/execucao/'+start.execucao,{method:'POST',body:{saidas:[]},expected:400});
+    if(i===0) {
+      const failed=await call(path+'/execucao/'+start.execucao,{method:'POST',body:{saidas:start.entradas.map(()=>true)}});
+      assert(!failed.ok);assert.equal(failed.erros,1);assert(!('senha' in failed));assert(!('recompensa' in failed));
+      for(const test of failed.resultados)assert.equal('esperado' in test,!test.passou);
+      await call(path+'/execucao/'+start.execucao,{method:'POST',body:{saidas:start.entradas.map(mission.reference)},expected:409});
+      Object.assign(start,await call(path+'/execucao',{method:'POST',body:{}}));
+    }
+    const success=await call(path+'/execucao/'+start.execucao,{method:'POST',body:{saidas:start.entradas.map(mission.reference)}});
+    assert(success.ok);resolved.add(mission.id);
+    assert(success.resultados.every(t=>t.passou&&!('esperado' in t)));
+    assert.equal(success.clueRef,mission.clueRef);
+    const listed=(await call(root)).missoes[i];assert(listed.resolvida);assert.equal(listed.senha,success.senha);
+    if(i<privateMissions.length-1) {
+      const unlock=root+'/'+privateMissions[i+1].id+'/desbloquear';
+      await call(unlock,{method:'POST',body:{senha:42},expected:400});
+      await call(unlock,{method:'POST',body:{senha:'x'.repeat(33)},expected:400});
+      assert(!(await call(unlock,{method:'POST',body:{senha:'ERRADA'}})).ok);
+      assert((await call(unlock,{method:'POST',body:{senha:success.senha}})).ok);
+    } else assert(!('senha' in success));
+  }
+  const progress=await call('/api/jogo/estado');assert.equal(progress.progresso.length,5);
+  const other=await request(port,'/api/jogo/nova-partida',{method:'POST',body:'{}'});
+  const otherCookie=other.headers['set-cookie'][0].split(';')[0];
+  const isolated=await call(root,{sessionCookie:otherCookie});assert(isolated.missoes.every(m=>!m.resolvida&&m.erros===0&&!('senha' in m)));
+  await call('/api/jogo/nova-partida',{method:'POST',body:{}});resolved.clear();
+  const reset=await call(root);assert(reset.missoes.every(m=>!m.resolvida&&m.erros===0&&!('senha' in m)));
+  const old=await call(root+'/'+privateMissions[0].id+'/execucao',{method:'POST',body:{}});
+  await call('/api/jogo/nova-partida',{method:'POST',body:{}});
+  await call(root+'/'+privateMissions[0].id+'/execucao/'+old.execucao,{method:'POST',body:{saidas:old.entradas.map(privateMissions[0].reference)},expected:409});
+  console.log('API de missões: cinco missões por HTTP, entradas sem gabarito, senha só após sucesso, respostas públicas, desbloqueio, validação, execução única, progresso, isolamento e reset aprovados.');
+}
+
 async function verify() {
   let time = 1000;
   const sessions = createSessions({ now: () => time });
@@ -56,7 +120,7 @@ async function verify() {
     for (const pathname of ['/index.html', '/style.css', '/main.js', '/engine/api.js', '/data/maps.js', '/ui/phone.css']) {
       const res = await request(port, pathname);assert.equal(res.status, 200, pathname);security(res);
     }
-    for (const pathname of ['/AGENTS.md', '/server/app.cjs', '/codex/PLANO.md', '/../AGENTS.md', '/%2e%2e/', '/assets/../AGENTS.md', '/assets/%2e%2e/AGENTS.md', '/%69ndex.html', '/assets\\..\\AGENTS.md', '/.git/config', '/verify.cjs', '/_render_all.ps1', '/assets/', '/assets/nope.cjs']) {
+    for (const pathname of ['/AGENTS.md', '/server/app.cjs', '/server/missions.cjs', '/server/data/missions.cjs', '/codex/PLANO.md', '/../AGENTS.md', '/%2e%2e/', '/assets/../AGENTS.md', '/assets/%2e%2e/AGENTS.md', '/%69ndex.html', '/assets\\..\\AGENTS.md', '/.git/config', '/verify.cjs', '/_render_all.ps1', '/assets/', '/assets/nope.cjs']) {
       const res = await request(port, pathname);assert.equal(res.status, 404, pathname);security(res);
     }
     for (const [pathname, mime] of [['/assets/fonts/vt323-latin-400-normal.woff2','font/woff2'],['/assets/zeroos/trace.svg','image/svg+xml']]) {
@@ -72,6 +136,7 @@ async function verify() {
     const cookieHeader = created.headers['set-cookie'][0];assert.match(cookieHeader, /^zc_sid=[a-f0-9]{48}; HttpOnly; SameSite=Strict; Path=\/$/);
     const cookie = cookieHeader.split(';')[0];
     const state = await request(port, '/api/jogo/estado', { cookie });assert.equal(state.status, 200);assert.deepEqual(JSON.parse(state.body), { ok: true, progresso: [] });
+    await verifyMissionApi(port,cookie);
     const second = await request(port, '/api/jogo/nova-partida', { method: 'POST', body: '{}' });assert.notEqual(second.headers['set-cookie'][0], cookieHeader);
     const reset = await request(port, '/api/jogo/nova-partida', { method: 'POST', cookie, body: '{}' });assert.equal(reset.status, 200);
     assert.equal((await request(port, '/api/jogo/estado', { cookie })).status, 200);
@@ -95,6 +160,11 @@ async function verify() {
   await game._newSession(() => advanced++, button, root);release({ ok: true });await starting;
   assert.equal(advanced, 1);assert.equal(button.disabled, false);
   console.log('Cliente: nova partida confirmada antes de avançar, erro visível, nova tentativa e prevenção de clique duplicado aprovados.');
+  const apiScope=vm.createContext({AbortController,setTimeout,clearTimeout,fetch:async()=>({ok:true,json:async()=>({ok:false,erros:1})})});
+  vm.runInContext(fs.readFileSync('engine/api.js','utf8')+'\nglobalThis.clientApi=api;',apiScope);
+  assert.equal((await apiScope.clientApi.post('/api/jogo/missoes/teste/execucao/id',{saidas:[]})).ok,false,'Falha de teste deve chegar à UI');
+  apiScope.fetch=async()=>({ok:false,json:async()=>({ok:false,erro:'Inicie uma nova partida.'})});
+  await assert.rejects(()=>apiScope.clientApi.get('/api/jogo/missoes'),/Inicie uma nova partida/);
 }
 
 verify().catch(error => { console.error(error);process.exitCode = 1; });

@@ -11,7 +11,7 @@ const api = (() => {
         ...(method === 'POST' ? { body: JSON.stringify(corpo ?? {}) } : {}),
       });
       const result = await response.json();
-      if (!response.ok || result.ok !== true) throw new Error(result.erro || 'Não foi possível concluir a solicitação.');
+      if (!response.ok) throw new Error(result.erro || 'Não foi possível concluir a solicitação.');
       return result;
     } catch (error) {
       if (error.name === 'AbortError' || error instanceof TypeError || error instanceof SyntaxError) {

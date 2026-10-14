@@ -38,8 +38,8 @@ Falhas dos sistemas vibecodados existem só em `/lab`, simuladas sobre dados fal
 - Testes (Node, sem dependências): `node verify.cjs`, `node verify-computer.cjs`,
   `node verify-npc-animation.cjs`, `node verify-player-frames.cjs`, `node verify-server.cjs`.
 - `server/`: HTTP nativo, lista explícita de estáticos públicos, sessões em memória e `/api/jogo`.
-  O navegador nunca deve receber respostas/gabaritos na arquitetura-alvo. S1 cria só a base:
-  as regras existentes continuam no cliente até a migração prevista nas próximas tarefas.
+  As cinco missões de código são validadas no servidor, com entradas aleatórias e execuções
+  únicas de 60 s. Gabaritos, senhas, erros e desbloqueios ficam na sessão; o Worker só devolve saídas.
 - Sem build, sem npm, sem frameworks. Não adicione dependências.
 
 ## Arquitetura
@@ -51,7 +51,8 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
     (formas em U/L = várias peças).
   - `npcs.js`, `objects.js`: pontos de interação (`type`: npc, computer, computer_final, item, manager, door).
   - `dialogs.js`, `clues.js`: falas e pistas (`relevant: true` = registro técnico).
-  - `code-missions.js`: missões JS (corpo de função `input → return`, testes `[input, esperado]`).
+  - `code-missions.js`: metadados públicos das missões JS (corpo de função `input → return`).
+    Casos, funções de referência e recompensas ficam em `server/data/missions.cjs`.
   - `missions.js`: hipóteses da decisão final.
 - `engine/game.js` — loop, estados (`start`, `briefing`, `playing`, `transition`, `case`, `phone`,
   `result`, `complete`, `gameover`), troca de sala, interação.
@@ -79,8 +80,8 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   valores no final (`Object.assign`, `push`, laços). Ex.: portas/spawns reais das salas estão no fim
   de `maps.js`; nomes reais dos NPCs vêm de `NPC_DIALOG_NAMES`; posição real dos NPCs vem de
   `NPC_PLACEMENTS`. **Sempre leia o arquivo até o fim** antes de editar dados.
-- A lógica dos PCs fica em `engine/computer.js` (`ZeroComputer`); os cinco desafios estão em
-  `data/code-missions.js` (`CODE_MISSIONS`).
+- A interface dos PCs fica em `engine/computer.js` (`ZeroComputer`); os metadados públicos estão
+  em `data/code-missions.js` (`CODE_MISSIONS`) e a validação em `server/missions.cjs`.
 - Retratos de diálogo são escolhidos pelo prefixo do nome antes de `·` (mapa em
   `DialogueSystem._renderPortraits`). Novo NPC com retrato = adicionar ali.
 - Modos de teste ativos: decisão final sem exigir os 5 registros; Dante entrega o Passe Ômega direto.

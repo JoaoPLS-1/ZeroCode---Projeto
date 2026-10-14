@@ -38,8 +38,8 @@ ZeroComputer.prototype.explore=function(folder='',back=false){
   for(const mission of CODE_MISSIONS){const state=this.record(mission.id);
    if(state.read)add('Instruções · '+mission.file,'Documento','6',()=>manual(mission));
    if(state.tutorialRead)add('Treinamento · '+mission.file,'Tutorial','6',()=>lesson(mission));
-   if(state.solved){const index=CODE_MISSIONS.indexOf(mission);add('Recuperação · '+mission.file,'Relatório','4',()=>show('Missão concluída',mission.reward));
-    if(index<CODE_MISSIONS.length-1)add('Acesso · '+CODE_MISSIONS[index+1].file,'Credencial','4',()=>show('Credencial recuperada',mission.reward+'\n\nSenha: '+state.password+'\n\nDigite esta senha na próxima estação.','4'));
+   if(state.solved){const index=CODE_MISSIONS.indexOf(mission);add('Recuperação · '+mission.file,'Relatório','4',()=>show('Missão concluída',state.reward));
+    if(index<CODE_MISSIONS.length-1)add('Acesso · '+CODE_MISSIONS[index+1].file,'Credencial','4',()=>show('Credencial recuperada',state.reward+'\n\nSenha: '+state.password+'\n\nDigite esta senha na próxima estação.','4'));
    }
   }
   for(const clue of Object.values(this.owner.g.cluesData||{})){if(this.owner.g.clues.hasClue(clue.id))add(clue.title,'Evidência','6',()=>show(clue.title,(clue.body||[]).join('\n\n')));}

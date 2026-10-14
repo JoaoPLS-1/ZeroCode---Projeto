@@ -13,6 +13,8 @@ function createSessions({ now = Date.now } = {}) {
     session.criadaEm = now();
     session.usadaEm = session.criadaEm;
     session.progresso = [];
+    session.missoes = null;
+    session.gameOver = false;
     return session;
   }
   return {

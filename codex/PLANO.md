@@ -144,7 +144,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 
 **Fase S — Servidor (antes do conteúdo; pedido do pentester)**
 - ✅ S1 Servidor do jogo: estáticos seguros, sessão, nova partida, cliente da API
-- ⬜ S2 Missões de código com gabarito no servidor (entradas aleatórias, senhas e erros no servidor)
+- ✅ S2 Missões de código com gabarito no servidor (entradas aleatórias, senhas e erros no servidor)
 
 **Fase 1 — Plataforma ZeroOS (ferramentas do CTF)**
 - ⬜ 03 Progresso no servidor (flags) + espelho no cliente

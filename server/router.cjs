@@ -39,20 +39,29 @@ async function readJson(req) {
 
 function createRouter() {
   const routes = new Map();
+  const patterns = [];
   return {
+    addPattern(method, pattern, handler) { patterns.push({ method, pattern, handler }); },
     add(method, pathname, handler) {
       if (!routes.has(pathname)) routes.set(pathname, new Map());
       routes.get(pathname).set(method, handler);
     },
     async handle(req, res, pathname) {
-      const methods = routes.get(pathname);
+      let methods = routes.get(pathname), params;
+      if (!methods) {
+        const matches = patterns.filter(route => route.pattern.test(pathname));
+        if (matches.length) {
+          methods = new Map(matches.map(route => [route.method, route.handler]));
+          params = pathname.match(matches[0].pattern).slice(1);
+        }
+      }
       if (!methods) return json(res, 404, { ok: false, erro: 'Rota não encontrada.' });
       const handler = methods.get(req.method);
       if (!handler) {
         res.setHeader('Allow', [...methods.keys()].join(', '));
         return json(res, 405, { ok: false, erro: 'Método não permitido.' });
       }
-      try { await handler(req, res); }
+      try { await handler(req, res, params); }
       catch (error) {
         if (!res.headersSent) json(res, error.status || 500, { ok: false, erro: error.status ? error.message : 'Erro interno do servidor.' });
         else res.end();
