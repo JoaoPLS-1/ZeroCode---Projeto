@@ -37,7 +37,7 @@ async function verify(){
     assert.equal(initial.perguntas.length,perguntas.length);
     initial.perguntas.forEach(q=>{assert(!('resposta' in q));assert(!('flag' in q));assert(!('conclusao' in q));assert.equal(q.respondida,false);});
     assert(!JSON.stringify(initial).includes('REQ-7F2-0412'));
-    assert.equal((await call(base,endpoint+'/pipeline',{resposta:'allow_failure: true'},cookie)).status,404);
+    assert.equal((await call(base,endpoint+'/regra-negocio',{resposta:'Catálogo do servidor'},cookie)).status,404);
     assert.equal((await call(base,endpoint+'/inexistente',{resposta:'x'},cookie)).status,404);
     for(const body of [null,{}, {resposta:42},{resposta:' '},{resposta:'x'.repeat(501)}])assert.equal((await call(base,endpoint+'/pagamento',body,cookie)).status,400);
     const wrong=await call(base,endpoint+'/pagamento',{resposta:'errada'},cookie);assert.equal(wrong.body.ok,false);assert(!JSON.stringify(wrong).includes('REQ-7F2-0412'));

@@ -171,7 +171,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ⏸ 18 Crachás: autorização → Passe Ômega + correção — **aguardando definição do autor**
 - ⏸ 19 Mural: tratamento de entrada + correção — **aguardando definição do autor**
 - ⏸ 20 Upload: validação de arquivo + correção — **aguardando definição do autor**
-- ⬜ 21 App Git/PR (histórico, blame) e App Pipeline
+- ✅ 21 App Pipeline (Git/PR entrou na 17)
 - ⬜ 22 Perguntas do incidente no caderno
 - ⬜ 23 Diálogos novos de todos os NPCs (`DIALOGOS.md`) e D.A.N.I.E.L. com dicas
 

@@ -48,7 +48,7 @@ const flags = casos.flatMap(caso => caso.camadas.map(([camada,conceito,ficha]) =
   id:caso.id+'-'+camada, caso:caso.caso, camada, titulo:caso.caso+' · '+conceito,
   conceito, vibecodeErrou:caso.erro, ficha, lembranca:caso.lembranca
 })));
-flags.push({ id:'pipeline', caso:'Processo', camada:'P', titulo:'Pipeline · Gate de qualidade', conceito:'Gate de qualidade',
+flags.push({ id:'pipeline-P', caso:'Processo', camada:'P', titulo:'Pipeline · Gate de qualidade', conceito:'Gate de qualidade',
   // rascunho
   vibecodeErrou:'permitiu publicar mesmo quando a etapa de testes falhava.',
   ficha:'Uma pipeline que deixa passar teste falho é só um botão de publicar. Revisão, QA e testes obrigatórios existem para o código que ninguém leu.',

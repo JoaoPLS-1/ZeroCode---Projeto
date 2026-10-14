@@ -57,3 +57,15 @@
 .zero-app-git .git-line[aria-pressed=true] {box-shadow:inset 4px 0 #174c86,inset 0 0 0 2px #174c86;font-weight:700}
 .git-status {min-height:1.5em}
 @media(max-width:700px){.git-content {flex-direction:column}.git-list {width:100%}.git-detail {width:100%}}
+.zero-app-window>.wm-body.zero-app-pipeline {padding:12px;overflow:auto;user-select:text}
+.zero-app-pipeline h2 {margin:0 0 10px;font-size:18px}
+.zero-app-pipeline button {border:1px solid var(--os-text);border-radius:3px;background:var(--os-panel);color:var(--os-text);padding:6px 10px;font:inherit;cursor:pointer}
+.zero-app-pipeline button:disabled {opacity:.6;cursor:default}
+.pipeline-tabs {display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pipeline-tabs button[aria-pressed=true] {background:var(--os-text);color:var(--os-panel)}
+.pipeline-run {border:1px solid var(--os-text);padding:8px;margin-bottom:8px}.pipeline-run p {margin:3px 0;overflow-wrap:anywhere}
+.pipeline-log {padding:8px;border:1px solid var(--os-text);white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 Consolas,'Courier New',monospace}
+.zero-app-pipeline label {display:block;font-weight:600}
+.zero-app-pipeline textarea {display:block;box-sizing:border-box;width:100%;margin:6px 0 12px;resize:vertical;border:1px solid var(--os-text);border-radius:3px;background:var(--os-panel);color:var(--os-text);padding:8px;font:14px/1.5 Consolas,'Courier New',monospace}
+.zero-app-pipeline :is(button,textarea):focus-visible {outline:2px solid var(--os-text);outline-offset:2px}
+.pipeline-status {min-height:1.5em}

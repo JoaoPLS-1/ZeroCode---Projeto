@@ -18,7 +18,7 @@ async function verify() {
   assert.deepEqual(listar(session), { flags:[], lembrancas:0, meta:5 });
   assert.throws(()=>capturar(session,'inexistente'),error=>error.status===404);
   assert.deepEqual(session.progresso,[]);
-  for (const [i,id] of ['retry-D','pagamento-E','crachas-C','mural-C','upload-D','pipeline'].entries()) {
+  for (const [i,id] of ['retry-D','pagamento-E','crachas-C','mural-C','upload-D','pipeline-P'].entries()) {
     const result = capturar(session,id);
     assert(result.nova);assert.equal(result.lembrancas,i+1);assert.equal(result.wiresharkLiberado,i===4);
     assert.equal('senhaLembrada' in result,i===4);
@@ -128,7 +128,7 @@ async function verify() {
   ui.remember();assert.equal(game.dialogue.def.lines[0].speaker,'thought');assert(dialogueRoot.classList.contains('flag-memory'));
   game.dialogue.continueEl=element();
   scope.key({code:'Tab',preventDefault(){},stopImmediatePropagation(){}});
-  scope.receive({captura:capturar({progresso:[]},'pipeline')},'/api/jogo/dev/flag');
+  scope.receive({captura:capturar({progresso:[]},'pipeline-P')},'/api/jogo/pipeline');
   assert.equal(ui.queue.length,1);assert(ui.update());assert.equal(game.dialogue.def.lines.length,1);
   game.dialogue.advance();assert.equal(game.state,'case');assert.equal(locks,1);
   assert(ui.update());ui.remember();game.dialogue.advance();assert.equal(ui.queue.length,0);

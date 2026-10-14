@@ -20,6 +20,7 @@ function createSessions({ now = Date.now } = {}) {
     session.portaSecretaTentativas = [];
     session.perguntasTentativas = [];
     session.repoErros = 0;
+    session.pipelineYaml = null;
     return session;
   }
   return {
