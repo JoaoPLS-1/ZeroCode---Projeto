@@ -168,9 +168,9 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 
 **Fase 3 — Demais casos e processo**
 - ⬜ 17 Retry do NEXUS: code review do PR + teste do 503 (missões atuais viram "corrigir")
-- ⬜ 18 Crachás: autorização → Passe Ômega + correção
-- ⬜ 19 Mural: tratamento de entrada + correção
-- ⬜ 20 Upload: validação de arquivo + correção
+- ⏸ 18 Crachás: autorização → Passe Ômega + correção — **aguardando definição do autor**
+- ⏸ 19 Mural: tratamento de entrada + correção — **aguardando definição do autor**
+- ⏸ 20 Upload: validação de arquivo + correção — **aguardando definição do autor**
 - ⬜ 21 App Git/PR (histórico, blame) e App Pipeline
 - ⬜ 22 Perguntas do incidente no caderno
 - ⬜ 23 Diálogos novos de todos os NPCs (`DIALOGOS.md`) e D.A.N.I.E.L. com dicas
