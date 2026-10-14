@@ -6,7 +6,8 @@ selecionar com um clique, **abrir com dois cliques** num programa próprio, e te
 direito.
 
 ## O que fazer
-1. **Seleção e abertura:** clique simples seleciona a linha; **duplo clique** ou **Enter** abre;
+1. **Seleção e abertura:** clique simples seleciona a linha; **duplo clique** ou **Enter** abre
+   (padrão Windows — o autor quer que os arquivos "abram normalmente", como num SO);
    setas ↑/↓ mudam a seleção; Backspace volta à pasta anterior. Pastas abrem no próprio explorador.
 2. **Bloco de notas** (`engine/os/notepad.js`): arquivos de texto abrem numa janela própria
    (via `ZeroWindowManager` da tarefa 02b), somente leitura, fonte monoespaçada, texto

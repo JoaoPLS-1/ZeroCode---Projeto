@@ -6,6 +6,20 @@ cinza-claro, rótulos em CAIXA ALTA espaçada, slogans ("Seu espaço. Suas ideia
 flutuantes, brilhos e gradientes. Isso dificulta **ver, ler e entender**. Meta: parecer um sistema
 operacional de verdade, previsível para quem usa Windows/Linux no dia a dia.
 
+## Problemas concretos apontados pelo autor (print do jogo)
+- Caixas de texto grandes, arredondadas e claras demais: barra de endereço "Este computador ›
+  Registros › Computador Dev 1", campo de busca, botão "Procurar instruções nos arquivos",
+  cartões da barra lateral. Viram campos normais de SO: altura ~28–32 px, borda 1 px visível,
+  cantos ≤ 4 px, fundo branco (tema claro) ou cinza-escuro (tema escuro).
+- Barra lateral do ZeroTrace ("BIBLIOTECA / Registros técnicos / Análise do incidente / ZeroOS 1.0
+  Área de trabalho") não tem função → **remover**. Linha "Documentos da investigação · JavaScript ·
+  Laboratório isolado" e rodapé "Conectado à rede local · Documento disponível" → substituir por
+  uma barra de status real do editor (arquivo, linguagem, tentativas restantes).
+- Textos auxiliares azul-claro/cinza-claro pequenos (ex.: "· Registros", "Arquivos da estação",
+  "Prévia de leitura") → remover ou trocar por texto de contraste normal.
+- Janelas sobrepostas sem distinção de qual está ativa → janela ativa com barra de título mais
+  escura/destacada e sombra; inativas mais neutras.
+
 ## Referência
 - Tema **Windows**: Windows 10 — barra de tarefas escura sólida, janelas brancas, barra de título
   sólida, botões ─ □ ✕ à direita, ícones pixel art atuais (`assets/windows-pixel/`).
