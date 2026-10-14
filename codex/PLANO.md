@@ -157,7 +157,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 > Marco jogável: dá para ir do terminal ao Wireshark e à Sala Secreta com flags de teste.
 - ✅ 10 Motor de desafios de código (modo *implementar*; migra as 5 missões atuais)
 - ✅ 11 Modo *escrever o teste que faltou*
-- ⬜ 12 `/lab` (SQLite em memória por sessão) + App Inspetor HTTP
+- ⏸ 12 `/lab` (SQLite em memória por sessão) + App Inspetor HTTP — **só necessária para as camadas Explorar pausadas**
 - ✅ 13 App Roda de César + log real do NEXUS (linha do ano da IA) + cadeia de NPCs
 
 **Fase 2 — Primeiro caso completo (fatia vertical): Pagamento do Café**
@@ -172,8 +172,8 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ⏸ 19 Mural: tratamento de entrada + correção — **aguardando definição do autor**
 - ⏸ 20 Upload: validação de arquivo + correção — **aguardando definição do autor**
 - ✅ 21 App Pipeline (Git/PR entrou na 17)
-- ⬜ 22 Perguntas do incidente no caderno
-- ⬜ 23 Diálogos novos de todos os NPCs (`DIALOGOS.md`) e D.A.N.I.E.L. com dicas
+- ✅ 22 Perguntas do incidente no caderno (entregue nas tarefas 14, 17 e 21)
+- ✅ 23 Diálogos novos (D1) e dicas do D.A.N.I.E.L. (tarefa 10)
 
 **Fase 4 — Final**
 - ✅ 24 Sala Secreta: ÔMEGA e cena final
@@ -189,3 +189,18 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 4. O que acontece dentro da Sala Secreta.
 5. Quantas flags liberam o Wireshark (e se as três camadas valem o mesmo).
 6. Qual ano/IA usar no log (sugestões inequívocas: 1956, 1997, 2017, 2022).
+
+## 7. Estado ao fim da orquestração (14/10/2026)
+- Branch `orquestracao`; ponto seguro anterior: tag `baseline-2026-10-14` na `main`.
+- Fase jogável de ponta a ponta: história → missões → perguntas → code review → pipeline →
+  correções do Pagamento → 5 lembranças → Wireshark → IP:porta → Sala Secreta → ÔMEGA → decisão.
+  `verify-e2e.cjs` joga tudo pela API (classificação S). 19 testes passando.
+- Pendências para o autor: camadas **Explorar** (15, 18–20) e a infra `/lab` (12).
+- Notas de lapidação:
+  1. As 5 missões antigas ainda dão flags provisórias e, sozinhas, completam as 5 lembranças em
+     sequência linear — rever (ex.: só a do Dev 1 dar flag) para o mundo aberto pesar mais.
+  2. Ensinar `sed -n 'Np'` ao jogador (dica do D.A.N.I.E.L. ou caderno da Lívia).
+  3. Passe Ômega segue entregue pelo Dante em modo de testes (definição depende da camada Explorar
+     de Crachás).
+  4. Validação visual no navegador das telas novas (flag, Wireshark, Git, Pipeline, decisão) não foi
+     feita por mim nem pelo Codex — fazer no primeiro playtest.
