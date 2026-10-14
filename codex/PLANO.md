@@ -147,7 +147,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ✅ S2 Missões de código com gabarito no servidor (entradas aleatórias, senhas e erros no servidor)
 
 **Fase 1 — Plataforma ZeroOS (ferramentas do CTF)**
-- ⬜ 03 Progresso no servidor (flags) + espelho no cliente
+- ✅ 03 Progresso no servidor (flags) + espelho no cliente
 - ⬜ 04 Sistema de arquivos virtual servido pela API
 - ⬜ 05 Registro de apps no ZeroOS
 - ⬜ 06 App Terminal (`ls`, `cd`, `cat`, `grep -n`) — base do "log do ano da IA"

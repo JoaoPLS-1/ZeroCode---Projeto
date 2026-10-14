@@ -135,7 +135,7 @@ async function verify() {
     assert.equal(created.status, 200);assert.deepEqual(JSON.parse(created.body), { ok: true });security(created);
     const cookieHeader = created.headers['set-cookie'][0];assert.match(cookieHeader, /^zc_sid=[a-f0-9]{48}; HttpOnly; SameSite=Strict; Path=\/$/);
     const cookie = cookieHeader.split(';')[0];
-    const state = await request(port, '/api/jogo/estado', { cookie });assert.equal(state.status, 200);assert.deepEqual(JSON.parse(state.body), { ok: true, progresso: [] });
+    const state = await request(port, '/api/jogo/estado', { cookie });assert.equal(state.status, 200);assert.deepEqual(JSON.parse(state.body), { ok: true, progresso: [], contagem: { flags: 0, lembrancas: 0 } });
     await verifyMissionApi(port,cookie);
     const second = await request(port, '/api/jogo/nova-partida', { method: 'POST', body: '{}' });assert.notEqual(second.headers['set-cookie'][0], cookieHeader);
     const reset = await request(port, '/api/jogo/nova-partida', { method: 'POST', cookie, body: '{}' });assert.equal(reset.status, 200);
@@ -152,6 +152,8 @@ async function verify() {
   const context = { module: { exports: {} }, document: { createElement: () => ({ setAttribute() {} }) }, api: { post: async () => { throw new Error('Servidor indisponível'); } } };
   vm.createContext(context);vm.runInContext(fs.readFileSync('engine/game.js', 'utf8'), context);
   const game = Object.create(context.module.exports.prototype),button = {},root = { querySelector: () => null,append(node) { this.message = node; } };
+  game.progress = new (require('./engine/progress.js'))();
+  context.api.get = async pathname => { assert.equal(pathname, '/api/jogo/estado');return { progresso: [] }; };
   let advanced = 0;
   await game._newSession(() => advanced++, button, root);assert.equal(advanced, 0);assert.equal(button.disabled, false);assert.equal(root.message.textContent, 'Servidor indisponível');
   let release;

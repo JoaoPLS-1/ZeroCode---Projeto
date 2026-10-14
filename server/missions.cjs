@@ -2,6 +2,7 @@ const { randomBytes } = require('node:crypto');
 const { isDeepStrictEqual } = require('node:util');
 const { missions, inputs } = require('./data/missions.cjs');
 const { readJson, json } = require('./router.cjs');
+const progress = require('./progress.cjs');
 const EXECUTION_TTL = 60000;
 const fail = (status, message) => { throw Object.assign(new Error(message), { status }); };
 
@@ -23,7 +24,7 @@ function createMissionService({ now = Date.now } = {}) {
   }
   return {
     list(session) {
-      return { ok:true, gameOver:session.gameOver, missoes:states(session).map((state,i) => ({
+      return { ok:true, ...progress.state(session), gameOver:session.gameOver, missoes:states(session).map((state,i) => ({
         ...missions[i].public, bloqueada:!state.unlocked, resolvida:state.solved, erros:state.errors,
         ...(state.solved?{ recompensa:missions[i].reward, clueRef:missions[i].clueRef,
           ...(state.password?{senha:state.password}:{}) }:{})
@@ -61,13 +62,12 @@ function createMissionService({ now = Date.now } = {}) {
       const ok = resultados.every(r => r.passou);
       if (ok) {
         state.solved=true;
-        const clue='clue:'+mission.clueRef;
-        if (!session.progresso.includes(clue)) session.progresso.push(clue);
+        progress.set(session, 'clue:'+mission.clueRef);
       } else {
         state.errors++;
         if (state.errors >= 3) session.gameOver=true;
       }
-      return { ok, resultados, erros:state.errors, gameOver:session.gameOver,
+      return { ok, ...progress.state(session), resultados, erros:state.errors, gameOver:session.gameOver,
         ...(body.erro?{erroExecucao:body.erro}:{}),
         ...(ok?{recompensa:mission.reward, clueRef:mission.clueRef, ...(state.password?{senha:state.password}:{})}:{}) };
     },

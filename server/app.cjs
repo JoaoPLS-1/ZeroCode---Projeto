@@ -5,6 +5,7 @@ const { createHash } = require('node:crypto');
 const { createRouter, readJson, json } = require('./router.cjs');
 const { createSessions } = require('./sessions.cjs');
 const { installMissionRoutes } = require('./missions.cjs');
+const progress = require('./progress.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC_FILES = new Set(['/index.html', '/style.css', '/main.js']);
@@ -61,6 +62,7 @@ function createApp() {
   const sessions = createSessions();
   const router = createRouter();
   installMissionRoutes(router, sessions);
+  progress.installProgressRoutes(router, sessions);
   router.add('POST', '/api/jogo/nova-partida', async (req, res) => {
     await readJson(req);
     const session = sessions.get(req);
@@ -70,7 +72,7 @@ function createApp() {
   router.add('GET', '/api/jogo/estado', (req, res) => {
     const session = sessions.get(req);
     if (!session) return json(res, 401, { ok: false, erro: 'Inicie uma nova partida.' });
-    json(res, 200, { ok: true, progresso: session.progresso });
+    json(res, 200, { ok: true, ...progress.state(session) });
   });
   return http.createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');

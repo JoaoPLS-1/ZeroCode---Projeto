@@ -29,6 +29,8 @@ class Game {
     this.renderer.preloadNpcs(this.allNpcs);
     this.interaction = new InteractionSystem([]);
     this.clues = new ClueSystem(this.cluesData);
+    this.progress = new Progress();
+    api.onEstado(estado => this.progress.sincronizar(estado));
     this.dialogue = new DialogueSystem(this.dom.dialogueRoot);
     this.mission = new MissionSystem(this.dom.decisionRoot, this.missionData);
     this.hud = new HUD(this.dom.hudRoot, this.dom.promptEl);
@@ -101,6 +103,7 @@ class Game {
     message.textContent = '';
     try {
       await api.post('/api/jogo/nova-partida', {});
+      this.progress.sincronizar(await api.get('/api/jogo/estado'));
       onSuccess();
     } catch (error) { message.textContent = error.message; }
     finally { button.disabled = false; this._startingSession = false; }
@@ -272,6 +275,8 @@ class Game {
     this.hud.showPrompt(null);
 
     this.dialogue.open(contentDef, () => {
+      if (container.type === 'npc') api.post('/api/jogo/eventos', { chave: 'talk:' + container.id })
+        .catch(error => console.error('Não foi possível registrar o diálogo:', error));
       if (container.clueRef) this.clues.addClue(container.clueRef);
       this.hud.update(this.clues.getState());
       this._lockInteractions();
