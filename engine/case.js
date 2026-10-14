@@ -1,11 +1,4 @@
-// Desafios de leitura técnica. A evidência só é concedida após a análise.
-const CHALLENGES = [
- ['computer_dev_left','commit 7f2 / retry.js\n− if (attempt >= 3) return fail();\n+ if (status === 503) return send(job);','Qual proteção desapareceu?',['Criptografia','Limite de tentativas','Validação de usuário'],1,'Observe a condição removida: attempt >= 3.'],
- ['computer_dev_right','02:13:59 external_rps = 120\n02:14:00 deploy v2.1 OK\n02:14:03 retries = 512\n02:14:05 external_rps = 120','O que antecedeu as falhas?',['Deploy 2.1','Aumento de clientes','Queda de energia'],0,'Compare o horário do deploy ao dos retries.'],
- ['computer_qa_upper','PASS response_200\nPASS valid_payload\nSKIP response_503\nSKIP retry_limit','Que cenário falta testar?',['Cor da interface','Apenas respostas 200','Falha 503 com limite de retries'],2,'SKIP significa que o cenário não foi executado.'],
- ['computer_qa_infra_lower','trace_id: NX-204\nexternal_requests: 1\ninternal_attempts: 4096\nretry_delay_ms: 0','O que o registro demonstra?',['4.096 clientes','Repetição interna sem espera','Uma operação normal'],1,'Existe uma única requisição externa.'],
- ['computer_infra_upper','unknown_sources: 0\nexternal_traffic: baseline\ncpu_before_deploy: 23%\nqueue_after_deploy: +4096%','Qual hipótese perde força?',['Ataque externo','Retry defeituoso','Regressão no deploy'],0,'Não há origens desconhecidas nem crescimento do tráfego externo.']
-];
+// Investigação: pausa, dossiê, marcadores e classificação.
 class CaseExperience {
  constructor(g) {
   this.g=g;this.seconds=0;this.errors=0;this.hypothesisErrors=0;this.solved=new Set();
@@ -146,14 +139,8 @@ class CaseExperience {
    card.append(label,title,p);b.querySelector('.evidence-grid').append(card);
   }
  }
- terminal(c){
-  const q=CHALLENGES.find(q=>q[0]===c.id);if(!q)return false;
-  const b=this.desktop(c),pre=document.createElement('pre'),h=document.createElement('h3'),feedback=document.createElement('p');
-  const heading=document.createElement('div');heading.className='pc-document-heading';heading.innerHTML='<span>REGISTRO TÉCNICO</span><h2>Inspecionar evidência</h2><p>Leia o registro e identifique o que ele revela sobre o incidente.</p>';b.append(heading);
-  pre.textContent=q[1];h.textContent=q[2];feedback.setAttribute('aria-live','polite');feedback.className='terminal-feedback';b.append(pre,h);
-  if(this.solved.has(c.id)){feedback.textContent='✓ Registro analisado. Evidência disponível no dossiê.';b.append(feedback);return true;}
-  q[3].forEach((text,i)=>{const button=document.createElement('button');button.className='decision-option';button.textContent=`0${i+1} / ${text}`;button.onclick=()=>{if(i!==q[4]){this.errors++;button.disabled=true;feedback.textContent='REVISE / '+q[5];return;}this.solved.add(c.id);this.close();this.g._openContainerContent(c,c.contentRef);};b.append(button);});b.append(feedback);return true;
- }
+ // Os PCs de CODE_MISSIONS são tratados por engine/computer.js.
+ terminal(){return false;}
  update(dt){
   const g=this.g,n=g.clues.getRelevantCount();
   if(this.available()&&g.input.wasJustPressed('KeyM'))g.minimap.toggle();

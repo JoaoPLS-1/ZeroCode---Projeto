@@ -47,7 +47,7 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   `result`, `complete`, `gameover`), troca de sala, interação.
 - **Extensões por monkey-patch** de `Game.prototype` / `DialogueSystem.prototype` /
   `ZeroComputer.prototype` / `CaseExperience.prototype`, nesta ordem de carga:
-  `case.js` (pausa, dossiê, marcadores, nota S/A/B, `ZeroComputer`) → `explorer.js` (ZeroFiles) →
+  `case.js` (pausa, dossiê, marcadores, nota S/A/B) → `computer.js` (`ZeroComputer`) → `explorer.js` (ZeroFiles) →
   `manager.js` (Dante, Passe Ômega, bloqueio da Sala Secreta) → `main.js` → `windows-pixel.js` →
   `os-setup.js` (escolha ZeroOS/Windows) → `nexus-result.js`.
   Para novas mecânicas, prefira **módulos novos e explícitos** chamados pelo `Game` em vez de mais
@@ -62,9 +62,8 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   valores no final (`Object.assign`, `push`, laços). Ex.: portas/spawns reais das salas estão no fim
   de `maps.js`; nomes reais dos NPCs vêm de `NPC_DIALOG_NAMES`; posição real dos NPCs vem de
   `NPC_PLACEMENTS`. **Sempre leia o arquivo até o fim** antes de editar dados.
-- `engine/computer.js` é cópia literal do trecho final de `case.js` (redeclara `class ZeroComputer`) e
-  não tem efeito. Edite a lógica dos PCs em `case.js`.
-- O array `CHALLENGES` em `case.js` (múltipla escolha) está sem uso: os 5 PCs estão em `CODE_MISSIONS`.
+- A lógica dos PCs fica em `engine/computer.js` (`ZeroComputer`); os cinco desafios estão em
+  `data/code-missions.js` (`CODE_MISSIONS`).
 - Retratos de diálogo são escolhidos pelo prefixo do nome antes de `·` (mapa em
   `DialogueSystem._renderPortraits`). Novo NPC com retrato = adicionar ali.
 - Kael é o protagonista **e** existe um NPC "Kael · Café" (`kael-npc`). Cuidado com ambiguidade.
