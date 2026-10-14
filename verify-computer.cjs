@@ -15,7 +15,7 @@ assert.throws(()=>execute('while(true){}',missions[0].tests),/timed out/);
 class Case {terminal(){}close(){this.closed=true;}}
 const nodes=new Map();const node=s=>{if(!nodes.has(s))nodes.set(s,{value:'return false;',textContent:'',disabled:false,focus(){}});return nodes.get(s);};
 class Worker {constructor(){Worker.current=this;}postMessage(data){this.data=data;}terminate(){this.stopped=true;}respond(result){this.onmessage({data:result});}}
-const scope=vm.createContext({CaseExperience:Case,CODE_MISSIONS:missions,Worker,setTimeout:()=>1,clearTimeout(){},location:{reload(){}},console});
+const scope=vm.createContext({CaseExperience:Case,CODE_MISSIONS:missions,Worker,setTimeout:()=>1,clearTimeout(){},clearInterval(){},location:{reload(){}},console});
 vm.runInContext(fs.readFileSync('engine/computer.js','utf8')+'\nglobalThis.ZeroComputer=ZeroComputer;',scope);
 const found=new Set(),owner=new Case();Object.assign(owner,{panel:{querySelector:node},solved:new Set(),errors:0,g:{state:'case',clues:{addClue:id=>found.add(id),getState:()=>({})},hud:{update(){}}}});
 const pc=owner.computer=new scope.ZeroComputer(owner);pc.c={id:missions[0].id,clueRef:'evidence'};

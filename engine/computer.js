@@ -29,14 +29,10 @@ class ZeroComputer {
  open(c){
   this.stop();this.c=c;const m=CODE_MISSIONS.find(m=>m.id===c.id),r=this.record(c.id),o=this.owner;
   const b=o.desktop(c),p=o.panel,find=s=>p.querySelector(s);
-  this.drag(find('.pc-window'),find('.pc-titlebar'));
-  this.drag(find('.zero-info'),find('.zero-info h2'));
-  const maximize=()=>{const w=find('.pc-window');w.removeAttribute('style');w.classList.toggle('maximized');};
-  find('.pc-max').onclick=maximize;find('.pc-titlebar').ondblclick=e=>{if(!e.target.closest('button'))maximize();};
   find('.pc-readonly').textContent='JavaScript · Laboratório isolado';
   const explorer=document.createElement('button');explorer.className='zero-explorer-launch';explorer.innerHTML='<img src="assets/zeroos/imported/5.png" alt=""><span>Arquivos</span>';
   explorer.setAttribute('aria-label','Abrir Explorador de Arquivos');explorer.title='Explorador de Arquivos';
-  find('.pc-taskbar').insertBefore(explorer,find('.pc-task'));explorer.onclick=()=>this.explore();
+  find('.zero-launchers').append(explorer);explorer.onclick=()=>this.explore();
   find('.zero-vault').onclick=()=>this.explore('ZeroVault');
   find('.pc-window').classList.add('hidden');
   find('.pc-start-button').focus();
@@ -46,7 +42,7 @@ class ZeroComputer {
   if(previous&&!r.unlocked){
    b.innerHTML='<h2>Estação protegida</h2><p class="lock-description"></p><label>Senha de manutenção<input class="code-password" autocomplete="off"></label><button class="code-unlock">Desbloquear</button><p class="code-feedback" role="status"></p>';
    find('.lock-description').textContent='Conclua '+previous.name+' no PC anterior. A senha aparece na recompensa e em Credenciais no explorador. Consulte a sequência: Dev 1 → Dev 2 → QA → Técnico → Infra.';
-   find('.code-unlock').onclick=()=>{const prior=this.record(previous.id);if(prior.solved&&find('.code-password').value.trim()===prior.password){r.unlocked=true;this.open(c);this.owner.panel.querySelector('.pc-shortcut').click();}else find('.code-feedback').textContent='Senha inválida ou missão anterior incompleta. Isso não consome tentativas de código.';};
+   find('.code-unlock').onclick=()=>{const prior=this.record(previous.id);if(prior.solved&&find('.code-password').value.trim()===prior.password){r.unlocked=true;this.open(c);this.owner.launchTrace();}else find('.code-feedback').textContent='Senha inválida ou missão anterior incompleta. Isso não consome tentativas de código.';};
    return;
   }
   b.innerHTML='<div class="pc-document-heading"><span class="code-tab">'+m.file+'</span><h2></h2></div><div class="code-actions"><button class="code-run">▶ Executar testes</button><button class="code-files">Procurar instruções nos arquivos</button></div><label class="code-label">Corpo da função JavaScript · input → return<textarea class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editor JavaScript"></textarea></label><div class="code-output-heading">Saída</div><p class="code-risk"></p><pre class="code-output" role="status" aria-live="polite"></pre><footer class="code-status"><span>'+m.file+' · JavaScript</span><span class="code-attempts"></span></footer>';
@@ -99,7 +95,7 @@ class ZeroComputer {
  }
  reward(){const r=this.record(this.c.id),m=CODE_MISSIONS.find(m=>m.id===this.c.id);this.owner.panel.querySelector('.code-output').textContent='✓ Todos os testes passaram. Evidência coletada.\n'+m.reward+(CODE_MISSIONS.indexOf(m)<4?'\nSenha do próximo PC: '+r.password:'');}
  gameOver(reason){
-  this.dead=true;this.stop();this.owner.g.state='gameover';
+  this.dead=true;this.stop();this.owner.windowManager?.destroy();clearInterval(this.owner.osClock);this.owner.osMenuEvents?.abort();if(typeof closeContextMenu==='function')closeContextMenu();this.owner.g.state='gameover';
   this.owner.panel.innerHTML='<div class="zero-gameover"><span>LoopZero / falha crítica</span><h1>ZeroOS não encontrado</h1><p></p><p>A estação foi corrompida. A investigação terminou.</p><button>Reiniciar investigação</button></div>';
   this.owner.panel.querySelector('p').textContent=reason;const b=this.owner.panel.querySelector('button');b.onclick=()=>location.reload();b.focus();
  }
@@ -107,4 +103,4 @@ class ZeroComputer {
 const zeroTerminal=CaseExperience.prototype.terminal;
 CaseExperience.prototype.terminal=function(c){if(!CODE_MISSIONS.some(m=>m.id===c.id))return zeroTerminal.call(this,c);this.computer??=new ZeroComputer(this);if(!this.computer.dead)this.computer.open(c);return true;};
 const zeroClose=CaseExperience.prototype.close;
-CaseExperience.prototype.close=function(){if(this.computer?.dead)return;this.computer?.stop();zeroClose.call(this);};
+CaseExperience.prototype.close=function(){if(this.computer?.dead)return;this.computer?.stop();this.windowManager?.destroy();clearInterval(this.osClock);this.osMenuEvents?.abort();if(typeof closeContextMenu==='function')closeContextMenu();zeroClose.call(this);};

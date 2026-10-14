@@ -65,6 +65,11 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
 - Outros: `phone.js` (bolso + Teams narrativo), `hud.js` (caderno + minimapa 2×3),
   `dialogue.js`, `mission.js` (D.A.N.I.E.L.), `code-worker.js` (sandbox das missões), `player.js`,
   `renderer.js`, `collision.js`.
+- SO: `engine/os/window-manager.js` (`ZeroWindowManager`) gerencia foco, arraste, tamanho,
+  minimizar/maximizar, fechamento e botões da barra. `open(...)` cria apps novos; `adopt(...)`
+  integra as janelas existentes. `engine/os/context-menu.js` fornece `showContextMenu(...)`
+  e intercepta Esc dos menus antes do teclado do jogo. Ambos carregam antes de `case.js`.
+  O desktop encerra observadores, eventos e relógio ao sair, trocar sistema ou encerrar a partida.
 - Estilos: `style.css` + `ui/*.css`.
 
 ## Armadilhas conhecidas

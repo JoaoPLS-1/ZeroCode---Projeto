@@ -3,7 +3,7 @@
  const openDesktop=ZeroComputer.prototype.open;
  const windowsLogo='<span class="windows-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>';
  ZeroComputer.prototype.chooseOS=function(c){
-  this.stop();this.pixelObserver?.disconnect();this.c=c;
+  this.stop();this.pixelObserver?.disconnect();this.owner.windowManager?.destroy();clearInterval(this.owner.osClock);this.owner.osMenuEvents?.abort();closeContextMenu();this.c=c;
   const o=this.owner,p=o.panel,r=this.record(c.id);
   o.focus=document.activeElement;o.g.state='case';o.g.hud.showPrompt(null);
   o.g.input.keys={};o.g.input._justPressed={};
@@ -29,10 +29,7 @@
   openDesktop.call(this,c);
   const p=this.owner.panel,b=document.createElement('button');
   b.className='pc-switch-os';b.textContent='Trocar sistema';b.onclick=()=>this.chooseOS(c);
-  p.querySelector('.pc-start').append(b);
-  // Keep a visible shortcut so changing the style is easy to discover.
-  const shortcut=b.cloneNode(true);shortcut.onclick=b.onclick;
-  p.querySelector('.pc-taskbar').insertBefore(shortcut,p.querySelector('.pc-disconnect'));
+  p.querySelector('.pc-start-footer').prepend(b);this.owner.setupDesktopApps();
  };
  const close=CaseExperience.prototype.close;
  CaseExperience.prototype.close=function(){this.computer?.pixelObserver?.disconnect();this.panel.classList.remove('os-setup','windows-pixel');close.call(this);};

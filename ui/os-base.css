@@ -8,7 +8,7 @@
 .pc-desktop button:focus-visible,.os-install button:focus-visible {outline:2px solid var(--os-accent);outline-offset:-2px}
 .pc-desktop button:disabled {color:var(--os-muted);cursor:default}
 .pc-desktop img {object-fit:contain;image-rendering:auto}
-.zero-launchers {position:absolute;top:16px;bottom:64px;left:12px;width:176px;display:grid;grid-template-columns:repeat(2,80px);grid-auto-rows:88px;align-content:start;gap:8px;overflow:auto}
+.zero-launchers {position:absolute;top:16px;bottom:64px;left:12px;width:176px;display:grid;grid-template-columns:repeat(2,80px);grid-auto-rows:88px;align-content:start;gap:8px;overflow:auto;overflow-x:hidden}
 .zero-launchers button {position:static;display:flex;flex-direction:column;align-items:center;justify-content:center;width:80px;padding:4px 2px;color:#fff;background:transparent;border:1px solid transparent;border-radius:3px;font-size:12px;text-shadow:0 1px 2px #000}
 .zero-launchers img {width:48px;height:48px;margin-bottom:5px}
 .zero-launchers span {display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -19,8 +19,8 @@
 .pc-window.maximized {inset:0 0 48px!important;width:auto!important;height:auto!important;transform:none!important;border-radius:0}
 .code-explorer.maximized {left:0!important;top:0!important;width:100%!important;height:calc(100% - 48px)!important;max-height:none;border-radius:0}
 .pc-titlebar,.code-explorer>header {display:flex;align-items:center;justify-content:space-between;flex-shrink:0;height:32px;min-height:32px;padding:0 0 0 10px;background:var(--os-title);color:var(--os-text);user-select:none;font-size:14px}
-.pc-window:focus-within,.code-explorer:focus-within,.zero-info:focus-within {border-color:var(--os-accent);box-shadow:0 10px 28px #0006}
-.pc-window:focus-within .pc-titlebar,.code-explorer:focus-within>header,.zero-info:focus-within h2 {background:var(--os-title-active);color:var(--os-title-text)}
+.wm-window.wm-active {border-color:var(--os-accent);box-shadow:0 10px 28px #0006}
+.wm-window.wm-active>.pc-titlebar {background:var(--os-title-active);color:var(--os-title-text)}
 .pc-titlebar>span,.code-explorer header strong {display:flex;align-items:center;gap:8px;font-weight:400}
 .pc-titlebar img,.code-explorer header img {width:20px;height:20px}
 .pc-titlebar>div,.code-explorer header>div {display:flex;height:32px}
@@ -85,7 +85,7 @@
 .pc-taskbar button:hover {background:#404040}
 .pc-taskbar img {width:24px;height:24px}
 .pc-taskbar .pc-task,.pc-taskbar .zero-explorer-launch {border-bottom:2px solid #89caff}
-.pc-desktop:has(.pc-window:focus-within) .pc-task,.pc-desktop:has(.code-explorer:focus-within) .zero-explorer-launch {background:#484848;border-bottom-color:#fff}
+.pc-taskbar .pc-task.wm-active {background:#484848;border-bottom-color:#fff}
 .pc-taskbar .pc-switch-os {display:none}
 .pc-session {margin-left:auto;color:#fff;font-size:12px}
 .pc-taskbar time {width:80px;margin-left:8px;text-align:center;white-space:normal;line-height:18px;font-size:12px}
@@ -128,6 +128,38 @@
 .windows-mark {display:grid;grid-template-columns:1fr 1fr;gap:3px;flex-shrink:0}
 .windows-mark i {display:block;background:#0078d4}
 .pc-start-button .windows-mark {width:22px;height:22px;gap:2px}.pc-start-button .windows-mark i {background:#fff}
+/* Window manager controls and resize hit areas. */
+.pc-titlebar>.wm-controls {display:flex;gap:0;height:32px;margin-left:auto;flex-shrink:0}
+.wm-window {max-height:none;touch-action:auto}
+.wm-window>.pc-titlebar {touch-action:none;cursor:grab}
+.wm-window.maximized>.wm-resize {display:none}
+.wm-resize {position:absolute;z-index:2;touch-action:none}
+.wm-n,.wm-s {left:8px;right:8px;height:5px;cursor:ns-resize}.wm-n {top:0}.wm-s {bottom:0}
+.wm-e,.wm-w {top:8px;bottom:8px;width:5px;cursor:ew-resize}.wm-e {right:0}.wm-w {left:0}
+.wm-ne,.wm-nw,.wm-se,.wm-sw {width:9px;height:9px}.wm-ne {top:0;right:0;cursor:nesw-resize}.wm-nw {top:0;left:0;cursor:nwse-resize}.wm-se {bottom:0;right:0;cursor:nwse-resize}.wm-sw {bottom:0;left:0;cursor:nesw-resize}
+.wm-body {flex:1;min-height:0;overflow:auto;user-select:text}
+.wm-window.zero-info>h2 {order:0;display:flex;padding:0 0 0 10px;line-height:32px;flex-shrink:0}
+.zero-info>.zero-info-close {display:none}
+.zero-info>.wm-resize {padding:0}
+.zero-info-title {overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-taskbar .pc-task {flex-shrink:1;min-width:40px;max-width:180px}
+.pc-taskbar .pc-task span {overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-taskbar time {flex-shrink:0}.pc-taskbar time span {display:block}
+.pc-start {display:flex;flex-direction:column;max-height:calc(100% - 48px)}
+.pc-start-apps {overflow:auto;min-height:0}.pc-start-apps button {display:flex;align-items:center;gap:10px}
+.pc-start-apps img {width:24px;height:24px}.pc-start-footer {border-top:1px solid var(--os-border);margin-top:12px;padding-top:4px}
+.zero-launchers button.os-selected {background:#0078d466;border-color:#89caff}
+#case-panel.pc-mode .os-context-menu {position:absolute;z-index:1100;min-width:180px;padding:4px;background:var(--os-panel);color:var(--os-text);border:1px solid var(--os-border);border-radius:3px;box-shadow:0 4px 16px #0005;font:14px 'Segoe UI',system-ui,sans-serif}
+.os-context-menu button {display:block;width:100%;padding:7px 12px;text-align:left;background:transparent;color:inherit;border:0;border-radius:0;font:inherit;cursor:pointer}
+.os-context-menu button:hover {background:var(--os-hover)}.os-context-menu button:disabled {color:var(--os-muted);cursor:default}.os-context-menu hr {border:0;border-top:1px solid var(--os-border);margin:4px}
+#case-panel.pc-mode .case-content:has(.code-editor) {display:flex;flex-direction:column;overflow:hidden}
+.case-content:has(.code-editor)>.pc-document-heading,.case-content:has(.code-editor)>.code-actions,.code-output-heading,.code-status {flex-shrink:0}
+.case-content:has(.code-editor)>.code-label {display:flex;flex-direction:column;flex:1;min-height:70px}
+.case-content:has(.code-editor) .code-editor {flex:1;min-height:40px;height:0;resize:none}
+.case-content:has(.code-editor)>.code-risk {flex-shrink:0;max-height:48px;overflow:auto}
+#case-panel.pc-mode .case-content:has(.code-editor)>.code-output {flex:0 1 100px;min-height:40px}
+.case-content:has(.code-editor)>.code-status {position:static}
+.file-preview,.code-output,.files-details,.code-risk {user-select:text}
 @media(max-width:800px) {
  .pc-window {inset:5% 2% 10% 100px}.code-explorer {left:2%;width:96%;top:5%;max-height:calc(95% - 56px)}
  .zero-launchers {width:80px;grid-template-columns:80px}

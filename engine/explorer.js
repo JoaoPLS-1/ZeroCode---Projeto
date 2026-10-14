@@ -11,12 +11,10 @@ ZeroComputer.prototype.explore=function(folder='',back=false){
  if(!w){
   w=document.createElement('section');w.className='code-explorer explorer-modern';
   w.innerHTML='<header tabindex="0"><strong><img src="assets/zeroos/imported/5.png" alt=""> ZeroFiles</strong><div><button class="files-max" aria-label="Maximizar explorador">□</button><button class="files-close" aria-label="Fechar explorador">×</button></div></header><div class="files-navigation"><button class="files-back" aria-label="Voltar">←</button><button class="files-home" aria-label="Início">⌂</button><div class="files-path"></div><input class="files-search" type="search" placeholder="Pesquisar nesta pasta" aria-label="Pesquisar nesta pasta"></div><div class="files-toolbar"><button class="files-sort">Nome ↑</button></div><div class="files-layout"><aside class="files-sidebar"></aside><div class="files-center"><div class="files-columns"><span>Nome</span><span>Tipo</span><span>Tamanho</span><span>Data de modificação</span></div><div class="file-list"></div></div><article class="files-details"><img class="preview-icon" src="assets/zeroos/imported/6.png" alt=""><h3>Selecione um arquivo</h3><pre class="file-preview"></pre><div class="preview-actions"></div></article></div><footer class="files-footer"></footer>';
-  p.querySelector('.pc-desktop').append(w);this.drag(w,w.querySelector('header'));this.fileHistory=[];
-  w.querySelector('.files-close').onclick=()=>{w.classList.add('hidden');p.querySelector('.zero-explorer-launch').focus();};
-  w.querySelector('.files-max').onclick=()=>{w.removeAttribute('style');w.classList.toggle('maximized');w.style.zIndex=++this.layer;};
+  p.querySelector('.pc-desktop').append(w);this.fileHistory=[];
  }
  if(!back&&this.fileFolder!==undefined&&this.fileFolder!==folder)this.fileHistory.push(this.fileFolder);
- this.fileFolder=folder;w.classList.remove('hidden');w.style.zIndex=++this.layer;
+ this.fileFolder=folder;this.owner.windowManager.adopt({id:'explorer',el:w,body:w.querySelector('.files-layout'),header:w.querySelector('header'),title:'Arquivos',icon:'assets/zeroos/imported/5.png'});
  const find=s=>w.querySelector(s),r=this.record(this.c.id),m=CODE_MISSIONS.find(m=>m.id===this.c.id),entries=[];
  find('.files-path').textContent='Este computador  ›  '+(folder||'Início');find('.files-search').value='';
  find('.files-back').disabled=!this.fileHistory.length;
@@ -25,7 +23,7 @@ ZeroComputer.prototype.explore=function(folder='',back=false){
  find('.files-details h3').textContent=folder==='ZeroVault'?'ZeroVault / Descobertas':'Prévia do arquivo';find('.preview-actions').textContent='';
  const show=(name,text,icon='6')=>{find('.files-details h3').textContent=name;find('.file-preview').textContent=text;find('.preview-icon').src='assets/zeroos/imported/'+icon+'.png';find('.preview-actions').textContent='';};
  const action=(label,fn)=>{const b=document.createElement('button');b.textContent=label;b.onclick=fn;find('.preview-actions').append(b);};
- const editor=()=>{p.querySelector('.pc-shortcut').click();p.querySelector('.pc-window').style.zIndex=++this.layer;};
+ const editor=()=>this.owner.launchTrace();
  const manual=mission=>{show('instrucoes.txt',mission.name+'\n\n'+mission.manual);action('Abrir ZeroTrace',editor);};
  const lesson=mission=>{show('Caderno de treinamento — '+mission.file,'Mensagem de Lívia, equipe de desenvolvimento\n\nSe você chegou agora, respire. Este caderno ensina o necessário para recuperar a estação.\n\nCOMO USAR O EDITOR\n1. Abra ZeroTrace. O editor já representa o corpo de uma função: não escreva function por fora.\n2. input é o dado que os testes entregam a você.\n3. Escreva uma resposta usando return. Texto usa aspas; números não. Linhas que começam com // são comentários.\n4. Encontre instrucoes.txt para conhecer as regras desta estação.\n5. Edite com calma: digitar e ler não gastam tentativas. Só executar código incorreto conta como erro.\n6. Depois de 3 erros no mesmo PC, a partida termina. Fechar a janela não apaga os erros.\n\n'+ZERO_TUTORIALS[CODE_MISSIONS.indexOf(mission)]+'\n\nDEPOIS DA MISSÃO\nA senha e a evidência serão guardadas no ZeroVault. A sequência é Dev 1 → Dev 2 → QA → Técnico → Infra.');action('Abrir ZeroTrace',editor);};
  const add=(name,type,icon,open)=>entries.push({name,type,icon,open});

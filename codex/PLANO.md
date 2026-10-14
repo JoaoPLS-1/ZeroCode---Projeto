@@ -136,7 +136,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ✅ 01 Atualizar testes desatualizados
 - ✅ 02 Remover código morto (`CHALLENGES`)
 - ✅ 02a Visual do ZeroOS próximo de um SO real (feedback: "cara de IA", leitura ruim)
-- ⬜ 02b Gerenciador de janelas, menu Iniciar, menu de contexto do sistema
+- ✅ 02b Gerenciador de janelas, menu Iniciar, menu de contexto do sistema
 - ⬜ 02c Explorador real: duplo clique, Bloco de notas, clique direito, propriedades
 
 **Fase S — Servidor (antes do conteúdo; pedido do pentester)**
