@@ -5,8 +5,7 @@ const casos = [
     camadas:[
       // rascunho
       ['D','Análise de incidente','Cruze o horário do deploy, o commit e os logs para entender quando o comportamento mudou.'],
-      // rascunho
-      ['E','Code review','Leia o diff antes de aprovar. Uma proteção removida pode transformar uma mudança pequena em um incidente.'],
+      ['E','Code review','Código que ninguém leu não foi revisado — foi carimbado.'],
       ['C','Resiliência / testes','Retry sem limite transforma uma falha em milhares. Toda repetição precisa de teto e de espera crescente. E o caminho de falha também precisa de teste — não só o feliz.']
     ] },
   { id:'pagamento', caso:'Pagamento', erro:'a IA implementou o que foi pedido ("calcular o total"), não as regras que ninguém escreveu ("e se for inválido?").',

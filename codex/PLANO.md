@@ -167,7 +167,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 > Revisar a experiência inteira deste caso antes de replicar o modelo nos outros.
 
 **Fase 3 — Demais casos e processo**
-- ⬜ 17 Retry do NEXUS: code review do PR + teste do 503 (missões atuais viram "corrigir")
+- ✅ 17 Retry do NEXUS: code review do PR + teste do 503 (missões atuais viram "corrigir")
 - ⏸ 18 Crachás: autorização → Passe Ômega + correção — **aguardando definição do autor**
 - ⏸ 19 Mural: tratamento de entrada + correção — **aguardando definição do autor**
 - ⏸ 20 Upload: validação de arquivo + correção — **aguardando definição do autor**

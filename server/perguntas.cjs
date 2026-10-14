@@ -30,7 +30,7 @@ function installPerguntaRoutes(router, sessions, { now = Date.now } = {}) {
       return json(res,429,{ ok:false, erro:'Muitas tentativas. Aguarde um minuto antes de tentar novamente.' });
     }
     session.perguntasTentativas.push(time);
-    if (normalizar(body.resposta) !== normalizar(q.resposta))
+    if (![q.resposta,...(q.aliases || [])].some(resposta => normalizar(body.resposta) === normalizar(resposta)))
       return json(res,200,{ ok:false, mensagem:'A resposta ainda não confere com os registros. Continue investigando.' });
     progress.set(session, 'q:'+id);
     json(res,200,{ ok:true, respondida:true, conclusao:q.conclusao,

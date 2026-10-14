@@ -19,6 +19,7 @@ function createSessions({ now = Date.now } = {}) {
     session.capturaAberta = false;
     session.portaSecretaTentativas = [];
     session.perguntasTentativas = [];
+    session.repoErros = 0;
     return session;
   }
   return {

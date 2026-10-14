@@ -19,7 +19,7 @@ async function call(base,path,body,cookie){
 async function verify(){
   assert.equal(normalizar('  assistente   de\tIA \n'),'ASSISTENTE DE IA');
   assert.equal(new Set(perguntas.map(q=>q.id)).size,perguntas.length);
-  assert.deepEqual(perguntas.filter(q=>q.flag).map(q=>q.flag),['pagamento-D']);
+  assert.deepEqual(perguntas.filter(q=>q.flag).map(q=>q.flag),['retry-D','pagamento-D']);
   for(const q of perguntas){assert(q.dica&&q.conclusao);assert(['valor','escolha'].includes(q.tipo));if(q.opcoes)assert(q.opcoes.includes(q.resposta));}
   const lines=VFS_FILES['/var/log/cobrancas.log'].content.split('\n');assert.equal(lines.length,40);
   const repeated=lines.filter(line=>line.includes('REQ-7F2-0412'));assert.equal(repeated.length,3);
@@ -49,7 +49,7 @@ async function verify(){
       assert(correct.body.progresso.includes('q:pagamento'));assert(!JSON.stringify(correct).includes('REQ-7F2-0412'));
     }
     const answered=(await call(base,endpoint,undefined,cookie)).body.perguntas.find(q=>q.id==='pagamento');assert(answered.respondida&&answered.conclusao);assert(!('resposta' in answered));
-    const nonFlag=await call(base,endpoint+'/como-fez',{resposta:'  gerado  inteiro pelo ASSISTENTE '},cookie);assert(nonFlag.body.ok);assert(!nonFlag.body.captura);assert.equal(nonFlag.body.contagem.flags,1);
+    const nonFlag=await call(base,endpoint+'/como-fez',{resposta:'  gerado  pelo ASSISTENTE de IA '},cookie);assert(nonFlag.body.ok);assert(!nonFlag.body.captura);assert.equal(nonFlag.body.contagem.flags,1);
     const cards=(await call(base,'/api/jogo/flags',undefined,cookie)).body;assert.equal(cards.flags.length,1);assert.equal(cards.flags[0].conceito,'Idempotência');assert(cards.flags[0].ficha&&cards.flags[0].lembranca);
     const other=(await call(base,'/api/jogo/nova-partida',{})).cookie;assert((await call(base,endpoint,undefined,other)).body.perguntas.every(q=>!q.respondida));
     assert.equal((await call(base,'/api/jogo/eventos',{chave:'q:pagamento'},other)).status,403);
