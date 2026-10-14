@@ -22,10 +22,10 @@ isolada, e de controle de **onde** cada app existe (ferramentas por local mantê
      - `requires`: condição de `Progress.requires` (app oculto até ser liberado).
      - `open(ctx)`: recebe `ctx = { game, computer, station, fs, window }` e preenche
        `ctx.window.body`.
-   - Função que cria uma janela genérica do ZeroOS: cabeçalho com ícone + título + botões
-     minimizar/fechar, corpo vazio, arrastável com `computer.drag`, z-index com
-     `++computer.layer`. Reutilize classes CSS existentes quando possível; estilos novos em
-     `ui/zeroos-apps.css`.
+   - Janelas dos apps usam o `ZeroWindowManager` (tarefa 02b): `ctx.window` é o retorno de
+     `open({ id: app.id, title, icon })`. Não criar outro sistema de janelas. Estilos específicos
+     de apps em `ui/zeroos-apps.css`, seguindo as regras visuais da tarefa 02a.
+   - Os apps registrados também aparecem no **menu Iniciar** (tarefa 02b).
    - Um único embrulho de `ZeroComputer.prototype.open` (guardando e chamando o original, como os
      outros arquivos fazem) que, depois de montar o desktop, adiciona em `.zero-launchers` um botão
      para cada app disponível naquele PC (`availableAt` + `requires`). Abrir de novo um app já

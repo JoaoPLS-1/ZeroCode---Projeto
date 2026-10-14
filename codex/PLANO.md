@@ -105,7 +105,10 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 **Fase 0 — Base**
 - ✅ 00 Versionamento com git (manual, ver tarefa)
 - ✅ 01 Atualizar testes desatualizados
-- ✅ 02 Remover código morto (`computer.js` duplicado, `CHALLENGES`)
+- ✅ 02 Remover código morto (`CHALLENGES`)
+- ⬜ 02a Visual do ZeroOS próximo de um SO real (feedback: "cara de IA", leitura ruim)
+- ⬜ 02b Gerenciador de janelas, menu Iniciar, menu de contexto do sistema
+- ⬜ 02c Explorador real: duplo clique, Bloco de notas, clique direito, propriedades
 
 **Fase 1 — Plataforma ZeroOS (ferramentas do CTF)**
 - ⬜ 03 Sistema de progresso (flags)
