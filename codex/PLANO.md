@@ -176,7 +176,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ⬜ 23 Diálogos novos de todos os NPCs (`DIALOGOS.md`) e D.A.N.I.E.L. com dicas
 
 **Fase 4 — Final**
-- ⬜ 24 Sala Secreta: ÔMEGA e cena final
+- ✅ 24 Sala Secreta: ÔMEGA e cena final
 - ⬜ 25 Nova tomada de decisão com D.A.N.I.E.L.
 
 **Fase 5 — Evento**

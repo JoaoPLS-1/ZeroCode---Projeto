@@ -91,8 +91,7 @@ vm.runInContext(fs.readFileSync('engine/computer.js','utf8'),sandbox);
 const game=new FakeGame();game.clues=new Clues(defs);game.state='playing';game.hud={showPrompt(){}};game._lockInteractions=()=>{};
 game.dialogue={active:false,open(def,cb){this.def=def;this.cb=cb;}};game.mission={active:false};
 game._openContainerContent=c=>game.clues.addClue(c.clueRef);game.start();
-// A decisão final está liberada no modo de testes, inclusive sem registros.
-const final=objects.find(c=>c.type==='computer_final');game._interactWith(final);assert.equal(game.lastInteraction,final);assert.equal(game.clues.getRelevantCount(),0);
+// O bloqueio da decisão até encontrar ÔMEGA é coberto por verify-omega.cjs.
 // A execução e as credenciais são cobertas por verify-computer.cjs.
 // Aqui verificamos o encaminhamento das cinco estações ao laboratório atual.
 vm.runInContext('ZeroComputer.prototype.open=function(c){this.opened=c;};',sandbox);
@@ -116,7 +115,7 @@ for(const [allEvidence,errors,hypothesisErrors,rank] of [[false,0,0,'A'],[true,0
 game.case.errors=0;game.case.hypothesisErrors=0;
 game._showResult(false,{body:['Revisar']});assert.equal(game.result.correct,false);assert.equal(game.case.hypothesisErrors,1);assert.deepEqual(Array.from(game.result.def.body),['Revisar']);
 game._showResult(false,{body:['Revisar']});assert.equal(game.case.hypothesisErrors,2);
-console.log('Progressão: cinco estações de código, coleta deduplicada, decisão livre em modo de testes, classificação S/A/B e hipóteses incorretas aprovadas.');
+console.log('Progressão: cinco estações de código, coleta deduplicada, classificação S/A/B e hipóteses incorretas aprovadas.');
 
 // A sala só muda sob cobertura opaca, depois do carregamento do cenário.
 const transitionContext={module:{exports:{}},window:{matchMedia:()=>({matches:false})}};
@@ -125,7 +124,7 @@ vm.runInContext(fs.readFileSync('engine/game.js','utf8'),transitionContext);
 const TransitionGame=transitionContext.module.exports;
 function transitionFixture(){
  const g=Object.create(TransitionGame.prototype),nodes={span:{},h2:{}};
- g.state='playing';g.roomManager={getRoom:id=>ROOMS[id]};
+ g.state='playing';g.map=ROOMS.room_dev;g.roomManager={getRoom:id=>ROOMS[id]};
  g._transitionEl={style:{},classList:{add(){},remove(){}},querySelector:s=>nodes[s]};
  g.asset={loaded:false,failed:false};g.renderer={preloadMap:()=>g.asset};
  g.hud={showPrompt(){}};g._lockInteractions=()=>{g.locked=true;};g.commits=0;

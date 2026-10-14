@@ -233,6 +233,7 @@ class Game {
         this._roomTransition = null;
         this.state = 'playing';
         this._lockInteractions(350);
+        if (this.map.id === 'room_secret') this._omegaEncounter().enter();
       }
     }
   }
@@ -289,6 +290,10 @@ class Game {
   }
 
   _interactWith(container) {
+    if (container.type === 'omega_console') {
+      this._omegaEncounter().console();
+      return;
+    }
     if (container.type === 'item') {
       this.inventory.add({ id: container.itemId, name: container.name, icon: container.icon });
       this.allObjects = this.allObjects.filter((o) => o !== container);
@@ -315,10 +320,12 @@ class Game {
     }
 
     if (container.type === 'computer_final') {
-      this.mission.open((isCorrect, resultDef) => {
-        this._showResult(isCorrect, resultDef);
-      });
+      this._omegaEncounter().decide();
     }
+  }
+
+  _omegaEncounter() {
+    return this.omega ??= new OmegaEncounter(this);
   }
 
   _showResult(isCorrect, resultDef) {

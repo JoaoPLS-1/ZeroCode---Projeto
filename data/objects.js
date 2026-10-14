@@ -45,6 +45,7 @@ const OBJECTS = [
 ];
 
 OBJECTS.push({id:'manager_dante',type:'manager',roomId:'room_manager',name:'Dante Kernel · Gestor de Acesso',color:'purple',x:775,y:475,width:55,height:30,interactionRadius:100,action:'CONVERSAR'});
+OBJECTS.push({id:'omega_console',type:'omega_console',roomId:'room_secret',name:'Console de ÔMEGA',color:'purple',x:740,y:430,width:100,height:45,interactionRadius:100,action:'ACESSAR'});
 
 if (typeof module !== 'undefined') module.exports = OBJECTS;
 

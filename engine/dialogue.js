@@ -41,6 +41,7 @@ class DialogueSystem {
     this.lines = dialogDef.lines || [];
     this.npcName = dialogDef.npcName || 'NPC';
     this.kind = dialogDef.kind || 'dialogue';
+    this.unskippable = Boolean(dialogDef.unskippable);
     this.index = 0;
     this.active = true;
     this.onComplete = onComplete || null;
@@ -63,7 +64,7 @@ class DialogueSystem {
     const isKael = isPlayer || isThought;
     this.root.classList.toggle('is-thought', isThought);
     this.nameEl.textContent = isInvestigation
-      ? this.npcName
+      ? (line.speaker === 'thought' ? 'KAEL (pensa)' : this.npcName)
       : isThought ? 'Kael' : isPlayer
         ? 'Você'
         : this.npcName;
@@ -143,6 +144,7 @@ class DialogueSystem {
 
   close(completed = true) {
     if (!this.active) return;
+    if (!completed && this.unskippable) return;
     this.active = false;
     this.root.classList.add('hidden');
     const cb = this.onComplete;
