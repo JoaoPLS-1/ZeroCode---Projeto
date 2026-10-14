@@ -81,23 +81,52 @@ explora é a validação que o dev não escreveu**.
 ```
 
 ## 4. Arquitetura-alvo
-Base: o **ZeroOS** que já existe nos PCs (`engine/case.js`, `explorer.js`, `os-setup.js`,
-`windows-pixel.js`). Não importar o repositório `browser-os` (React+Vite, exige build); reaproveitar
-apenas as ideias abaixo, em JS puro:
-1. **Progresso** (`engine/progress.js`): flags/fatos descobertos, independente de pistas. Base de
-   tudo que é "o jogador já sabe X".
-2. **Sistema de arquivos virtual** (`data/vfs.js` + `engine/os/vfs.js`): arquivos por caminho,
-   em memória (zera a cada partida — importante no evento), com arquivos que aparecem por flag.
-3. **Registro de apps** (`engine/os/apps.js`): `{id, nome, ícone, disponívelEm, abrir}`; o desktop
-   do ZeroOS monta os lançadores a partir dele.
-4. **Terminal** (`engine/os/apps/terminal.js`): tabela de comandos sobre o VFS
-   (`ls`, `cd`, `cat`, `grep`, `help`, depois `git log`, `decode`...).
-5. **Motor de desafios de código** (`data/challenges/*.js` + app ZeroTrace genérico): generaliza as
-   missões atuais para os modos *implementar* e *escrever testes*, reutilizando `code-worker.js`.
-6. **Servidor simulado** (`engine/os/fake-api.js`): rotas dos sistemas vibecodados com as falhas;
-   usado pelo Inspetor HTTP (explorar). A função corrigida pelo jogador é testada contra as mesmas
-   requisições de ataque (corrigir).
-7. Apps de conteúdo: César, Git/PR, Pipeline, Inspetor HTTP, Wireshark.
+
+### Princípio: o servidor é a fonte da verdade
+Pedido do pentester consultado: o jogo não pode expor respostas no navegador. E é coerente com o
+recado da fase — *validação só no front-end é decoração*. Execução no **estande** (máquina local,
+`localhost`), **sem ranking**: nada persiste entre partidas.
+
+```
+ navegador (jogo)                         servidor Node (server/)
+ ─────────────────                        ──────────────────────────────────────────────
+ canvas, HUD, ZeroOS, apps     ──HTTP──►  /api/jogo   API "certa": sessão, progresso, flags,
+ executa o código do jogador              arquivos e pacotes liberados aos poucos, gabaritos
+ (Web Worker, como hoje)                  NUNCA enviados ao navegador
+                               ──HTTP──►  /lab        sistemas vibecodados SIMULADOS (Café,
+                                          crachás, mural, upload) sobre dados falsos por sessão
+                                          (SQLite em memória, node:sqlite). Falhas de lógica
+                                          proposital, nunca falha real no servidor.
+```
+Regras:
+- O navegador **não recebe**: flags, gabaritos de testes, senhas dos PCs, IP:porta, conteúdo de
+  arquivos/pacotes ainda não liberados.
+- Código do jogador **não roda no servidor**. O servidor envia só as *entradas* dos testes (com
+  casos aleatórios gerados a cada execução, para impedir respostas decoradas); o Worker do
+  navegador devolve as *saídas*; o servidor compara.
+- Sessão por cookie `HttpOnly`/`SameSite=Strict`; estado em memória; "Nova partida" zera tudo
+  (troca rápida de jogador no estande).
+- O servidor só serve arquivos públicos (lista explícita); `server/`, `codex/`, testes e docs não
+  são servidos.
+- Node **24 LTS** (tem `node:sqlite` embutido). Continua sem npm e sem dependências.
+- `/lab`: o "XSS" do mural roda dentro de `iframe sandbox` sem `allow-same-origin`, para não virar
+  falha real do próprio jogo.
+
+### Peças
+1. **Servidor** (`server/`): HTTP puro, arquivos estáticos, sessões, `/api/jogo`, depois `/lab`.
+2. **Cliente da API** (`engine/api.js`): `fetch` com sessão; o jogo nunca decide sozinho se algo
+   foi conquistado.
+3. **Progresso**: autoridade no servidor (`server/progress.cjs`); o cliente guarda só um espelho
+   para exibir (`engine/progress.js`).
+4. **Sistema de arquivos virtual**: definido em `server/data/vfs.cjs`; o navegador pede listagem e
+   conteúdo por API; arquivos aparecem conforme o progresso.
+5. **Registro de apps** (`engine/os/apps.js`) e **gerenciador de janelas** (tarefa 02b).
+6. **Terminal** (`engine/os/apps/terminal.js`): tabela de comandos sobre o VFS da API.
+7. **Desafios de código**: definição e gabarito em `server/data/challenges/`; o ZeroTrace recebe só
+   enunciado, código inicial e entradas.
+8. **Lab** (`/lab`) + **Inspetor HTTP**: o jogador explora (cyber) e corrige (dev, testado pelo
+   servidor contra as mesmas requisições de ataque).
+9. Apps de conteúdo: César, Git/PR, Pipeline, Wireshark (pacotes vêm do servidor).
 
 ## 5. Fragmentos (ordem de execução)
 Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez; revisar antes da próxima.
@@ -110,9 +139,13 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ⬜ 02b Gerenciador de janelas, menu Iniciar, menu de contexto do sistema
 - ⬜ 02c Explorador real: duplo clique, Bloco de notas, clique direito, propriedades
 
+**Fase S — Servidor (antes do conteúdo; pedido do pentester)**
+- ⬜ S1 Servidor do jogo: estáticos seguros, sessão, nova partida, cliente da API
+- ⬜ S2 Missões de código com gabarito no servidor (entradas aleatórias, senhas e erros no servidor)
+
 **Fase 1 — Plataforma ZeroOS (ferramentas do CTF)**
-- ⬜ 03 Sistema de progresso (flags)
-- ⬜ 04 Sistema de arquivos virtual
+- ⬜ 03 Progresso no servidor (flags) + espelho no cliente
+- ⬜ 04 Sistema de arquivos virtual servido pela API
 - ⬜ 05 Registro de apps no ZeroOS
 - ⬜ 06 App Terminal (`ls`, `cd`, `cat`, `grep -n`) — base do "log do ano da IA"
 - ⬜ 07 Captura de flags: lembranças no caderno, ficha de conhecimento, D.A.N.I.E.L. comemorando
@@ -121,7 +154,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 > Marco jogável: dá para ir do terminal ao Wireshark e à Sala Secreta com flags de teste.
 - ⬜ 10 Motor de desafios de código (modo *implementar*; migra as 5 missões atuais)
 - ⬜ 11 Modo *escrever o teste que faltou*
-- ⬜ 12 Servidor simulado + App Inspetor HTTP
+- ⬜ 12 `/lab` (SQLite em memória por sessão) + App Inspetor HTTP
 - ⬜ 13 App Roda de César + log real do NEXUS (linha do ano da IA) + cadeia de NPCs
 
 **Fase 2 — Primeiro caso completo (fatia vertical): Pagamento do Café**

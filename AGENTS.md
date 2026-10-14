@@ -16,6 +16,12 @@ sequências lineares obrigatórias.
 - Será apresentado no **TechSummit** (tema IA). História, estrutura da fase e arquitetura-alvo:
   `codex/PLANO.md`.
 
+## Regra de segurança (vale para toda tarefa)
+O **servidor é a fonte da verdade** (`codex/PLANO.md` §4). O navegador nunca recebe flags,
+gabaritos, senhas, IP:porta nem conteúdo ainda não liberado; nunca decide sozinho se o jogador
+conquistou algo. Código do jogador roda só no Web Worker do navegador, nunca no servidor.
+Falhas dos sistemas vibecodados existem só em `/lab`, simuladas sobre dados falsos por sessão.
+
 ## Fluxo de trabalho (importante)
 - O trabalho é feito em **fragmentos**: cada prompt indica **uma** tarefa em `codex/tarefas/NN-*.md`.
 - Execute **somente** a tarefa indicada. Não adiante tarefas seguintes, não "aproveite para melhorar"

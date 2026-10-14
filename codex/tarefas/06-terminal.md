@@ -7,7 +7,8 @@ navegar pastas. Os próximos comandos (`git log`, `decode`, etc.) serão acresce
 ## O que fazer
 1. `engine/os/terminal-core.js` — lógica **sem DOM**, testável em Node:
    - `createTerminal(fs)` → objeto com `cwd` (inicia em `/home/kael`) e
-     `run(line)` → `{ lines: string[], clear?: boolean }`.
+     `async run(line)` → `{ lines: string[], clear?: boolean }`. `fs` é o `RemoteFS` da tarefa 04
+     (assíncrono); nos testes, use um `fs` falso em memória com a mesma interface.
    - Tabela `TERMINAL_COMMANDS` (`{ nome: { help, run(args, term) } }`) e
      `registerTerminalCommand(nome, def)` para tarefas futuras.
    - Comandos: `help`, `ls [caminho]`, `cd [caminho]`, `pwd`, `cat <arquivo>`, `clear`,
@@ -16,7 +17,7 @@ navegar pastas. Os próximos comandos (`git log`, `decode`, etc.) serão acresce
    - Mensagens de erro em português, no estilo Unix
      (`cat: nao-existe.txt: arquivo não encontrado`, `cd: x: não é um diretório`).
    - Argumentos com aspas simples ou duplas (`grep "deploy v2" /var/log/nexus.log`).
-   - `cat` usa `fs.read`, portanto concede `grants` do arquivo.
+   - `cat` usa `fs.read`; o servidor registra a leitura e aplica `grants` (o terminal não decide nada).
 2. `engine/os/apps/terminal.js` — registra o app `terminal` (`availableAt: '*'`):
    - Saída monoespaçada com rolagem; prompt `kael@<estação>:<cwd>$`; histórico com ↑/↓;
      `Tab` não sai do campo (completar nomes é opcional).
@@ -40,7 +41,7 @@ navegar pastas. Os próximos comandos (`git log`, `decode`, etc.) serão acresce
 
 ## Prompt para o Codex
 ```
-Leia AGENTS.md e codex/tarefas/06-terminal.md. Pré-requisitos: tarefas 03, 04 e 05 concluídas.
+Leia AGENTS.md e codex/tarefas/06-terminal.md. Pré-requisitos: tarefas S1, S2, 03, 04 e 05 concluídas.
 Execute somente a tarefa 06. Ao final, liste arquivos alterados, saída de todos os verify*.cjs
 e o roteiro de teste manual.
 ```
