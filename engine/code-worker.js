@@ -5,6 +5,9 @@ self.XMLHttpRequest=undefined;self.WebSocket=undefined;self.importScripts=undefi
 self.onmessage=({data})=>{
  try {
   const program=new Function('input','"use strict";\n'+data.source);
+  if(data.modo==='testes'){
+   reply({casos:JSON.parse(JSON.stringify(program(undefined)))});return;
+  }
   const saidas=data.entradas.map(input=>program(structuredClone(input)));
   // Normalizar para o formato JSON usado pela API, inclusive undefined/NaN.
   reply({saidas:JSON.parse(JSON.stringify(saidas))});

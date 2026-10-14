@@ -9,10 +9,11 @@ function failure(status, message) {
   return Object.assign(new Error(message), { status });
 }
 
-async function readJson(req) {
-  if (Number(req.headers['content-length']) > BODY_LIMIT) {
+async function readJson(req, limit = BODY_LIMIT) {
+  const limitMessage = 'Corpo da requisição excede '+(limit / 1024)+' KB.';
+  if (Number(req.headers['content-length']) > limit) {
     req.resume();
-    throw failure(413, 'Corpo da requisição excede 64 KB.');
+    throw failure(413, limitMessage);
   }
   const chunks = [];
   let size = 0;
@@ -20,9 +21,9 @@ async function readJson(req) {
   await new Promise((resolve, reject) => {
     req.on('data', chunk => {
       size += chunk.length;
-      if (size > BODY_LIMIT) {
+      if (size > limit) {
         chunks.length = 0;
-        reject(failure(413, 'Corpo da requisição excede 64 KB.'));
+        reject(failure(413, limitMessage));
       } else chunks.push(chunk);
     });
     req.on('end', resolve);

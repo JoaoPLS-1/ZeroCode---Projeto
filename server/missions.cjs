@@ -15,7 +15,7 @@ function installMissionRoutes(router, sessions) {
     const session=sessionFor(req);await readJson(req);json(res,200,service.start(session,id));
   });
   router.addPattern('POST', /^\/api\/jogo\/missoes\/([^/]+)\/execucao\/([^/]+)$/, async (req,res,[id,execution]) => {
-    const session=sessionFor(req), body=await readJson(req);
+    const session=sessionFor(req), body=await readJson(req,service.submissionLimit(session,id));
     json(res,200,service.submit(session,id,execution,body));
   });
   router.addPattern('POST', /^\/api\/jogo\/missoes\/([^/]+)\/desbloquear$/, async (req,res,[id]) => {

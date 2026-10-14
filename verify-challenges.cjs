@@ -4,9 +4,9 @@ const {createApp}=require('./server/app.cjs');
 const {createSessions}=require('./server/sessions.cjs');
 const {flags}=require('./server/data/flags.cjs');
 const worker=fs.readFileSync('engine/code-worker.js','utf8');
-function execute(source,entradas){
+function execute(source,entradas,modo){
  let result;const scope=vm.createContext({self:{postMessage:value=>result=value},structuredClone});
- vm.runInContext(worker,scope);scope.data={source,entradas};vm.runInContext('self.onmessage({data})',scope,{timeout:500});
+ vm.runInContext(worker,scope);scope.data={source,entradas,modo};vm.runInContext('self.onmessage({data})',scope,{timeout:500});
  return JSON.parse(JSON.stringify(result));
 }
 const fresh=()=>({progresso:[],gameOver:false});
@@ -16,12 +16,22 @@ function format(){
  assert.equal(challenges.length,fs.readdirSync('server/data/challenges').filter(name=>name.endsWith('.cjs')).length);
  for(const c of challenges){
   for(const key of ['id','caso','camada','flag','titulo','arquivo','enunciado','codigoInicial'])assert.equal(typeof c[key],'string',c.id+': '+key);
-  assert(c.id&&c.titulo&&c.enunciado);assert.equal(c.camada,'C');assert.equal(c.modo,'implementar');
+  assert(c.id&&c.titulo&&c.enunciado);assert.equal(c.camada,'C');assert(['implementar','testes'].includes(c.modo));
   assert(c.estacoes.length&&c.estacoes.every(id=>typeof id==='string'));
   assert(flags.some(flag=>flag.id===c.flag));assert(c.codigoInicial.includes('// TODO'));
-  assert(Array.isArray(c.casosFixos)&&c.casosFixos.length);assert.equal(typeof c.gerarCasos,'function');assert.equal(typeof c.referencia,'function');
+  assert.equal(typeof c.referencia,'function');
   assert(c.maxErros===null||Number.isInteger(c.maxErros)&&c.maxErros>0);
   assert.equal(c.dicas.length,3);assert(c.dicas.every(d=>typeof d==='string'&&d.trim()));
+  if(c.modo==='testes'){
+   assert.equal(typeof c.assinatura,'string');assert.equal(typeof c.implementacaoVibecodada,'function');assert.equal(typeof c.validarEntrada,'function');
+   assert(c.minimoCasos>=1&&c.maximoCasos>=c.minimoCasos);
+   const starter=execute(c.codigoInicial,[],'testes');assert.equal(starter.casos.length,1);
+   assert(c.validarEntrada(starter.casos[0][0]));assert.equal(c.referencia(starter.casos[0][0]),starter.casos[0][1]);
+   assert.equal(c.implementacaoVibecodada(starter.casos[0][0]),starter.casos[0][1]);
+   assert.deepEqual(execute('return [[{status:503,attempt:5},false]];',[],'testes'),{casos:[[{status:503,attempt:5},false]]});
+   assert(execute('throw new Error("teste");',[],'testes').erro);continue;
+  }
+  assert(Array.isArray(c.casosFixos)&&c.casosFixos.length);assert.equal(typeof c.gerarCasos,'function');
   for(const seed of [1,42,2026]){
    const generated=c.gerarCasos(seeded(seed));assert(Array.isArray(generated)&&generated.length);
    assert.deepEqual(generated,c.gerarCasos(seeded(seed)),'gerador deve usar o rng recebido');
@@ -35,7 +45,39 @@ function format(){
    assert.notDeepEqual(starter.saidas,expected,c.id+' código inicial deve falhar');
   }
  }
- console.log('Formato/Worker: todos os desafios carregados, três dicas, flags válidas, TODO, referências e códigos iniciais recusados em três sementes aprovados.');
+ console.log('Formato/Worker: todos os desafios carregados, três dicas, flags válidas, TODO; implementar validado em três sementes e modelo de testes executado como lista aprovados.');
+}
+function testMode(){
+ let time=0;const api=createChallengeService({now:()=>time}),s=fresh(),id='retry-teste';
+ const listed=api.list(s,'computer_qa_upper').desafios,meta=listed.find(c=>c.id===id);
+ assert(meta&&!meta.bloqueada);assert(listed.some(c=>c.id==='computer_qa_upper'&&c.bloqueada));
+ for(const key of ['flag','referencia','validarEntrada','implementacaoVibecodada','dicas'])assert(!(key in meta));
+ assert(meta.codigoVibecodado.includes('503'));assert.equal(meta.minimoCasos,1);assert.equal(meta.maximoCasos,10);
+ let e=api.start(s,id);assert.deepEqual(e.entradas,[]);time+=EXECUTION_TTL;status(()=>api.submit(s,id,e.execucao,{casos:[]}),409);
+ e=api.start(s,id);
+ for(const casos of [null,[],Array(11).fill([{status:503,attempt:5},false]),[[null,false]],[[[],false]],[[{status:503,attempt:5}]],
+   [[{status:'503',attempt:5},false]],[[{status:99,attempt:5},false]],[[{status:600,attempt:5},false]],
+   [[{status:503,attempt:-1},false]],[[{status:503,attempt:101},false]],[[{status:503,attempt:1.5},false]],
+   [[{status:503,attempt:5,extra:true},false]],[[{status:503,attempt:5},'false']]])status(()=>api.submit(s,id,e.execucao,{casos}),400);
+ status(()=>api.submit(s,id,e.execucao,{casos:[[{status:503,attempt:5},false]],extra:'á'.repeat(5000)}),413);
+ assert.equal(api.list(s,'computer_qa_upper').desafios.find(c=>c.id===id).erros,0);
+ const noBug=api.submit(s,id,e.execucao,execute(meta.codigoInicial,[],'testes'));
+ assert(!noBug.ok);assert.equal(noBug.mensagem,'Seus testes passam, mas não pegam o bug');
+ assert.deepEqual(noBug.resultados.map(r=>[r.passaNaCorreta,r.falhaNaVibecodada]),[[true,false]]);
+ status(()=>api.submit(s,id,e.execucao,{casos:[[{status:503,attempt:5},false]]}),409);
+ e=api.start(s,id);const invalid=api.submit(s,id,e.execucao,{casos:[[{status:503,attempt:0},false],[{status:503,attempt:5},false]]});
+ assert(!invalid.ok);assert.equal(invalid.mensagem,'Seu teste não é válido: ele também falha na versão correta');
+ assert(!s.progresso.includes('flag:retry-C'));assert(!invalid.gameOver);
+ e=api.start(s,id);status(()=>api.submit(fresh(),id,e.execucao,{casos:[[{status:503,attempt:5},false]]}),409);
+ const solved=api.submit(s,id,e.execucao,{casos:[[{status:503,attempt:5},false],[{status:503,attempt:2},true]]});
+ assert(solved.ok&&solved.captura.nova);assert.equal(solved.contagem.flags,1);assert(s.progresso.includes('mem:retry-C'));
+ const dev=challenges.find(c=>c.id==='computer_dev_left'),exec=api.start(s,dev.id);
+ const duplicate=api.submit(s,dev.id,exec.execucao,{saidas:exec.entradas.map(dev.referencia)});
+ assert(duplicate.ok&&!duplicate.captura.nova);assert.equal(duplicate.contagem.flags,1);assert(duplicate.senha);
+ const other=fresh(),devExec=api.start(other,dev.id);api.submit(other,dev.id,devExec.execucao,{saidas:devExec.entradas.map(dev.referencia)});
+ e=api.start(other,id);assert(!api.submit(other,id,e.execucao,{casos:[[{status:503,attempt:5},false]]}).captura.nova);
+ createSessions().reset(s);assert(!api.list(s,'computer_qa_upper').desafios.find(c=>c.id===id).resolvida);
+ console.log('Modo testes: Worker devolve casos; bug detectado, casos sem bug/incorretos, entradas malformadas, limites 1–10/8 KB, execução única/expirada, isolamento, flag compartilhada nos dois sentidos e reset aprovados.');
 }
 // Fixtures somente no teste: não antecipam os desafios narrativos das próximas tarefas.
 const fixture={id:'teste-livre',caso:'teste',camada:'C',flag:'retry-C',estacoes:['computer_dev_left'],requires:'talk:teste',
@@ -89,17 +131,35 @@ async function http(){
   assert((await call('/api/jogo/desafios?estacao='+c.id)).data.desafios[0].resolvida);
   await call('/api/jogo/nova-partida',{});listed=await call('/api/jogo/desafios?estacao='+c.id);
   assert.equal(listed.data.desafios[0].dicasUsadas,0);assert(!listed.data.desafios[0].resolvida);
+  const qa=(await call('/api/jogo/desafios?estacao=computer_qa_upper')).data.desafios.find(c=>c.id==='retry-teste');assert(qa&&!qa.bloqueada);
+  const testExec=(await call('/api/jogo/desafios/retry-teste/execucao',{})).data;
+  const testPath='/api/jogo/desafios/retry-teste/execucao/'+testExec.execucao;
+  assert.equal((await call(testPath,{casos:[[{status:503,attempt:'5'},false]]})).status,400);
+  assert.equal((await call(testPath,{casos:[[{status:503,attempt:5},false]],extra:'x'.repeat(8192)})).status,413);
+  const padded=await fetch(base+testPath,{method:'POST',headers:{cookie,'Content-Type':'application/json'},body:' '.repeat(8192)+'{}'});assert.equal(padded.status,413);await padded.json();
+  const alias=await fetch(base+testPath.replace('/desafios/','/missoes/'),{method:'POST',headers:{cookie,'Content-Type':'application/json'},body:' '.repeat(8192)+'{}'});assert.equal(alias.status,413);await alias.json();
+  const testResult=await call(testPath,{casos:[[{status:503,attempt:5},false]]});assert.equal(testResult.status,200);assert(testResult.data.ok&&testResult.data.captura.nova);
+  assert.deepEqual(testResult.data.resultados.map(r=>[r.passaNaCorreta,r.falhaNaVibecodada]),[[true,true]]);
+  assert.equal((await call(testPath,{casos:[[{status:503,attempt:5},false]]})).status,409);
   for(const path of ['/server/challenges.cjs',...fs.readdirSync('server/data/challenges').map(name=>'/server/data/challenges/'+name)])assert.equal((await call(path)).status,404);
-  console.log('HTTP: sessão obrigatória, consulta por estação, bloqueio S2, três dicas, compatibilidade entre rotas, flags, reset e arquivos privados aprovados.');
+  console.log('HTTP: sessão obrigatória, estação, bloqueio S2, dicas, rotas compatíveis, modo testes com entrada malformada 400 e JSON acima de 8 KB 413 (incluindo espaços e rota S2), flag, replay, reset e dados privados aprovados.');
  }finally{await new Promise(resolve=>server.close(resolve));}
 }
 function client(){
  class Case {terminal(){}close(){}}
- const nodes=new Map(),node=selector=>{if(!nodes.has(selector))nodes.set(selector,{value:'',textContent:'',disabled:false});return nodes.get(selector);};
+ const nodes=new Map(),node=selector=>{if(!nodes.has(selector))nodes.set(selector,{value:'',textContent:'',disabled:false,firstChild:{textContent:''}});return nodes.get(selector);};
  const element=()=>({children:[],classList:{toggle(){}},setAttribute(key,value){this[key]=value;},append(child){this.children.push(child);},prepend(child){this.children.unshift(child);}});
  const s=fresh();s.progresso.push('talk:teste');const api=createChallengeService({catalog:[...challenges,fixture]});
+ const submissions=[];
+ class Worker {
+  postMessage(data){queueMicrotask(()=>this.onmessage({data:execute(data.source,data.entradas,data.modo)}));}
+  terminate(){}
+ }
  const scope=vm.createContext({CaseExperience:Case,CODE_MISSIONS:require('./data/code-missions.js'),document:{createElement:element},
-  api:{get:async path=>path.includes('/missoes')?api.legacyList(s):api.list(s,'computer_dev_left'),post:async path=>api.hint(s,path.split('/')[4])},console});
+  api:{get:async path=>path.includes('/missoes')?api.legacyList(s):api.list(s,'computer_dev_left'),post:async(path,body)=>{
+   const parts=path.split('/'),id=parts[4];if(parts[5]==='dica')return api.hint(s,id);
+   if(!parts[6])return api.start(s,id);submissions.push(body);return api.submit(s,id,parts[6],body);
+  }},Worker,setTimeout,clearTimeout,console});
  vm.runInContext(fs.readFileSync('engine/computer.js','utf8')+'\nglobalThis.ZeroComputer=ZeroComputer;',scope);
  const owner={panel:{querySelector:node},solved:new Set(),g:{clues:{addClue(){},getState:()=>({})},hud:{update(){}}}};
  return (async()=>{
@@ -116,7 +176,18 @@ function client(){
   pc.stationChallenges.push({...locked,name:locked.titulo,file:locked.arquivo});pc.record(locked.id).unlocked=false;
   pc.renderMission(pc.c,body);assert(body.innerHTML.includes('Estação protegida'));assert.equal(body.children[0].children.length,4,'lista permanece acessível no arquivo bloqueado');
   body.children[0].children[2].onclick();assert.equal(pc.currentId(),fixture.id);assert(!node('.code-run').disabled);
-  console.log('ZeroTrace: lista Arquivos, seleção, rascunhos independentes, tentativas ilimitadas e dicas exibidas/preservadas aprovados.');
+  pc.c={id:'computer_qa_upper'};pc.selectedId=null;pc.stationChallenges=api.list(s,pc.c.id).desafios.map(m=>({...m,name:m.titulo,file:m.arquivo,starter:m.codigoInicial,manual:m.enunciado}));
+  const qa=pc.stationChallenges.find(m=>m.modo==='testes');pc.selectedId=qa.id;pc.catalog.set(qa.id,qa);
+  Object.assign(pc.record(qa.id),{errors:0,solved:false,unlocked:true,maxErrors:null});pc.renderMission(pc.c,element());
+  assert.equal(node('.code-editor').value,qa.codigoInicial);assert(!node('.code-run').disabled);
+  assert(node('.code-label').firstChild.textContent.includes('Casos de teste'));assert(node('.code-risk').textContent.includes(qa.codigoVibecodado));
+  await pc.run();assert(node('.code-output').textContent.includes('Seus testes passam, mas não pegam o bug'));
+  node('.code-editor').value='return [[{status:503,attempt:0},false]];';await pc.run();assert(node('.code-output').textContent.includes('Seu teste não é válido'));
+  const before=submissions.length;node('.code-editor').value='return [';await pc.run();assert.equal(submissions.length,before);assert(node('.code-output').textContent.includes('SyntaxError'));
+  node('.code-editor').value='return [[{status:503,attempt:5},false]];';await pc.run();
+  assert(pc.record(qa.id).solved);assert(node('.code-editor').disabled);assert(node('.code-output').textContent.includes('revelaram o bug'));
+  assert.deepEqual(submissions.at(-1),{casos:[[{status:503,attempt:5},false]]});
+  console.log('ZeroTrace: lista, seleção, rascunhos, tentativas ilimitadas, dicas; modo testes exibe versão com bug, envia só casos do Worker, mostra recusas/erro de sintaxe e recompensa aprovada.');
  })();
 }
-(async()=>{format();service();await http();await client();})().catch(error=>{console.error(error);process.exitCode=1;});
+(async()=>{format();service();testMode();await http();await client();})().catch(error=>{console.error(error);process.exitCode=1;});

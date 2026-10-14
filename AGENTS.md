@@ -138,6 +138,12 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   Pedir dica ao D.A.N.I.E.L.; dicas usadas ficam na sessão e são apagadas na nova partida.
   `node verify-challenges.cjs` valida formato, referências/código inicial no Worker em `vm`,
   autorização, dicas, captura, HTTP e seleção no editor; `verify-computer.cjs` mantém a cobertura S2.
+- Modo testes (tarefa 11): `retry-teste` aparece em `computer_qa_upper`, independente do bloqueio S2.
+  O Worker devolve `{ casos: [[entrada, saída esperada], ...] }`; o servidor aceita 1–10 casos,
+  limita o JSON a 8 KB e executa apenas suas duas implementações privadas. Todos os casos devem
+  passar na correta e pelo menos um falhar na vibecodada. O desafio QA e o Dev 1 concedem a mesma
+  `retry-C`, sem duplicar lembranças; resolver o QA não desbloqueia a sequência S2 nem dá sua senha.
+  `node verify-challenges.cjs` cobre o modo, entradas inválidas, limites, flag compartilhada e editor.
 
 ## Armadilhas conhecidas
 - **Overrides no fim dos arquivos de dados.** `maps.js`, `dialogs.js`, `npcs.js` e `objects.js` redefinem

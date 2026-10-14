@@ -85,9 +85,11 @@ class ZeroComputer {
   }
   b.innerHTML='<div class="pc-document-heading"><span class="code-tab">'+this.escapeFile(m.file)+'</span><h2></h2></div><div class="code-actions"><button class="code-run">▶ Executar testes</button><button class="code-files">Procurar instruções nos arquivos</button><button class="code-hint">Pedir dica ao D.A.N.I.E.L.</button></div><label class="code-label">Corpo da função JavaScript · input → return<textarea class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editor JavaScript"></textarea></label><div class="code-output-heading">Saída</div><p class="code-risk"></p><pre class="code-output" role="status" aria-live="polite"></pre><footer class="code-status"><span>'+this.escapeFile(m.file)+' · JavaScript</span><span class="code-attempts"></span></footer>';
   find('.pc-document-heading h2').textContent=m.name;
+  if(m.modo==='testes')find('.code-label').firstChild.textContent='Casos de teste JavaScript · return [[entrada, saída esperada]]';
   find('.code-risk').textContent='LoopZero está corrompendo esta estação. Cada execução que falha consome 1 tentativa. Ao acumular 3 erros neste PC, o ZeroOS é apagado e a partida termina. Fechar o PC não zera os erros.';
   this.renderFiles(c,b);
   if(!Number.isInteger(m.ordemS2)){r.read=true;find('.code-risk').textContent=m.manual+(r.maxErrors===null?'\nVocê pode tentar quantas vezes precisar.':'');}
+  if(m.modo==='testes')find('.code-risk').textContent+='\n\n'+m.assinatura+'\nVersão vibecodada:\n'+m.codigoVibecodado;
   const editor=find('.code-editor');editor.value=r.draft;editor.disabled=r.solved;
   editor.oninput=()=>{r.draft=editor.value;};
   editor.onkeydown=e=>{if(e.key==='Tab'){e.preventDefault();const a=editor.selectionStart,z=editor.selectionEnd;editor.setRangeText('  ',a,z,'end');r.draft=editor.value;}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();this.run();}};
@@ -152,9 +154,10 @@ class ZeroComputer {
     this.worker.onmessage=e=>finish(e.data);
     this.worker.onerror=()=>{if(settled)return;settled=true;this.cancelRun=null;clearTimeout(this.timeout);this.worker?.terminate();this.worker=null;reject(new Error('Falha ao carregar o laboratório. Nenhuma tentativa consumida. Use um servidor HTTP local.'));};
     this.timeout=setTimeout(()=>finish({erro:'Tempo excedido (2 segundos). Verifique laços infinitos.'}),2000);
-    this.worker.postMessage({source:r.draft,entradas:execution.entradas});
+    this.worker.postMessage({source:r.draft,entradas:execution.entradas,modo:this.currentMission()?.modo});
    });
    if(generation!==this.generation)return;
+   if(this.currentMission()?.modo==='testes'&&answer.erro)throw new Error(answer.erro);
    const body=answer.erro?{saidas:execution.entradas.map(()=>null),erro:answer.erro}:answer;
    const result=await api.post('/api/jogo/desafios/'+encodeURIComponent(id)+'/execucao/'+execution.execucao,body);
    if(generation!==this.generation)return;
@@ -166,11 +169,11 @@ class ZeroComputer {
     if(result.clueRef){this.owner.solved.add(c.id);this.owner.g.clues.addClue(result.clueRef);}this.owner.g.hud.update(this.owner.g.clues.getState());
     this.owner.panel.querySelector('.code-editor').disabled=true;this.reward();
    }else{
-    out.textContent=(result.erroExecucao||result.resultados.map(t=>'Teste '+t.teste+': '+(t.passou?'OK':'FALHOU — entrada '+JSON.stringify(t.entrada)+'; esperado '+JSON.stringify(t.esperado)+'; recebido '+JSON.stringify(t.recebido))).join('\n'))+'\n\nRevise as instruções antes de tentar novamente.';
+    out.textContent=(result.mensagem?result.mensagem+'\n'+result.resultados.map(t=>'Teste '+t.teste+': correta '+(t.passaNaCorreta?'PASSA':'FALHA')+'; vibecodada '+(t.falhaNaVibecodada?'FALHA':'PASSA')).join('\n'):result.erroExecucao||result.resultados.map(t=>'Teste '+t.teste+': '+(t.passou?'OK':'FALHOU — entrada '+JSON.stringify(t.entrada)+'; esperado '+JSON.stringify(t.esperado)+'; recebido '+JSON.stringify(t.recebido))).join('\n'))+'\n\nRevise as instruções antes de tentar novamente.';
    }
   }catch(error){if(generation===this.generation){this.busy=false;this.refresh();out.textContent=error.message+'\nConsulte a estação novamente antes de reenviar.';}}
  }
- reward(){const r=this.record(this.currentId());this.owner.panel.querySelector('.code-output').textContent='✓ Todos os testes passaram. Evidência coletada.\n'+(r.reward||'Desafio concluído.')+(r.password?'\nSenha do próximo PC: '+r.password:'');}
+ reward(){const r=this.record(this.currentId());this.owner.panel.querySelector('.code-output').textContent=(this.currentMission()?.modo==='testes'?'✓ Seus testes passaram na versão correta e revelaram o bug na vibecodada. Evidência coletada.\n':'✓ Todos os testes passaram. Evidência coletada.\n')+(r.reward||'Desafio concluído.')+(r.password?'\nSenha do próximo PC: '+r.password:'');}
  gameOver(reason){
   this.dead=true;this.stop();this.owner.windowManager?.destroy();clearInterval(this.owner.osClock);this.owner.osMenuEvents?.abort();if(typeof closeContextMenu==='function')closeContextMenu();this.owner.g.state='gameover';
   this.owner.panel.innerHTML='<div class="zero-gameover"><span>LoopZero / falha crítica</span><h1>ZeroOS não encontrado</h1><p></p><p>A estação foi corrompida. A investigação terminou.</p><button>Reiniciar investigação</button></div>';

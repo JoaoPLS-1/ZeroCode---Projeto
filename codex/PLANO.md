@@ -156,7 +156,7 @@ Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez;
 - ✅ 09 Porta da Sala Secreta por IP:porta (substitui o Passe Ômega como tranca)
 > Marco jogável: dá para ir do terminal ao Wireshark e à Sala Secreta com flags de teste.
 - ✅ 10 Motor de desafios de código (modo *implementar*; migra as 5 missões atuais)
-- ⬜ 11 Modo *escrever o teste que faltou*
+- ✅ 11 Modo *escrever o teste que faltou*
 - ⬜ 12 `/lab` (SQLite em memória por sessão) + App Inspetor HTTP
 - ✅ 13 App Roda de César + log real do NEXUS (linha do ano da IA) + cadeia de NPCs
 
