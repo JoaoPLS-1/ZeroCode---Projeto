@@ -38,19 +38,16 @@ class CaseExperience {
   this.focus=document.activeElement;this.g.state='case';this.g.hud.showPrompt(null);
   this.panel.classList.add('pc-mode');
   this.panel.innerHTML=`<div class="pc-desktop">
-   <div class="pc-brand"><img class="pc-logo" src="assets/zeroos/imported/1.png" alt="" /><div>ZeroOS<span>Seu espaço. Suas ideias.</span></div></div>
-   <div class="zero-wallpaper" aria-hidden="true"><img src="assets/zeroos/imported/1.png" alt="" /><strong>Zero<span>OS</span></strong><small>Um novo jeito de conectar ideias.</small></div>
-   <nav class="zero-launchers" aria-label="Aplicativos"><button class="pc-shortcut" aria-label="Abrir ZeroTrace"><img src="assets/zeroos/imported/2.png" alt="" />ZeroTrace<small>ANÁLISE</small></button><button class="zero-vault"><img src="assets/zeroos/imported/4.png" alt="" />ZeroVault<small>EVIDÊNCIAS</small></button><button class="zero-link"><img src="assets/zeroos/imported/3.png" alt="" />ZeroLink<small>ESTAÇÃO</small></button></nav>
+   <nav class="zero-launchers" aria-label="Aplicativos"><button class="pc-shortcut" aria-label="Abrir ZeroTrace"><img src="assets/zeroos/imported/2.png" alt="" /><span>ZeroTrace</span></button><button class="zero-vault"><img src="assets/zeroos/imported/4.png" alt="" /><span>ZeroVault</span></button><button class="zero-link"><img src="assets/zeroos/imported/3.png" alt="" /><span>ZeroLink</span></button></nav>
    <div class="pc-window">
-    <header class="pc-titlebar"><span><img src="assets/zeroos/imported/2.png" alt="" /> ZeroTrace <span class="zero-accent">· Registros</span></span><div><button class="pc-min" aria-label="Minimizar">−</button><button class="pc-max" aria-label="Maximizar">□</button><button class="pc-close" aria-label="Fechar janela">×</button></div></header>
-    <div class="pc-toolbar"><span>Documentos da investigação</span><span class="pc-readonly">● Somente leitura</span></div>
-    <div class="pc-address">Este computador <span>› Registros ›</span> <strong></strong></div>
-    <div class="pc-workspace"><aside><small>BIBLIOTECA</small><div class="selected">Registros técnicos</div><div>Análise do incidente</div><footer>ZeroOS 1.0<br><span>Área de trabalho</span></footer></aside><main class="case-content"></main></div>
-    <div class="pc-status">● Conectado à rede local <span>Documento disponível</span></div>
+    <header class="pc-titlebar" tabindex="0"><span><img src="assets/zeroos/imported/2.png" alt="" /> ZeroTrace</span><div><button class="pc-min" aria-label="Minimizar">−</button><button class="pc-max" aria-label="Maximizar">□</button><button class="pc-close" aria-label="Fechar janela">×</button></div></header>
+    <div class="pc-toolbar" hidden><span class="pc-readonly"></span></div>
+    <div class="pc-address" hidden><strong></strong></div>
+    <div class="pc-workspace"><aside hidden><footer></footer></aside><main class="case-content"></main></div>
    </div>
-   <div class="pc-start hidden"><strong>Bem-vindo ao ZeroOS</strong><p>Seus aplicativos, sempre por perto.</p><button class="pc-launch">Abrir ZeroTrace</button><button class="pc-exit">Sair do computador</button></div>
-   <section class="zero-info hidden" aria-label="Informações do sistema"><button class="zero-info-close" aria-label="Fechar informações">×</button><h2></h2><div></div></section>
-   <footer class="pc-taskbar"><button class="pc-start-button" aria-label="Abrir aplicativos ZeroOS" aria-expanded="false"><img src="assets/zeroos/imported/1.png" alt="" /> Aplicativos</button><button class="pc-task" aria-label="Restaurar ZeroTrace"><img src="assets/zeroos/imported/2.png" alt="" /><span>ZeroTrace</span></button><span class="pc-session"></span><button class="pc-disconnect">Sair · Esc</button><time></time></footer>
+   <div class="pc-start hidden"><strong>Aplicativos</strong><button class="pc-launch">Abrir ZeroTrace</button><button class="pc-exit">Sair do computador</button></div>
+   <section class="zero-info hidden" aria-label="Informações do sistema"><button class="zero-info-close" aria-label="Fechar informações">×</button><h2 tabindex="0"></h2><div></div></section>
+   <footer class="pc-taskbar"><button class="pc-start-button" aria-label="Abrir aplicativos ZeroOS" aria-expanded="false"><img src="assets/zeroos/imported/1.png" alt="" /> Iniciar</button><button class="pc-task" aria-label="Restaurar ZeroTrace"><img src="assets/zeroos/imported/2.png" alt="" /><span>ZeroTrace</span></button><span class="pc-session"></span><button class="pc-disconnect" hidden>Sair · Esc</button><time></time></footer>
   </div>`;
   const find=s=>this.panel.querySelector(s),win=find('.pc-window'),menu=find('.pc-start');
   find('.pc-address strong').textContent=c.name;

@@ -40,7 +40,7 @@ class ZeroComputer {
   find('.zero-vault').onclick=()=>this.explore('ZeroVault');
   find('.pc-window').classList.add('hidden');
   find('.pc-start-button').focus();
-  const welcome=document.createElement('div');welcome.className='desktop-welcome';welcome.innerHTML='<strong>Mensagem da equipe</strong><p>Primeiro dia? Abra Arquivos e procure o caderno de treinamento e as instruções de recuperação. ZeroTrace é o editor; ZeroVault guarda suas descobertas e senhas.</p>';
+  const welcome=document.createElement('div');welcome.className='desktop-welcome';welcome.innerHTML='<details open><summary aria-label="Fechar notificação">×</summary><div><strong>Mensagem da equipe</strong><p>Primeiro dia? Abra Arquivos e procure o caderno de treinamento e as instruções de recuperação. ZeroTrace é o editor; ZeroVault guarda suas descobertas e senhas.</p></div></details>';
   find('.pc-desktop').append(welcome);
   const i=CODE_MISSIONS.indexOf(m),previous=CODE_MISSIONS[i-1];
   if(previous&&!r.unlocked){
@@ -49,7 +49,7 @@ class ZeroComputer {
    find('.code-unlock').onclick=()=>{const prior=this.record(previous.id);if(prior.solved&&find('.code-password').value.trim()===prior.password){r.unlocked=true;this.open(c);this.owner.panel.querySelector('.pc-shortcut').click();}else find('.code-feedback').textContent='Senha inválida ou missão anterior incompleta. Isso não consome tentativas de código.';};
    return;
   }
-  b.innerHTML='<div class="pc-document-heading"><span>RECUPERAÇÃO DO ZEROOS</span><h2></h2></div><p class="code-risk"></p><button class="code-files">Procurar instruções nos arquivos</button><label class="code-label">Corpo da função JavaScript · input → return<textarea class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editor JavaScript"></textarea></label><div class="code-actions"><button class="code-run">Executar testes</button><span class="code-attempts"></span></div><pre class="code-output" role="status" aria-live="polite"></pre>';
+  b.innerHTML='<div class="pc-document-heading"><span class="code-tab">'+m.file+'</span><h2></h2></div><div class="code-actions"><button class="code-run">▶ Executar testes</button><button class="code-files">Procurar instruções nos arquivos</button></div><label class="code-label">Corpo da função JavaScript · input → return<textarea class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editor JavaScript"></textarea></label><div class="code-output-heading">Saída</div><p class="code-risk"></p><pre class="code-output" role="status" aria-live="polite"></pre><footer class="code-status"><span>'+m.file+' · JavaScript</span><span class="code-attempts"></span></footer>';
   find('.pc-document-heading h2').textContent=m.name;
   find('.code-risk').textContent='LoopZero está corrompendo esta estação. Cada execução que falha consome 1 tentativa. Ao acumular 3 erros neste PC, o ZeroOS é apagado e a partida termina. Fechar o PC não zera os erros.';
   const editor=find('.code-editor');editor.value=r.draft;editor.disabled=r.solved;

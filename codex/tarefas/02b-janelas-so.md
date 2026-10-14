@@ -36,6 +36,14 @@ Este gerenciador também será a base dos apps futuros (Terminal, Wireshark — 
 6. Texto de documentos e saídas pode ser **selecionado e copiado** (Ctrl+C) — não bloquear
    `user-select` nessas áreas.
 
+## Pendências visuais da 02a (resolver aqui)
+- A janela do ZeroTrace sobra espaço vazio abaixo da barra de status: o conteúdo deve ocupar toda
+  a altura da janela (editor cresce; "Saída" e barra de status coladas no rodapé), inclusive ao
+  redimensionar/maximizar.
+- O Explorador não tem botão minimizar: todas as janelas devem ter ─ □ ✕.
+- Relógio da barra de tarefas mostra "23:33 ·" com ponto sobrando: hora em cima, data embaixo,
+  sem separador.
+
 ## Restrições
 - Não mudar regras de missão, senha, tentativas, game over nem a escolha de sistema.
 - Manter as classes listadas na tarefa 02a.

@@ -1,0 +1,6 @@
+#case-panel.pc-mode,#case-panel.os-setup {
+ --os-desktop:#18232f;--os-panel:#252526;--os-field:#1e1e1e;
+ --os-text:#f0f0f0;--os-muted:#c0c0c0;--os-border:#707070;
+ --os-title:#333333;--os-title-active:#124c75;--os-title-text:#ffffff;
+ --os-accent:#0067b8;--os-hover:#404040;--os-selected:#164f78;
+}

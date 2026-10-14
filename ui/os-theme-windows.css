@@ -1,0 +1,8 @@
+#case-panel.windows-pixel {
+ --os-desktop:#0866b6;--os-panel:#ffffff;--os-field:#ffffff;
+ --os-text:#202020;--os-muted:#555555;--os-border:#767676;
+ --os-title:#eeeeee;--os-title-active:#0067b8;--os-title-text:#ffffff;
+ --os-accent:#0067b8;--os-hover:#e5f1fb;--os-selected:#cce8ff;
+}
+#case-panel.windows-pixel .pc-desktop {background:var(--os-desktop) url('../assets/windows-pixel/wallpaper.png') center/cover no-repeat}
+#case-panel.windows-pixel .pc-desktop img {image-rendering:pixelated}
