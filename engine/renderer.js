@@ -11,6 +11,8 @@ const HIGHLIGHT_COLORS = {
   purple: '#b56cff',
 };
 
+const NPC_IDLE_SKINS = new Set(['edu','luna','mark','rick','steve']);
+
 // Gentle idle motion, with a stable phase per character (no synchronized crowd).
 function npcIdlePose(id, seconds, reducedMotion) {
   if (reducedMotion) return {stretch:1, sway:0};
@@ -42,6 +44,8 @@ class Renderer {
   preloadNpcs(npcs) {
     for(const npc of npcs){
       const image=new Image();image.src=npc.sprite;this.npcSprites.set(npc.id,image);
+      // Só estes NPCs têm atlas de respiração em assets/npcs/idle/.
+      if(!NPC_IDLE_SKINS.has(npc.sprite.split('/').pop().replace('.png','')))continue;
       const idle=new Image();
       idle.onload=()=>{try {measurePlayerFrames(idle,2);} catch { /* Use original if frame data is unavailable. */ }};
       idle.src=npc.sprite.replace('assets/npcs/','assets/npcs/idle/');this.npcIdleSprites.set(npc.id,idle);
