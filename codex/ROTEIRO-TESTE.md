@@ -3,6 +3,22 @@
 Gabarito para o autor testar. **Não mostrar aos jogadores.** (A pasta `codex/` não é servida pelo
 jogo — dá 404.) Valores conferidos no código em 14/10/2026.
 
+## Modo Apresentação (Pitch) — tecla P na tela inicial
+→ / PageDown próximo · ← / PageUp anterior · 1–6 capítulo · H esconde a legenda.
+1 O incidente · 2 Aprender fazendo (ZeroTrace no pagamento) · 3 Cada acerto ensina (flag) ·
+4 Investigação de rede (Wireshark aberto — duplo clique no título para maximizar e filtre
+`ip.addr == 10.19.56.7`) · 5 A virada (ÔMEGA) · 6 Decisão e resultado.
+
+## Modo Rápido (leigos) — 2 salas, meta de 2 lembranças, sem programar
+1. Falar com o **Edu** (bilhete com a mensagem cifrada).
+2. **Dev 1** › Git · NEXUS › Pull requests › #214 › clicar nas linhas **r2, r4, r5** › enviar → 1ª lembrança.
+3. **Dev 1** › Roda de César, deslocamento **−3** › Dossiê (J) › Perguntas › escolher
+   "O SERVIDOR QUE DORME AINDA FALA." → 2ª lembrança (Wireshark liberado).
+4. **Dev 1** › Wireshark › clicar no pacote TCP diferente → `10.19.56.7`, porta `2017`.
+5. Porta de cima à direita do Desenvolvimento → IP/porta → Sala Secreta → ÔMEGA → decisão.
+
+# Modo Completo
+
 ## Mapa rápido dos PCs
 | PC (sala) | Missão de código | Apps extras |
 |---|---|---|

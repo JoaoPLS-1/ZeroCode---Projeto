@@ -114,8 +114,8 @@ Scripts clássicos carregados em ordem pelo `index.html` (globais compartilhadas
   a cifra. O inventário só é visível em `computer_qa_infra_lower`, `computer_infra_upper` e
   `computer_dev_right`. `engine/os/apps/cesar.js` registra a Roda de César em todos os PCs e
   exporta `cesar(texto, n)`. `cat` acima de 500 linhas exibe as primeiras 200;
-  `less <arquivo> [página]` lê páginas de 200. Extensão didática do terminal: em `grep -n`,
-  um padrão numérico também seleciona aquela linha, além de procurar o texto literal.
+  `less <arquivo> [página]` lê páginas de 200. Para ler uma linha específica use
+  `sed -n 'Np' <arquivo>` (ex.: `sed -n '2017p' /var/log/nexus.log`); `grep` só procura texto.
   `node verify-cifra-log.cjs` valida dados, cifra, interface, terminal e autorização HTTP.
 - Wireshark (tarefa 08): `server/data/capture.cjs` guarda os 50 pacotes privados;
   `GET /api/jogo/captura?estacao=computer_infra_upper` exige `app:wireshark`.
