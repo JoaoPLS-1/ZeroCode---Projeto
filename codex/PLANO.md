@@ -128,6 +128,14 @@ Regras:
    servidor contra as mesmas requisições de ataque).
 9. Apps de conteúdo: César, Git/PR, Pipeline, Wireshark (pacotes vêm do servidor).
 
+## 5a. Três modos para o TechSummit (prioridade — apresentação na sexta 16/10/2026)
+Pedido do mentor do evento: adaptar o que existe em três versões do mesmo jogo, escolhidas na tela
+inicial. Ordem: M1 → P1 → R1.
+- ⬜ M1 Infraestrutura de modos (Rápido · Pitch · Completo), meta de lembranças e salas por modo
+- ⬜ P1 Modo Pitch: 6 capítulos ao vivo com legenda de venda, navegação por teclado
+- ⬜ R1 Modo Rápido: Desenvolvimento + Sala Secreta, 2 lembranças, sem programar, objetivos guiados
+- O modo **Completo** é o jogo atual (seções abaixo).
+
 ## 5. Fragmentos (ordem de execução)
 Status: ⬜ pendente · 🟨 em andamento · ✅ concluído. Uma tarefa por vez; revisar antes da próxima.
 
