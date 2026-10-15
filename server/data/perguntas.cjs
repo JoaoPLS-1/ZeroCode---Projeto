@@ -16,4 +16,8 @@ const perguntas = [
   { id:'pagamento', pergunta:'Qual identificador de requisição foi cobrado mais de uma vez?', tipo:'valor', resposta:'REQ-7F2-0412', flag:'pagamento-D', dica:'Compare os request_id em /var/log/cobrancas.log no servidor de release ou na estação de telemetria.', conclusao:'Mesmo identificador, três cobranças. O sistema não sabe que já processou aquele pedido.' },
 ];
 perguntas.forEach((pergunta, index) => { pergunta.ordem = index + 1; });
-module.exports = { perguntas };
+const perguntasRapido = [{ id:'cifra', ordem:1, pergunta:'O que a mensagem decifrada diz?', tipo:'escolha',
+  opcoes:['O SERVIDOR QUE DORME AINDA FALA.','O SERVIDOR QUE FALHA AINDA DORME.','O SERVIDOR QUE DORME NUNCA FALA.'],
+  resposta:'O SERVIDOR QUE DORME AINDA FALA.', flag:'cifra-R',
+  dica:'Converse com Edu e use a chave do bilhete na Roda de César do Dev 1.', conclusao:'Uma cifra de César desloca as letras: a chave permite recuperar a mensagem.' }];
+module.exports = { perguntas, perguntasRapido };

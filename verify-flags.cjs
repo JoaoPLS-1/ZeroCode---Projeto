@@ -8,10 +8,10 @@ const { createApp } = require('./server/app.cjs');
 const { missions } = require('./server/data/missions.cjs');
 
 async function verify() {
-  assert.equal(new Set(flags.map(flag => flag.id)).size, 20);
+  assert.equal(new Set(flags.map(flag => flag.id)).size, 21);
   for (const flag of flags) {
     for (const field of ['id','caso','camada','titulo','conceito','vibecodeErrou','ficha','lembranca'])assert.equal(typeof flag[field], 'string');
-    assert(['D','E','C','P'].includes(flag.camada));
+    assert(['D','E','C','P','R'].includes(flag.camada));
   }
   for(const id of ['retry-C','provisoria-2','provisoria-3','provisoria-4','provisoria-5'])assert(flags.find(flag=>flag.id===id).provisoria);
   const session = { progresso:[] };

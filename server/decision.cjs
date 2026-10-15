@@ -41,7 +41,8 @@ function installDecisionRoutes(router, sessions) {
    !definition.choices.every(choice => choice.options.some(option => option.id === choices[choice.id])))
    return json(res,400,{ok:false,erro:'Escolha uma opção para ÔMEGA, deploy e processo.'});
   session.decisao = evaluate(session,choices);
-  json(res,200,{ok:true,resultado:session.decisao});
+  if(session.modo==='rapido') progress.set(session,'evento:decisao-tomada');
+  json(res,200,{ok:true,resultado:session.decisao,...(session.modo==='rapido'?progress.state(session):{})});
  });
 }
 module.exports = {evaluate,installDecisionRoutes};

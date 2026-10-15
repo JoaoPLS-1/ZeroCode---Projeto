@@ -37,6 +37,9 @@ class Game {
         this.salasPermitidas = estado.salas;
         this.hud.setLembrancas(estado.contagem.lembrancas, estado.metaLembrancas);
         this.minimap.setSalas(estado.salas);
+        this.hud.setObjetivos(this.modo === 'rapido' ? this.dialogsData.rapido_objetivos : null, this.progress);
+        const assinatura = JSON.stringify(estado.progresso);
+        if (assinatura !== this._rapidoProgresso) { this._rapidoProgresso = assinatura; this._rapidoSemProgresso = 0; }
       }
     });
     this.dialogue = new DialogueSystem(this.dom.dialogueRoot);
@@ -139,6 +142,7 @@ class Game {
   _goToPlaying() {
     this.state = 'playing';
     this.dom.briefingScreen.classList.add('hidden');
+    this._syncRoomSystems();
     this.hud.setVisible(true);
     this.minimap.setVisible(true);
     this.inventory.setVisible(true);
@@ -189,7 +193,7 @@ class Game {
     this.activeContainers = [
       ...this.activeNpcs,
       ...this.activeObjects,
-      ...(this.map.doors || []),
+      ...(this.map.doors || []).map(door => this.modo === 'rapido' && door.rapido ? {...door,...door.rapido} : door),
     ];
     this.interaction.setContainers(this.activeContainers);
     this.minimap.update(this.map.id, this.roomManager.visited);
@@ -307,7 +311,7 @@ class Game {
   }
 
   _openContainerContent(container, contentRef) {
-    const contentDef = this.dialogsData[contentRef];
+    const contentDef = this.dialogsData[this.modo === 'rapido' && container.id === 'npc_dev_left' ? 'dialog_edu_rapido' : contentRef];
     if (!contentDef) return;
     this.hud.showPrompt(null);
 
@@ -402,6 +406,18 @@ class Game {
   }
 
   _update(dt) {
+    if (this.modo === 'rapido' && !document.hidden && ['playing','case'].includes(this.state) && !this.dialogue.isActive()) {
+      this._rapidoSemProgresso = (this._rapidoSemProgresso || 0) + dt;
+      if (this._rapidoSemProgresso >= 45) {
+        this._rapidoSemProgresso = 0;
+        const objetivo = this.dialogsData.rapido_objetivos.find(o => !this.progress.has(o.chave));
+        if (objetivo) {
+          const notice=this.state==='case' ? this.case?.panel.querySelector('.desktop-welcome') : null;
+          if(notice){notice.setAttribute('role','status');notice.textContent='D.A.N.I.E.L.: '+objetivo.dica;}
+          else if(this.state==='playing')this.dialogue.open({kind:'dialogue',npcName:'D.A.N.I.E.L. · Assistente',lines:[{speaker:'npc',text:objetivo.dica}]}, () => this._lockInteractions());
+        }
+      }
+    }
     if(this.state==='playing') this.npcAnimationTime=(this.npcAnimationTime||0)+dt;
     if (this.state === 'transition') {
       this._updateRoomTransition(dt);

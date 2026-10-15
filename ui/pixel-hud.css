@@ -3,6 +3,7 @@
 #hud{top:10px;left:10px;width:clamp(230px,19vw,290px);height:auto;aspect-ratio:1.38;z-index:21;pointer-events:none;filter:drop-shadow(0 4px 0 #120b2580)}
 .notebook-art{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
 .notebook-content{position:absolute;left:15%;right:11%;top:15%;bottom:13%;color:#2c1746;font:17px/1.05 ZeroPixel,monospace;display:flex;flex-direction:column}
+.hud-rapido .notebook-objective,.hud-rapido .notebook-progress,.hud-rapido .notebook-count,.hud-rapido .hud-false{display:none}.hud-rapido .notebook-content{overflow:auto}.notebook-guided{padding-left:17px;margin:5px 0;font-size:14px;line-height:1.1}.notebook-guided li{margin-bottom:5px}.notebook-guided .done{color:#4b3566;text-decoration:line-through}
 .notebook-content>small{font-size:14px;letter-spacing:1px;margin-bottom:5px}.notebook-content h2{font:22px/.95 ZeroPixel,monospace;margin:0 0 4px;letter-spacing:0}.notebook-objective{font:15px/1 ZeroPixel,monospace;margin:0;max-width:100%}.notebook-progress{display:flex;gap:7px;align-items:center;padding:8px 0;margin-bottom:5px;border-bottom:1px solid #8f7c90}.notebook-progress i{width:9px;height:9px;box-sizing:border-box;border:2px solid #b8a6b4;clip-path:polygon(25% 0,75% 0,100% 25%,100% 75%,75% 100%,25% 100%,0 75%,0 25%)}.notebook-progress i.done{background:#9054ca;border-color:#bb8be6}.notebook-count{display:flex;justify-content:space-between;align-items:center;margin:3px 0;color:#2d1b47;font:17px/1 ZeroPixel,monospace}.notebook-count b{font-weight:400;color:inherit}.hud-false{font:11px/1 ZeroPixel,monospace}
 #case-bar{position:absolute;top:12px;right:20px;left:auto;bottom:auto;display:flex;align-items:flex-start;gap:14px;padding:0;border:0;border-radius:0;box-shadow:none;background:none;backdrop-filter:none;z-index:22}
 #case-bar>.case-status-copy{display:none}
@@ -87,3 +88,4 @@
 #map-visibility-toggle{clip-path:none;background:#252d33;border:2px solid #465159;color:#d6e1e4;box-shadow:none}
 @media(max-width:1000px){#minimap.room-map{width:250px}}
 @media(max-height:570px){#minimap.room-map{width:210px}#minimap.room-map.expanded{width:min(410px,60%)}}
+#hud.hud-rapido{height:300px;aspect-ratio:auto}.hud-rapido .notebook-content{pointer-events:auto}.hud-rapido .notebook-guided{font-size:15px}

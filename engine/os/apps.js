@@ -18,9 +18,10 @@ if(typeof ZeroComputer!=='undefined')(()=>{
  const original=ZeroComputer.prototype.open;
  ZeroComputer.prototype.open=function(station){
   const result=original.call(this,station),owner=this.owner,game=owner.g;
+  if(game.modo==='rapido')owner.panel.querySelector('.pc-shortcut')?.remove();
   const nav=owner.panel.querySelector('.zero-launchers'),manager=owner.windowManager,events=owner.osMenuEvents;
   if(!nav||!manager||!events||events.signal.aborted)return result;
-  const available=app=>(app.availableAt==='*'||app.availableAt.includes(station.id))&&(game.progress.requires(app.requires)||typeof app.openLocked==='function');
+  const available=app=>(app.availableAt==='*'||app.availableAt.includes(station.id))&&(!app.availableInMode||app.availableInMode(game,station))&&(game.progress.requires(app.requires)||typeof app.openLocked==='function');
   const launch=app=>{
    if(events.signal.aborted||!available(app))return;
    owner.closeStartMenu();

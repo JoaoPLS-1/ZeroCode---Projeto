@@ -41,7 +41,7 @@ function installProgressRoutes(router, sessions) {
       return json(res, 200, { ok:true, nova, ...(nova ? { cena:omega.cena } : {}), ...state(session) });
     }
     if (body?.chave === 'evento:batimento-visto') {
-      if (!has(session, 'app:wireshark') || !session.capturaAberta || body.estacao !== 'computer_infra_upper' || !capture.suspeito(body.pacote))
+      if (!has(session, 'app:wireshark') || !session.capturaAberta || !require('./capture.cjs').capturaPermitida(session, body.estacao) || !capture.suspeito(body.pacote))
         return json(res, 403, { ok:false, erro:'Evento não permitido.' });
       const nova = set(session, body.chave);
       return json(res, 200, { ok:true, nova, ...(nova ? { pensamento:capture.pensamento } : {}), ...state(session) });

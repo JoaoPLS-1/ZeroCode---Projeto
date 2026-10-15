@@ -37,6 +37,7 @@ const ZERO_GIT_APP = {
   }
   function pr(root,data,ticket){
    const p=data.pr,marked=new Set();
+   if(ctx.game?.modo==='rapido')root.append(make('p',null,'Clique nas linhas que tiraram a proteção do sistema e envie a revisão.'));
    root.append(make('h3',null,'#'+p.numero+' · '+p.titulo),make('p',null,'Autor: '+p.autor+' · Commit: '+p.commit),make('p',null,p.descricao),
     make('p',null,'Aberto em '+p.abertaEm+' · Aprovado em '+p.aprovadaEm),
     make('p',null,'Aprovado por '+p.aprovador+' em '+p.segundosAteAprovar+' s · '+p.comentario));

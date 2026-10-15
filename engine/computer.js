@@ -30,6 +30,11 @@ class ZeroComputer {
   this.stop();this.c=c;this.selectedId=null;this.stationChallenges=[];const o=this.owner;
   const b=o.desktop(c),p=o.panel,find=s=>p.querySelector(s);
   find('.pc-readonly').textContent='JavaScript · Laboratório isolado';
+  if(o.g.modo==='rapido'){
+   find('.pc-readonly').textContent='Estação de investigação';
+   const message=document.createElement('p');message.textContent=o.g.dialogsData.dialog_rapido_desktop;
+   message.className='desktop-welcome';find('.pc-desktop').append(message);
+  }
   const explorer=document.createElement('button');explorer.className='zero-explorer-launch';explorer.innerHTML='<img src="assets/zeroos/imported/5.png" alt=""><span>Arquivos</span>';
   explorer.setAttribute('aria-label','Abrir Explorador de Arquivos');explorer.title='Explorador de Arquivos';
   find('.zero-launchers').append(explorer);explorer.onclick=()=>this.explore();
@@ -37,7 +42,7 @@ class ZeroComputer {
   find('.pc-window').classList.add('hidden');
   find('.pc-start-button').focus();
   const welcome=document.createElement('div');welcome.className='desktop-welcome';welcome.innerHTML='<details open><summary aria-label="Fechar notificação">×</summary><div><strong>Mensagem da equipe</strong><p>Primeiro dia? Abra Arquivos e procure o caderno de treinamento e as instruções de recuperação. ZeroTrace é o editor; ZeroVault guarda suas descobertas e senhas.</p></div></details>';
-  if(o.g.modo!=='pitch')find('.pc-desktop').append(welcome);
+  if(!['pitch','rapido'].includes(o.g.modo))find('.pc-desktop').append(welcome);
   b.textContent='Consultando a estação no servidor…';
   const generation=this.generation;
   this.ready=this.sync().then(result=>{

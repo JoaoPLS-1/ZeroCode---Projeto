@@ -16,6 +16,18 @@ class HUD {
 
   setLembrancas(count, meta = this.metaLembrancas ?? 5) { this.metaLembrancas=meta;this.memoryEl.textContent='Lembranças '+count+'/'+meta; }
 
+  setObjetivos(objetivos, progress) {
+    this.root.classList.toggle('hud-rapido', !!objetivos);
+    this.objectivesEl?.remove();this.objectivesEl=null;
+    if (!objetivos) return;
+    const list=document.createElement('ol');list.className='notebook-guided';list.setAttribute('aria-label','Objetivos da investigação');
+    for (const objetivo of objetivos) {
+      const item=document.createElement('li'),done=progress.has(objetivo.chave);
+      item.textContent=(done?'✓ ':'')+objetivo.texto;item.classList.toggle('done',done);list.append(item);
+    }
+    this.objectivesEl=list;this.memoryEl.before(list);
+  }
+
   update(clueState) {
     this.foundEl.textContent = `${clueState.found}/${clueState.total}`;
     this.relevantEl.textContent = `${clueState.relevant}/${clueState.relevantTarget}`;

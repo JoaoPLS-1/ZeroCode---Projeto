@@ -258,6 +258,10 @@ Object.assign(ROOMS.room_secret,{bounds:{x:135,y:320,width:1390,height:410},spaw
 
 ROOMS.room_manager.minimapBackground='assets/backgrounds/fase1/sala-gerencia-minimapa.png';
 
+// Sobrescritas públicas aplicadas em cópias das portas, apenas no modo rápido.
+ROOMS.room_dev.doors.find(d=>d.id==='door_dev_right').rapido={name:'Sala Secreta · Controlador de acesso',targetRoom:'room_secret',targetSpawn:'entryMain'};
+ROOMS.room_secret.doors[0].rapido={name:'Desenvolvimento',targetRoom:'room_dev',targetSpawn:'entryRight'};
+
 // Alias temporário para ferramentas externas que ainda procurem MAPS.
 const MAPS = ROOMS;
 

@@ -28,7 +28,7 @@ function createChallengeService({now=Date.now,catalog=challenges}={}) {
   function station(session,id) {
     const c=catalog.find(c=>c.id===id);
     // Ocultos e inexistentes têm a mesma resposta, inclusive nos POSTs.
-    if(!c||!progress.requires(session,c.requires))fail(404,'Desafio não encontrado.');
+    if(session.modo==='rapido'||!c||!progress.requires(session,c.requires))fail(404,'Desafio não encontrado.');
     return {c,state:stateFor(session,c)};
   }
   function active(session,state) {
@@ -55,10 +55,10 @@ function createChallengeService({now=Date.now,catalog=challenges}={}) {
     list(session,estacao) {
       if(typeof estacao!=='string'||!estacao)fail(400,'Informe a estação.');
       return {ok:true,...progress.state(session),gameOver:session.gameOver,
-        desafios:catalog.filter(c=>c.estacoes.includes(estacao)&&progress.requires(session,c.requires)).map(c=>publicData(session,c))};
+        desafios:catalog.filter(c=>session.modo!=='rapido'&&c.estacoes.includes(estacao)&&progress.requires(session,c.requires)).map(c=>publicData(session,c))};
     },
     legacyList(session) {
-      return {ok:true,...progress.state(session),gameOver:session.gameOver,missoes:legacy.map(c=>{
+      return {ok:true,...progress.state(session),gameOver:session.gameOver,missoes:legacy.filter(()=>session.modo!=='rapido').map(c=>{
         const m=publicData(session,c);
         return {...m,name:m.titulo,file:m.arquivo,starter:m.codigoInicial,manual:m.enunciado};
       })};

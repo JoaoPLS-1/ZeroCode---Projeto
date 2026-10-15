@@ -1,14 +1,16 @@
-const { perguntas } = require('./data/perguntas.cjs');
+const { perguntas, perguntasRapido } = require('./data/perguntas.cjs');
 const progress = require('./progress.cjs');
 const { capturar } = require('./flags.cjs');
 const { readJson, json } = require('./router.cjs');
 const normalizar = valor => valor.trim().toUpperCase().replace(/\s+/g, ' ');
 
+const roteiro = session => session.modo === 'rapido' ? perguntasRapido : perguntas;
+
 function installPerguntaRoutes(router, sessions, { now = Date.now } = {}) {
   router.add('GET', '/api/jogo/perguntas', (req, res) => {
     const session = sessions.get(req);
     if (!session) return json(res,401,{ ok:false, erro:'Inicie uma nova partida.' });
-    json(res,200,{ ok:true, perguntas:perguntas.map(q => {
+    json(res,200,{ ok:true, perguntas:roteiro(session).map(q => {
       const respondida = progress.has(session, 'q:'+q.id);
       return { id:q.id, ordem:q.ordem, pergunta:q.pergunta, tipo:q.tipo,
         ...(q.opcoes ? { opcoes:q.opcoes } : {}), disponivel:q.disponivel !== false,
@@ -18,7 +20,7 @@ function installPerguntaRoutes(router, sessions, { now = Date.now } = {}) {
   router.addPattern('POST', /^\/api\/jogo\/perguntas\/([a-z0-9-]+)$/, async (req, res, [id]) => {
     const session = sessions.get(req);
     if (!session) return json(res,401,{ ok:false, erro:'Inicie uma nova partida.' });
-    const q = perguntas.find(q => q.id === id);
+    const q = roteiro(session).find(q => q.id === id);
     if (!q || q.disponivel === false) return json(res,404,{ ok:false, erro:'Pergunta indisponível.' });
     const body = await readJson(req);
     if (typeof body?.resposta !== 'string' || !body.resposta.trim() || body.resposta.length > 500)

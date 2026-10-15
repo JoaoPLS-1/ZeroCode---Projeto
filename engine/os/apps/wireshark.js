@@ -1,9 +1,9 @@
 const ZERO_WIRESHARK_APP = {
- id:'wireshark',name:'Wireshark',icon:'assets/zeroos/trace.svg',availableAt:['computer_infra_upper'],requires:'app:wireshark',
+ id:'wireshark',name:'Wireshark',icon:'assets/zeroos/trace.svg',availableAt:['computer_infra_upper','computer_dev_left'],availableInMode:(game,station)=>station.id==='computer_infra_upper'||game.modo==='rapido',requires:'app:wireshark',
  openLocked(ctx){
   const body=ctx.window.body;body.classList.add('zero-app-about');
   const title=document.createElement('h2');title.textContent='Autenticação necessária — senha do administrador (Kael)';
-  const text=document.createElement('p');text.textContent='Kael não se lembra da senha. Recuperar cinco lembranças libera o acesso à captura de rede.';
+  const text=document.createElement('p');text.textContent=ctx.game.modo==='rapido'?'Recuperar duas lembranças libera o acesso à captura de rede no Dev 1.':'Kael não se lembra da senha. Recuperar cinco lembranças libera o acesso à captura de rede.';
   body.append(title,text);
   const off=ctx.game.progress.on(()=>{if(ctx.game.progress.requires(this.requires)&&body.isConnected){off();body.replaceChildren();body.classList.remove('zero-app-about');this.open(ctx).catch(error=>{if(body.isConnected)body.textContent=error.message;});}});
   // A janela pode ser fechada independentemente do desktop.
@@ -17,6 +17,7 @@ const ZERO_WIRESHARK_APP = {
   if(!body.isConnected)return;
   body.replaceChildren();const packets=result.pacotes;
   const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el;};
+  if(ctx.game.modo==='rapido')body.append(make('p',null,'Quase todo o tráfego é HTTP. Procure o que é diferente — clique nele para ver de onde vem e para qual porta vai.'));
   const form=make('form','wireshark-filter'),input=make('input');input.type='text';input.autocomplete='off';input.spellcheck=false;
   input.placeholder='Filtro de exibição';input.setAttribute('aria-label','Filtro de exibição');
   const apply=make('button',null,'Aplicar');apply.type='submit';form.append(input,apply);

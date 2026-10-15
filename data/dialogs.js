@@ -206,4 +206,16 @@ DIALOGS.dialog_dante={kind:'dialogue',npcName:'Dante Kernel · Gestor de Acesso'
 DIALOGS.dialog_modo_bloqueado={kind:'dialogue',npcName:'D.A.N.I.E.L. · Assistente',lines:[
  {speaker:'npc',text:'Essa área não faz parte desta investigação.'}
 ]};
+DIALOGS.dialog_edu_rapido={kind:'dialogue',npcName:'Edu · Backend',lines:[
+ {speaker:'npc',text:'Achei isso no log do NEXUS: R VHUYLGRU TXH GRUPH DLQGD IDOD. A Lívia sempre usava a chave 3.'},
+ {speaker:'npc',text:'A Roda de César está no Dev 1. Depois registre no dossiê o que a mensagem diz.'}
+]};
+DIALOGS.rapido_objetivos=[
+ {texto:'Revise o código que a IA gerou',chave:'review:retry',dica:'No Dev 1, abra o Git e procure o PR #214 em Pull requests.'},
+ {texto:'Decifre a mensagem escondida',chave:'q:cifra',dica:'Converse com Edu, use a Roda de César no Dev 1 e responda à pergunta no dossiê.'},
+ {texto:'Encontre o servidor que não deveria falar',chave:'evento:batimento-visto',dica:'Abra o Wireshark no Dev 1 e compare os protocolos dos pacotes.'},
+ {texto:'Abra a sala que ninguém conhece',chave:'acesso:sala-secreta',dica:'A porta de cima à direita recebe os dados encontrados na captura.'},
+ {texto:'Decida o que fazer',chave:'evento:decisao-tomada',dica:'Na Sala Secreta, encontre ÔMEGA, consulte o console e tome sua decisão.'}
+];
+DIALOGS.dialog_rapido_desktop='Abra o Git para revisar o PR #214 ou a Roda de César para decifrar o bilhete do Edu. Registre a mensagem no dossiê. Duas lembranças liberam o Wireshark aqui no Dev 1.';
 if (typeof module !== "undefined") module.exports = DIALOGS;

@@ -52,7 +52,9 @@ async function verify() {
         assert(suspicious.some(p=>p.n===body.pacote));progress.sincronizar({progresso:['app:wireshark','evento:batimento-visto']});return {nova:true,pensamento};},
     }});
   vm.runInContext(fs.readFileSync('engine/os/apps/wireshark.js','utf8'),scope);
-  assert.equal(definition.requires,'app:wireshark');assert.deepEqual(Array.from(definition.availableAt),['computer_infra_upper']);
+  assert.equal(definition.requires,'app:wireshark');assert.deepEqual(Array.from(definition.availableAt),['computer_infra_upper','computer_dev_left']);
+  assert.equal(definition.availableInMode({modo:'completo'},{id:'computer_dev_left'}),false);
+  assert.equal(definition.availableInMode({modo:'rapido'},{id:'computer_dev_left'}),true);
   const ctx={game:{progress},station:{id:'computer_infra_upper'},computer:{owner:{windowManager:{windows:new Map([['wireshark',record]])},osMenuEvents:controller}},window:{body:new Element('div')}};
   definition.openLocked(ctx);assert.equal(reads,0);assert(ctx.window.body.textContent.includes('Kael não se lembra'));
   assert.equal(ctx.window.body.querySelectorAll('input').length,0);

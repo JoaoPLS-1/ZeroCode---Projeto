@@ -17,7 +17,7 @@ function capturar(sessao, id) {
   const wiresharkLiberado = nova && lembrancas >= meta(sessao) && progress.set(sessao, 'evento:senha-lembrada');
   if (wiresharkLiberado) progress.set(sessao, 'app:wireshark');
   return { nova, flag:fichaPublica(flag), lembrancas, wiresharkLiberado,
-    ...(wiresharkLiberado ? { senhaLembrada:structuredClone(senhaLembrada) } : {}) };
+    ...(wiresharkLiberado ? { senhaLembrada:structuredClone(sessao.modo === 'rapido' ? [{speaker:'npc',text:'D.A.N.I.E.L.: Duas lembranças recuperadas. A captura de rede está disponível no Dev 1.'}] : senhaLembrada) } : {}) };
 }
 function listar(sessao) {
   return { flags:flags.filter(flag => progress.has(sessao, 'flag:'+flag.id)).map(fichaPublica),

@@ -64,6 +64,10 @@ for (const [numero,conceito,ficha,lembranca,erro] of [
 ]) flags.push({ id:'provisoria-'+numero, caso:'Investigação', camada:'C', titulo:conceito, conceito,
   vibecodeErrou:erro, ficha, lembranca, provisoria:true });
 
+flags.push({ id:'cifra-R', caso:'IA', camada:'R', titulo:'IA · Cifra de César', conceito:'Criptografia básica',
+  vibecodeErrou:'confundiu esconder uma mensagem com protegê-la de verdade.',
+  ficha:'A cifra de César desloca cada letra por uma chave fixa. É útil para aprender, mas pode ser quebrada testando poucos deslocamentos; sistemas reais precisam de criptografia moderna.',
+  lembranca:'A Lívia sempre usava a chave 3 nos nossos bilhetes. Agora lembro.' });
 const senhaLembrada = [
   { speaker:'thought', text:'Servidor de Infra… a senha. Eu escolhi uma que ninguém adivinharia: o ano em que tudo começou para mim. …Lembrei.' },
   { speaker:'npc', text:'Bem-vindo de volta, Kael. Agora você tem acesso à captura de rede.' }
