@@ -15,6 +15,7 @@ const { installPerguntaRoutes } = require('./perguntas.cjs');
 const { installRepoRoutes } = require('./repo.cjs');
 const { installPipelineRoutes } = require('./pipeline.cjs');
 const { installDecisionRoutes } = require('./decision.cjs');
+const { installPitchRoutes } = require('./pitch.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const PUBLIC_FILES = new Set(['/index.html', '/style.css', '/main.js']);
@@ -80,6 +81,7 @@ function createApp() {
   installRepoRoutes(router, sessions);
   installPipelineRoutes(router, sessions);
   installDecisionRoutes(router, sessions);
+  installPitchRoutes(router, sessions);
   router.add('POST', '/api/jogo/nova-partida', async (req, res) => {
     const body = await readJson(req);
     let session = sessions.get(req);

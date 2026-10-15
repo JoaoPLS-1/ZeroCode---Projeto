@@ -126,6 +126,11 @@ class Game {
   }
 
   _goToBriefing() {
+    if (this.modo === 'pitch') {
+      this.pitch ??= new PitchPresentation(this);
+      this.pitch.start();
+      return;
+    }
     this.state = 'briefing';
     this.dom.startScreen.classList.add('hidden');
     this.dom.briefingScreen.classList.remove('hidden');
@@ -257,7 +262,8 @@ class Game {
         this._roomTransition = null;
         this.state = 'playing';
         this._lockInteractions(350);
-        if (this.map.id === 'room_secret') this._omegaEncounter().enter();
+        if (t.onComplete) t.onComplete();
+        else if (this.map.id === 'room_secret') this._omegaEncounter().enter();
       }
     }
   }
@@ -269,7 +275,8 @@ class Game {
     this.map = room;
     this._syncRoomSystems();
 
-    const spawn = this.roomManager.getSpawn(targetSpawnId) || Object.values(room.spawns)[0];
+    const spawn = typeof targetSpawnId === 'object' && targetSpawnId !== null ? targetSpawnId
+      : this.roomManager.getSpawn(targetSpawnId) || Object.values(room.spawns)[0];
     if (spawn) this.player.setPosition(spawn.x, spawn.y);
 
     if (this._resizeCanvas) this._resizeCanvas();

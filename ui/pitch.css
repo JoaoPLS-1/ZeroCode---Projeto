@@ -1,0 +1,12 @@
+#pitch-bar { position:absolute;bottom:0;left:0;right:0;z-index:1100;padding:12px 28px;background:rgba(9,17,24,.97);border-top:1px solid #536774;color:#f2f5f7;font-family:'Segoe UI',sans-serif; }
+#pitch-bar[hidden] { display:none; }
+#pitch-bar strong { font-size:16px;color:#91e5ec; }
+#pitch-bar p { margin:6px 0;font-size:clamp(19px,2vw,28px);line-height:1.35;max-width:1400px; }
+#pitch-bar small { font-size:12px;color:#b2c0ca; }
+#pitch-bar [role="status"] { display:block;color:#ffcf91;font-size:14px; }
+.pitch-caption { --pitch-space:190px; }
+.pitch-caption #case-panel,.pitch-caption #dialogue-modal,.pitch-caption #decision-modal,.pitch-caption #flag-panel,.pitch-caption #result-screen,.pitch-caption #phone-overlay { bottom:var(--pitch-space); }
+.pitch-caption #case-panel.pc-mode { height:calc(100% - var(--pitch-space)); }
+.pitch-caption #dialogue-modal.cyber-dialogue { bottom:var(--pitch-space); }
+@media(max-width:800px) { #pitch-bar { padding:8px 14px; } .pitch-caption { --pitch-space:225px; } }
+@media(max-height:650px) { #pitch-bar p { font-size:18px; } #pitch-bar { padding:8px 16px; } .pitch-caption { --pitch-space:165px; } }

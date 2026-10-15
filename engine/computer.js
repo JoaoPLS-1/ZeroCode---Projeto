@@ -37,14 +37,18 @@ class ZeroComputer {
   find('.pc-window').classList.add('hidden');
   find('.pc-start-button').focus();
   const welcome=document.createElement('div');welcome.className='desktop-welcome';welcome.innerHTML='<details open><summary aria-label="Fechar notificação">×</summary><div><strong>Mensagem da equipe</strong><p>Primeiro dia? Abra Arquivos e procure o caderno de treinamento e as instruções de recuperação. ZeroTrace é o editor; ZeroVault guarda suas descobertas e senhas.</p></div></details>';
-  find('.pc-desktop').append(welcome);
+  if(o.g.modo!=='pitch')find('.pc-desktop').append(welcome);
   b.textContent='Consultando a estação no servidor…';
   const generation=this.generation;
-  this.sync().then(result=>{
+  this.ready=this.sync().then(result=>{
    if(generation!==this.generation)return;
    if(result.gameOver){this.gameOver('Três execuções incorretas permitiram que LoopZero apagasse o ZeroOS.');return;}
    this.renderMission(c,b);
   }).catch(error=>{if(generation===this.generation){b.textContent=error.message;const retry=document.createElement('button');retry.textContent='Tentar novamente';retry.onclick=()=>this.open(c);b.append(retry);}});
+ }
+ selectChallenge(id){
+  if(!this.stationChallenges.some(m=>m.id===id))throw new Error('Desafio indisponível nesta estação.');
+  this.selectedId=id;this.renderMission(this.c,this.owner.panel.querySelector('.case-content'));this.owner.launchTrace();
  }
  async sync(){
   const generation=this.generation;

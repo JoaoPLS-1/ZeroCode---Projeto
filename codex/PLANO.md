@@ -132,7 +132,7 @@ Regras:
 Pedido do mentor do evento: adaptar o que existe em três versões do mesmo jogo, escolhidas na tela
 inicial. Ordem: M1 → P1 → R1.
 - ✅ M1 Infraestrutura de modos (Rápido · Pitch · Completo), meta de lembranças e salas por modo
-- ⬜ P1 Modo Pitch: 6 capítulos ao vivo com legenda de venda, navegação por teclado
+- ✅ P1 Modo Pitch: 6 capítulos ao vivo com legenda de venda, navegação por teclado
 - ⬜ R1 Modo Rápido: Desenvolvimento + Sala Secreta, 2 lembranças, sem programar, objetivos guiados
 - O modo **Completo** é o jogo atual (seções abaixo).
 
