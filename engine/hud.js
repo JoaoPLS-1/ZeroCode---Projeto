@@ -14,7 +14,7 @@ class HUD {
     this.root.querySelector('.notebook-content').append(this.memoryEl);this.setLembrancas(0);
   }
 
-  setLembrancas(count) { this.memoryEl.textContent='Lembranças '+count+'/5'; }
+  setLembrancas(count, meta = this.metaLembrancas ?? 5) { this.metaLembrancas=meta;this.memoryEl.textContent='Lembranças '+count+'/'+meta; }
 
   update(clueState) {
     this.foundEl.textContent = `${clueState.found}/${clueState.total}`;
@@ -74,6 +74,11 @@ class Minimap {
     this.collapsed=!this.collapsed;
     this.setVisible(this.enabled);
   }
+  setSalas(salas){
+    if(this.salasPermitidas===salas)return;
+    this.salasPermitidas=salas;
+    this.draw();
+  }
   toggle(){
     if(this.collapsed){this.collapsed=false;this.setVisible(this.enabled);return;}
     const open=this.root.classList.toggle('expanded');
@@ -94,6 +99,7 @@ class Minimap {
     const c=this.ctx;c.imageSmoothingEnabled=false;c.clearRect(0,0,this.canvas.width,this.canvas.height);
     this.doorMarkers=[];
     for(const [id,r] of Object.entries(this.layout)){
+      if(Array.isArray(this.salasPermitidas)&&!this.salasPermitidas.includes(id))continue;
       const room=this.rooms[id],active=id===this.current,img=this.backgrounds[id];
       c.fillStyle='#171d22';c.fillRect(r.x,r.y,r.w,r.h);
       if(img?.complete&&img.naturalWidth)c.drawImage(img,r.x,r.y,r.w,r.h);

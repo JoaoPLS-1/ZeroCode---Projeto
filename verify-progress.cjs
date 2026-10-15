@@ -59,7 +59,7 @@ async function verify() {
     await call('/api/jogo/eventos', { chave: 'talk:npc_qa' }, 401);
     cookie = (await call('/api/jogo/nova-partida', {})).cookie;
     const initial = (await call('/api/jogo/estado')).payload;
-    assert.deepEqual(initial, { ok: true, progresso: [], contagem: { flags: 0, lembrancas: 0 } });
+    assert.deepEqual(initial, { ok: true, modo:'completo', salas:'*', metaLembrancas:5, progresso: [], contagem: { flags: 0, lembrancas: 0 } });
     for (const chave of ['flag:x', 'clue:x', 'app:x', 'q:x', 'talk:inexistente', 'mem:1', 'file:inexistente', '__proto__', '', 1, null])
       await call('/api/jogo/eventos', { chave }, 403);
     await call('/api/jogo/eventos', {}, 403);await call('/api/jogo/eventos', null, 403);

@@ -174,7 +174,7 @@ async function verify() {
     assert.equal(created.status, 200);assert.deepEqual(JSON.parse(created.body), { ok: true });security(created);
     const cookieHeader = created.headers['set-cookie'][0];assert.match(cookieHeader, /^zc_sid=[a-f0-9]{48}; HttpOnly; SameSite=Strict; Path=\/$/);
     const cookie = cookieHeader.split(';')[0];
-    const state = await request(port, '/api/jogo/estado', { cookie });assert.equal(state.status, 200);assert.deepEqual(JSON.parse(state.body), { ok: true, progresso: [], contagem: { flags: 0, lembrancas: 0 } });
+    const state = await request(port, '/api/jogo/estado', { cookie });assert.equal(state.status, 200);assert.deepEqual(JSON.parse(state.body), { ok: true, modo:'completo', salas:'*', metaLembrancas:5, progresso: [], contagem: { flags: 0, lembrancas: 0 } });
     const privateCapture='/api/jogo/captura?estacao=computer_infra_upper';
     for(const pathname of [privateCapture,'/api/jogo/captura','/api/jogo/flags','/api/jogo/missoes','/api/jogo/estado',
       '/api/jogo/fs/lista?estacao=computer_infra_upper&caminho=/',
@@ -215,7 +215,7 @@ async function verify() {
   let advanced = 0;
   await game._newSession(() => advanced++, button, root);assert.equal(advanced, 0);assert.equal(button.disabled, false);assert.equal(root.message.textContent, 'Servidor indisponível');
   let release;
-  context.api.post = (pathname, body) => { assert.equal(pathname, '/api/jogo/nova-partida');assert.equal(JSON.stringify(body), '{}');return new Promise(resolve => { release = resolve; }); };
+  context.api.post = (pathname, body) => { assert.equal(pathname, '/api/jogo/nova-partida');assert.equal(JSON.stringify(body), '{"modo":"completo"}');return new Promise(resolve => { release = resolve; }); };
   const starting = game._newSession(() => advanced++, button, root);assert.equal(advanced, 0);assert.equal(button.disabled, true);
   await game._newSession(() => advanced++, button, root);release({ ok: true });await starting;
   assert.equal(advanced, 1);assert.equal(button.disabled, false);

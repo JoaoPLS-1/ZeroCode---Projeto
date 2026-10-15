@@ -10,6 +10,7 @@ function createSessions({ now = Date.now } = {}) {
     }
   }
   function reset(session) {
+    session.modo = 'completo';
     session.criadaEm = now();
     session.usadaEm = session.criadaEm;
     session.progresso = [];

@@ -30,7 +30,15 @@ class Game {
     this.interaction = new InteractionSystem([]);
     this.clues = new ClueSystem(this.cluesData);
     this.progress = new Progress();
-    api.onEstado(estado => this.progress.sincronizar(estado));
+    api.onEstado(estado => {
+      this.progress.sincronizar(estado);
+      if (estado.modo) {
+        this.modo = estado.modo;
+        this.salasPermitidas = estado.salas;
+        this.hud.setLembrancas(estado.contagem.lembrancas, estado.metaLembrancas);
+        this.minimap.setSalas(estado.salas);
+      }
+    });
     this.dialogue = new DialogueSystem(this.dom.dialogueRoot);
     this.mission = new MissionSystem(this.dom.decisionRoot, this.missionData);
     this.hud = new HUD(this.dom.hudRoot, this.dom.promptEl);
@@ -82,14 +90,22 @@ class Game {
   }
 
   _bindScreenButtons() {
-    this.dom.startButton.addEventListener('click', () => this._newSession(() => this._goToBriefing(), this.dom.startButton, this.dom.startScreen));
+    for (const button of this.dom.startScreen.querySelectorAll('[data-modo]')) {
+      button.addEventListener('click', () => this._newSession(() => this._goToBriefing(), button, this.dom.startScreen, button.dataset.modo));
+    }
+    window.addEventListener('keydown', event => {
+      if (this.state === 'start' && event.code === 'KeyP' && !event.repeat && !event.ctrlKey && !event.altKey && !event.metaKey) {
+        event.preventDefault();
+        this.dom.startScreen.querySelector('[data-modo="pitch"]').click();
+      }
+    });
     this.dom.briefingButton.addEventListener('click', () => this._goToPlaying());
     this.dom.resultButton.addEventListener('click', () => this._onResultButtonClick());
     const replayButton = this.dom.completeScreen.querySelector('.neon-button');
     replayButton.addEventListener('click', () => this._newSession(() => location.reload(), replayButton, this.dom.completeScreen));
   }
 
-  async _newSession(onSuccess, button, root) {
+  async _newSession(onSuccess, button, root, modo = 'completo') {
     if (this._startingSession) return;
     this._startingSession = true;
     button.disabled = true;
@@ -102,7 +118,7 @@ class Game {
     }
     message.textContent = '';
     try {
-      await api.post('/api/jogo/nova-partida', {});
+      await api.post('/api/jogo/nova-partida', { modo });
       this.progress.sincronizar(await api.get('/api/jogo/estado'));
       onSuccess();
     } catch (error) { message.textContent = error.message; }
@@ -176,6 +192,10 @@ class Game {
 
   _changeRoom(targetRoomId, targetSpawnId) {
     if (this.state !== 'playing' || this._roomTransition) return;
+    if (Array.isArray(this.salasPermitidas) && !this.salasPermitidas.includes(targetRoomId)) {
+      this.dialogue.open(this.dialogsData.dialog_modo_bloqueado, () => this._lockInteractions());
+      return;
+    }
     if (targetRoomId === 'room_secret' && !this.progress.has('acesso:sala-secreta')) {
       this.secretDoor ??= new SecretDoor(this);
       this.secretDoor.open(targetSpawnId);

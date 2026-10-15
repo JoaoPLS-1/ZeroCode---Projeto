@@ -4,6 +4,7 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const { createRouter, readJson, json } = require('./router.cjs');
 const { createSessions } = require('./sessions.cjs');
+const modos = require('./data/modos.cjs');
 const { installMissionRoutes } = require('./missions.cjs');
 const progress = require('./progress.cjs');
 const { installVfsRoutes } = require('./vfs.cjs');
@@ -80,9 +81,10 @@ function createApp() {
   installPipelineRoutes(router, sessions);
   installDecisionRoutes(router, sessions);
   router.add('POST', '/api/jogo/nova-partida', async (req, res) => {
-    await readJson(req);
-    const session = sessions.get(req);
-    if (session) sessions.reset(session); else sessions.create(res);
+    const body = await readJson(req);
+    let session = sessions.get(req);
+    if (session) sessions.reset(session); else session = sessions.create(res);
+    session.modo = typeof body?.modo === 'string' && Object.hasOwn(modos, body.modo) ? body.modo : 'completo';
     json(res, 200, { ok: true });
   });
   router.add('GET', '/api/jogo/estado', (req, res) => {

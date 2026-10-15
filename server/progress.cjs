@@ -1,4 +1,5 @@
 const NPCS = require('../data/npcs.js');
+const modos = require('./data/modos.cjs');
 const { readJson, json } = require('./router.cjs');
 const capture = require('./data/capture.cjs');
 const omega = require('./data/omega.cjs');
@@ -24,7 +25,9 @@ function requires(session, cond) {
   return false;
 }
 function state(session) {
-  return { progresso: all(session), contagem: { flags: count(session, 'flag:'), lembrancas: count(session, 'mem:') } };
+  const modo = session.modo || 'completo';
+  return { modo, salas: modos[modo].salas, metaLembrancas: modos[modo].metaLembrancas,
+    progresso: all(session), contagem: { flags: count(session, 'flag:'), lembrancas: count(session, 'mem:') } };
 }
 function installProgressRoutes(router, sessions) {
   router.add('POST', '/api/jogo/eventos', async (req, res) => {

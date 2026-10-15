@@ -203,4 +203,7 @@ DIALOGS.dialog_dante={kind:'dialogue',npcName:'Dante Kernel · Gestor de Acesso'
  {speaker:'npc',text:"Cada um só vê o próprio crachá. Pelo menos foi o que me disseram."},
  {speaker:'thought',text:"'Foi o que me disseram.' Alguém conferiu?"}
 ]};
+DIALOGS.dialog_modo_bloqueado={kind:'dialogue',npcName:'D.A.N.I.E.L. · Assistente',lines:[
+ {speaker:'npc',text:'Essa área não faz parte desta investigação.'}
+]};
 if (typeof module !== "undefined") module.exports = DIALOGS;

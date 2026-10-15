@@ -7,8 +7,8 @@ class FlagsUI {
     document.getElementById('game-container').append(this.panel);
     api.onResposta((result,path)=>{
       if(path==='/api/jogo/nova-partida'){this.reset();return;}
-      if(Number.isInteger(result.contagem?.lembrancas))this.g.hud.setLembrancas(result.contagem.lembrancas);
-      else if(Number.isInteger(result.lembrancas))this.g.hud.setLembrancas(result.lembrancas);
+      if(Number.isInteger(result.contagem?.lembrancas))this.g.hud.setLembrancas(result.contagem.lembrancas,result.metaLembrancas);
+      else if(Number.isInteger(result.lembrancas))this.g.hud.setLembrancas(result.lembrancas,result.meta);
       if(result.captura?.nova)this.queue.push(result.captura);
     });
     window.addEventListener('keydown',event=>{
